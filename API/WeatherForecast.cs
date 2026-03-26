@@ -1,4 +1,4 @@
-namespace TechChallenger
+namespace API
 {
     public class WeatherForecast
     {

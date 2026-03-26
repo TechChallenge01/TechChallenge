@@ -1,6 +1,7 @@
+using API;
 using Microsoft.AspNetCore.Mvc;
 
-namespace TechChallenger.Controllers
+namespace API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
