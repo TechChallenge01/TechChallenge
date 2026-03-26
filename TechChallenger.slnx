@@ -1,3 +1,9 @@
 <Solution>
-  <Project Path="C:\Users\p-lpagni\Desktop\TechChallenge\TechChallenge\API\API.csproj" />
+  <Folder Name="/src/">
+    <Project Path="Application/Application.csproj" Id="d3e044ea-9a0d-4bf9-9304-a1157904cb5c" />
+    <Project Path="C:\Users\p-lpagni\Desktop\TechChallenge\TechChallenge\API\API.csproj" />
+    <Project Path="Domain/Domain.csproj" Id="9a3abb68-fac5-415c-898e-285d42d01007" />
+    <Project Path="Infra/Infra.csproj" Id="c1560a46-449f-4d01-8628-2f423d9b4074" />
+  </Folder>
+  <Folder Name="/tests/" />
 </Solution>
