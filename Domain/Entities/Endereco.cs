@@ -8,7 +8,6 @@ namespace Domain.Entities
     {
         public Endereco(string logradouro, string numero, string complemento, string bairro , string cidade, string estado, string cep)
         {
-            Id = Guid.NewGuid();
             Logradouro = logradouro;
             Numero = numero;
             Complemento = complemento;
@@ -19,8 +18,8 @@ namespace Domain.Entities
         }
 
         protected Endereco() { }
-
-        public Guid Id { get; private set; }
+        public Guid ClienteId { get; private set; }
+        public virtual Cliente Cliente { get; private set; }
         public string Logradouro { get; private set; }
         public string Numero { get; private set; }
         public string Complemento { get; private set; }
