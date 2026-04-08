@@ -6,9 +6,8 @@ namespace Domain.Entities
 {
     public class Telefone
     {
-        public Telefone(string ddd, string ddi, string numero, string tipo)
+        public Telefone(string ddd, string ddi, string numero, string tipo, Guid clienteId)
         {
-            Id = Guid.NewGuid();
             DDD = ddd;
             DDI = ddi;
             Numero = numero;
@@ -17,7 +16,9 @@ namespace Domain.Entities
 
         protected Telefone() { }
 
-        public Guid Id { get; private set; }
+        public Guid ClienteId { get; private set; }
+
+        public virtual Cliente Cliente { get; private set; }
         public string DDD { get; private set; }
         public string DDI { get; private set; }
         public string Numero { get; private set; }
