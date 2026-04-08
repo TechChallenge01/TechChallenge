@@ -33,7 +33,6 @@ namespace Domain.Entities
         public string Nome { get; private set; }
         public CpfCnpj CpfCnpj { get; private set; }
 
-
         public IReadOnlyCollection<Email> Emails => _emails.AsReadOnly();
         public IReadOnlyCollection<Telefone> Telefones => _telefones.AsReadOnly();
         public IReadOnlyCollection<Endereco> Enderecos => _enderecos.AsReadOnly();

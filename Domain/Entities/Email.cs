@@ -6,12 +6,14 @@ namespace Domain.Entities
 {
     public class Email
     {
-        public Email(string email)
+        public Email(string email, Guid clienteId)
         {
-            Id = Guid.NewGuid();
             EnderecoEmail = email;
+            ClienteId = clienteId;
         }
-        public Guid Id { get; private set; }
+
+        public virtual Cliente Cliente { get; private set; }
+        public Guid ClienteId { get; private set; }
         public string EnderecoEmail { get; private set; }
     }
 }
