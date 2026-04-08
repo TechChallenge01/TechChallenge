@@ -1,0 +1,26 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Domain.Entities
+{
+    public class Telefone
+    {
+        public Telefone(string ddd, string ddi, string numero, string tipo)
+        {
+            Id = Guid.NewGuid();
+            DDD = ddd;
+            DDI = ddi;
+            Numero = numero;
+            Tipo = tipo; // Celular, Fixo, etc.
+        }
+
+        protected Telefone() { }
+
+        public Guid Id { get; private set; }
+        public string DDD { get; private set; }
+        public string DDI { get; private set; }
+        public string Numero { get; private set; }
+        public string Tipo { get; private set; }
+    }
+}
