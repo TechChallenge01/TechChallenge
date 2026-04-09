@@ -44,7 +44,7 @@ namespace Domain.Entities
 
         private void ValidarSenha(string senha)
         {
-            if (string.IsNullOrWhiteSpace(senha) || senha.Length > 6 )
+            if (string.IsNullOrWhiteSpace(senha) || senha.Length < 6 )
                 throw new ArgumentException("A senha deve ter pelo menos 6 caracteres.");
         }
     }
