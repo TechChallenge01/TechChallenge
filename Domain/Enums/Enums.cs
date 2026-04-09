@@ -12,4 +12,12 @@ namespace Domain.Enums
         Residencial = 4,
         Outro = 5
     }
+
+    public enum PerfilUsuario
+    {
+        Administrador = 1,
+        Funcionario = 2,
+        Mecanico = 3,
+        Cliente = 4
+    }
 }
