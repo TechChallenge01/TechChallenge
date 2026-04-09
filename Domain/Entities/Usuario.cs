@@ -8,21 +8,20 @@ using System.Runtime.CompilerServices;
 
 namespace Domain.Entities
 {
-    public class Usuario
+    public class Usuario : Entity
     {
-        public Guid Id { get; private set; }
         public string Nome { get; private set; }
         public Email Email { get; private set; }
         public string SenhaHash { get; private set; }
         public PerfilUsuario Perfil { get; private set; }
 
-        public Usuario(string name, string email, string senha, PerfilUsuario perfil)
+        public Usuario(string name, string email, string senha, PerfilUsuario perfil, Guid idUsuarioCriacao)
         {
             ValidarNome(name);
             ValidarEmail(email);
             ValidarSenha(senha);
 
-            Id = Guid.NewGuid();
+            IdUsuarioCriacao = idUsuarioCriacao;
             Nome = name;
             Email = new Email(email);
             SenhaHash = senha;
