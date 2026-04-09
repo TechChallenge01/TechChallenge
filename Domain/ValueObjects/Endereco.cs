@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Domain.Entities
+namespace Domain.ValueObjects
 {
     public class Endereco
     {
@@ -18,8 +18,6 @@ namespace Domain.Entities
         }
 
         protected Endereco() { }
-        public Guid ClienteId { get; private set; }
-        public virtual Cliente Cliente { get; private set; }
         public string Logradouro { get; private set; }
         public string Numero { get; private set; }
         public string Complemento { get; private set; }
