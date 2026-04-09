@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Domain.Entities
+namespace Domain.ValueObjects
 {
     public class Telefone
     {
@@ -15,10 +15,6 @@ namespace Domain.Entities
         }
 
         protected Telefone() { }
-
-        public Guid ClienteId { get; private set; }
-
-        public virtual Cliente Cliente { get; private set; }
         public string DDD { get; private set; }
         public string DDI { get; private set; }
         public string Numero { get; private set; }
