@@ -3,21 +3,20 @@ using System.Linq;
 
 namespace Domain.Entities
 {
-    public class Cliente
+    public class Cliente : Entity
     {
-        public Guid Id { get; private set; }
         public string Nome { get; private set; }
         public CpfCnpj CpfCnpj { get; private set; }
 
         private readonly List<Email> _emails;
         private readonly List<Telefone> _telefones;
         private readonly List<Endereco> _enderecos;
-        public Cliente(string nome, string cpfCnpj)
+        public Cliente(string nome, string cpfCnpj, Guid idUsuarioCriacao)
         {
             cpfCnpj = new string(cpfCnpj.Where(char.IsDigit).ToArray());
             ValidarNome(nome);
 
-            Id = Guid.NewGuid();
+            IdUsuarioCriacao = idUsuarioCriacao;
             Nome = nome;
             CpfCnpj = new CpfCnpj(cpfCnpj);
 
