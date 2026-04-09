@@ -5,6 +5,10 @@ namespace Domain.Entities
 {
     public class Cliente
     {
+        public Guid Id { get; private set; }
+        public string Nome { get; private set; }
+        public CpfCnpj CpfCnpj { get; private set; }
+
         private readonly List<Email> _emails;
         private readonly List<Telefone> _telefones;
         private readonly List<Endereco> _enderecos;
@@ -28,10 +32,6 @@ namespace Domain.Entities
             _telefones = new List<Telefone>();
             _enderecos = new List<Endereco>();
         }
-
-        public Guid Id { get; private set; }
-        public string Nome { get; private set; }
-        public CpfCnpj CpfCnpj { get; private set; }
 
         public IReadOnlyCollection<Email> Emails => _emails.AsReadOnly();
         public IReadOnlyCollection<Telefone> Telefones => _telefones.AsReadOnly();
