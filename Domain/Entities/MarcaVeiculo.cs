@@ -1,23 +1,26 @@
-﻿using System;
+﻿using Domain.Base;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Text;
 
 namespace Domain.Entities
 {
-    public class MarcaVeiculo : Entity
+    public class MarcaVeiculo : BaseEntity
     {
-        public string Nome { get; private set; }
+        protected MarcaVeiculo() { }
 
         public MarcaVeiculo(string nome, Guid idUsuarioCriacao)
         {
             ValidarMarca(nome);
 
+            Id = Guid.NewGuid();
             IdUsuarioCriacao = idUsuarioCriacao;
             Nome = nome.Trim();
         }
 
-        protected MarcaVeiculo() { }
+        public Guid Id { get; private set; }
+        public string Nome { get; private set; }
 
         private void ValidarMarca(string nome)
         {

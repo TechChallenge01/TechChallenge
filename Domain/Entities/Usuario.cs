@@ -2,20 +2,21 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-using Domain.ValueObjects;
 using Domain.Enums;
 using System.Runtime.CompilerServices;
+using Domain.Base;
+using Domain.Aggregates.Cliente.ValueObjects;
 
 namespace Domain.Entities
 {
-    public class Usuario : Entity
+    public class Usuario : BaseEntity
     {
         public string Nome { get; private set; }
         public Email Email { get; private set; }
         public string SenhaHash { get; private set; }
-        public PerfilUsuario Perfil { get; private set; }
+        public EPerfilUsuario Perfil { get; private set; }
 
-        public Usuario(string name, string email, string senha, PerfilUsuario perfil, Guid idUsuarioCriacao)
+        public Usuario(string name, string email, string senha, EPerfilUsuario perfil, Guid idUsuarioCriacao)
         {
             ValidarNome(name);
             ValidarEmail(email);

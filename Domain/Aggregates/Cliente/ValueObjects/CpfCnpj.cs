@@ -1,4 +1,4 @@
-﻿namespace Domain.ValueObjects
+﻿namespace Domain.Aggregates.Cliente.ValueObjects
 {
     public class CpfCnpj
     {

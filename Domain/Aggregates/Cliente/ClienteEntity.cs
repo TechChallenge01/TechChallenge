@@ -1,17 +1,12 @@
-﻿using Domain.ValueObjects;
+﻿using Domain.Aggregates.Cliente.ValueObjects;
+using Domain.Base;
 using System.Linq;
 
-namespace Domain.Entities
+namespace Domain.Agregates.Cliente
 {
-    public class Cliente : Entity
+    public class ClienteEntity : BaseEntity
     {
-        public string Nome { get; private set; }
-        public CpfCnpj CpfCnpj { get; private set; }
-
-        private readonly List<Email> _emails;
-        private readonly List<Telefone> _telefones;
-        private readonly List<Endereco> _enderecos;
-        public Cliente(string nome, string cpfCnpj, Guid idUsuarioCriacao)
+        public ClienteEntity(string nome, string cpfCnpj, Guid idUsuarioCriacao)
         {
             cpfCnpj = new string(cpfCnpj.Where(char.IsDigit).ToArray());
             ValidarNome(nome);
@@ -23,19 +18,29 @@ namespace Domain.Entities
             _emails = new List<Email>();
             _telefones = new List<Telefone>();
             _enderecos = new List<Endereco>();
+            _veiculos = new List<Veiculo>();
         }
 
-        protected Cliente() 
+        protected ClienteEntity()
         {
             _emails = new List<Email>();
             _telefones = new List<Telefone>();
             _enderecos = new List<Endereco>();
+            _veiculos = new List<Veiculo>();
         }
+
+        public string Nome { get; private set; }
+        public CpfCnpj CpfCnpj { get; private set; }
+
+        private readonly List<Email> _emails;
+        private readonly List<Telefone> _telefones;
+        private readonly List<Endereco> _enderecos;
+        private readonly List<Veiculo> _veiculos;
 
         public IReadOnlyCollection<Email> Emails => _emails.AsReadOnly();
         public IReadOnlyCollection<Telefone> Telefones => _telefones.AsReadOnly();
         public IReadOnlyCollection<Endereco> Enderecos => _enderecos.AsReadOnly();
-
+        public IReadOnlyCollection<Veiculo> Veiculos => _veiculos.AsReadOnly();
         public void AdicionarEndereco(Endereco endereco)
         {
             if(endereco == null) throw new ArgumentNullException(nameof(endereco)) ;
@@ -73,6 +78,17 @@ namespace Domain.Entities
             if (telefoneExistente) { throw new ArgumentException("Este telefone já está cadastrado."); }
 
             _telefones.Add(telefone);
+        }
+
+        public void AdicionarVeiculo(Veiculo veiculo)
+        {
+            if(veiculo == null) throw new ArgumentNullException(nameof(veiculo)) ;
+
+            bool veiculoExistente = _veiculos.Any(veiculoTemporario => veiculoTemporario.Placa.Equals(veiculo.Placa, StringComparison.OrdinalIgnoreCase));
+
+            if (veiculoExistente) { throw new ArgumentException("Este veículo já está cadastrado."); }
+
+            _veiculos.Add(veiculo);
         }
 
         private void ValidarNome(string nome)

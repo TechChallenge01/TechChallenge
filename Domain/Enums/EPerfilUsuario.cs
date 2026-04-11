@@ -4,16 +4,7 @@ using System.Text;
 
 namespace Domain.Enums
 {
-    public enum TipoTelefone
-    {
-        Fixo = 1,
-        Celular = 2,
-        Comercial = 3,
-        Residencial = 4,
-        Outro = 5
-    }
-
-    public enum PerfilUsuario
+    public enum EPerfilUsuario
     {
         Administrador = 1,
         Funcionario = 2,

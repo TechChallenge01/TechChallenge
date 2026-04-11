@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Domain.ValueObjects
+namespace Domain.Aggregates.Cliente.ValueObjects
 {
     public class Email
     {
