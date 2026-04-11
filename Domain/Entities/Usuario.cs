@@ -11,11 +11,6 @@ namespace Domain.Entities
 {
     public class Usuario : BaseEntity
     {
-        public string Nome { get; private set; }
-        public Email Email { get; private set; }
-        public string SenhaHash { get; private set; }
-        public EPerfilUsuario Perfil { get; private set; }
-
         public Usuario(string name, string email, string senha, EPerfilUsuario perfil, Guid idUsuarioCriacao)
         {
             ValidarNome(name);
@@ -30,6 +25,12 @@ namespace Domain.Entities
         }
 
         public Usuario() { }
+
+        public string Nome { get; private set; }
+        public Email Email { get; private set; }
+        public string SenhaHash { get; private set; }
+        public EPerfilUsuario Perfil { get; private set; }
+        
 
         private void ValidarNome(string name)
         {

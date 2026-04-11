@@ -6,11 +6,11 @@ using System.Text;
 
 namespace Domain.Entities
 {
-    public class MarcaVeiculo : BaseEntity
+    public class MarcaVeiculoEntity : BaseEntity
     {
-        protected MarcaVeiculo() { }
+        protected MarcaVeiculoEntity() { }
 
-        public MarcaVeiculo(string nome, Guid idUsuarioCriacao)
+        public MarcaVeiculoEntity(string nome, Guid idUsuarioCriacao)
         {
             ValidarMarca(nome);
 

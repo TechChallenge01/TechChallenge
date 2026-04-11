@@ -6,34 +6,35 @@ using System.Collections.Generic;
 using System.IO.Pipes;
 using System.Text;
 
-namespace Domain.Aggregates.Cliente.ValueObjects
+namespace Domain.Aggregates.Cliente
 {
-    public class Veiculo : BaseEntity
+    public class VeiculoEntity : BaseEntity
     {
-        public Veiculo(string nome, Guid marcaVeiculoiD, Guid clienteId, int ano, string placa, string cor, Guid idUsuarioCriacao)
+        public VeiculoEntity(string nome, Guid marcaVeiculoiD, Guid clienteId, int ano, string placa, string cor, Guid idUsuarioCriacao) : base(idUsuarioCriacao, DateTime.UtcNow, null, null)
         {
             ValidaNome(nome);
             ValidaAno(ano);
             ValidaPlaca(placa);
 
+            Id = Guid.NewGuid();
             Nome = nome.Trim();
             MarcaVeiculoId = marcaVeiculoiD;
             ClienteId = clienteId;
             Ano = ano;
             Placa = placa;
             Cor = cor;
-            IdUsuarioCriacao = idUsuarioCriacao;
         }
 
-        protected Veiculo() { }
+        protected VeiculoEntity() { }
 
+        public Guid Id { get; private set; }
         public string Nome { get; private set; }
         public Guid MarcaVeiculoId { get; private set; }
         public Guid ClienteId { get; private set; }
         public int Ano { get; private set; }
         public string Placa { get; private set; }
         public string Cor { get; private set; }
-        protected virtual MarcaVeiculo Marca { get; private set; }
+        protected virtual MarcaVeiculoEntity Marca { get; private set; }
         protected virtual ClienteEntity Cliente { get; private set; }
 
         private void ValidaNome(string nome) 
