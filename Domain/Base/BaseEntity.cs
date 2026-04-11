@@ -7,10 +7,7 @@ namespace Domain.Base
     public abstract class BaseEntity
     {
         public BaseEntity()
-        {
-            Ativo = true;
-            DataCriacao = DateTime.UtcNow;
-        }
+        { }
 
         protected BaseEntity(Guid idUsuarioCriacao, DateTime dataCriacao, Guid? idUsuarioAtualizacao, DateTime? dataAtualizacao)
         {
@@ -18,7 +15,6 @@ namespace Domain.Base
             DataCriacao = dataCriacao;
             IdUsuarioAtualizacao = idUsuarioAtualizacao;
             DataAtualizacao = dataAtualizacao;
-            Ativo = true;
         }
 
         public Guid IdUsuarioCriacao { get; protected set; }
@@ -27,7 +23,7 @@ namespace Domain.Base
         public Guid? IdUsuarioAtualizacao { get; protected set; }
         public DateTime? DataAtualizacao { get; protected set; }
 
-        public bool Ativo { get; protected set; }
+        public bool Ativo { get; protected set; } = true;
 
         public void Inativar() => Ativo = false;
 

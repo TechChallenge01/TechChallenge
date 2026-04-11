@@ -1,4 +1,5 @@
-﻿using Domain.Aggregates.Cliente.ValueObjects;
+﻿using Domain.Aggregates.Cliente;
+using Domain.Aggregates.Cliente.ValueObjects;
 using Domain.Base;
 using System.Linq;
 
@@ -18,7 +19,7 @@ namespace Domain.Agregates.Cliente
             _emails = new List<Email>();
             _telefones = new List<Telefone>();
             _enderecos = new List<Endereco>();
-            _veiculos = new List<Veiculo>();
+            _veiculos = new List<VeiculoEntity>();
         }
 
         protected ClienteEntity()
@@ -26,7 +27,7 @@ namespace Domain.Agregates.Cliente
             _emails = new List<Email>();
             _telefones = new List<Telefone>();
             _enderecos = new List<Endereco>();
-            _veiculos = new List<Veiculo>();
+            _veiculos = new List<VeiculoEntity>();
         }
 
         public string Nome { get; private set; }
@@ -35,12 +36,12 @@ namespace Domain.Agregates.Cliente
         private readonly List<Email> _emails;
         private readonly List<Telefone> _telefones;
         private readonly List<Endereco> _enderecos;
-        private readonly List<Veiculo> _veiculos;
+        private readonly List<VeiculoEntity> _veiculos;
 
         public IReadOnlyCollection<Email> Emails => _emails.AsReadOnly();
         public IReadOnlyCollection<Telefone> Telefones => _telefones.AsReadOnly();
         public IReadOnlyCollection<Endereco> Enderecos => _enderecos.AsReadOnly();
-        public IReadOnlyCollection<Veiculo> Veiculos => _veiculos.AsReadOnly();
+        public IReadOnlyCollection<VeiculoEntity> Veiculos => _veiculos.AsReadOnly();
         public void AdicionarEndereco(Endereco endereco)
         {
             if(endereco == null) throw new ArgumentNullException(nameof(endereco)) ;
@@ -80,7 +81,7 @@ namespace Domain.Agregates.Cliente
             _telefones.Add(telefone);
         }
 
-        public void AdicionarVeiculo(Veiculo veiculo)
+        public void AdicionarVeiculo(VeiculoEntity veiculo)
         {
             if(veiculo == null) throw new ArgumentNullException(nameof(veiculo)) ;
 
