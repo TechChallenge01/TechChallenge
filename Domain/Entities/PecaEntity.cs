@@ -1,36 +1,46 @@
 ﻿using Domain.Base;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace Domain.Entities
 {
     public class PecaEntity : BaseEntity
     {
-        public PecaEntity(string name, string marcaPeca, decimal precoVenda, Guid UsuarioCriacaoId, DateTime dataCriacao) : base(UsuarioCriacaoId, dataCriacao, null, null)
+        public PecaEntity(string name, string descricao, string marcaPeca, decimal precoVenda, Guid UsuarioCriacaoId, DateTime dataCriacao) : base(UsuarioCriacaoId, dataCriacao, null, null)
         {
             ValidarNome(name);
             ValidarPrecoVenda(precoVenda);
             ValidarMarcaPeca(marcaPeca);
+            ValidaDescricao(descricao);
 
             Id = Guid.NewGuid();
 
             Name = name;
             MarcaPeca = marcaPeca;
             PrecoVenda = precoVenda;
+            Descricao = descricao;
         }
 
         protected PecaEntity() { }
 
         public Guid Id { get; private set; }
         public string Name { get; private set; }
+        public string Descricao { get; private set; }
         public string MarcaPeca { get; private set; }
         public decimal PrecoVenda { get; private set; }
-
+        
         private void ValidarNome(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("O nome da peça é obrigatório.");
+        }
+
+        public void ValidaDescricao(string descricao)
+        {
+            if (string.IsNullOrWhiteSpace(descricao))
+                throw new ArgumentException("A descrição da peça é obrigatória.");
         }
 
         private void ValidarMarcaPeca(string marcaPeca)
@@ -69,6 +79,15 @@ namespace Domain.Entities
             ValidarNome(novoNome);
 
             Name = novoNome;
+            IdUsuarioAtualizacao = idUsuarioAtualizacao;
+            DataAtualizacao = dataAtualizacao;
+        }
+
+        public void AlterarDescricao(string descricao, Guid idUsuarioAtualizacao, DateTime dataAtualizacao)
+        {
+            ValidaDescricao(descricao);
+
+            Descricao = descricao;
             IdUsuarioAtualizacao = idUsuarioAtualizacao;
             DataAtualizacao = dataAtualizacao;
         }
