@@ -37,7 +37,7 @@ namespace Domain.Entities
                 throw new ArgumentException("O nome da peça é obrigatório.");
         }
 
-        public void ValidaDescricao(string descricao)
+        private void ValidaDescricao(string descricao)
         {
             if (string.IsNullOrWhiteSpace(descricao))
                 throw new ArgumentException("A descrição da peça é obrigatória.");
