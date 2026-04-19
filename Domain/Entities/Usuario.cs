@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Linq;
-using Domain.Enums;
-using System.Runtime.CompilerServices;
+﻿using Domain.Enums;
 using Domain.Base;
 using Domain.Aggregates.Cliente.ValueObjects;
 

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Domain.Aggregates.OrdemServico;
+﻿namespace Domain.Aggregates.OrdemServico;
 
 public class OsPecaEntity : Base.BaseEntity
 {

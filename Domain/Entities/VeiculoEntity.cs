@@ -1,12 +1,7 @@
 ﻿using Domain.Agregates.Cliente;
 using Domain.Base;
-using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.IO.Pipes;
-using System.Text;
 
-namespace Domain.Aggregates.Cliente
+namespace Domain.Entities
 {
     public class VeiculoEntity : BaseEntity
     {

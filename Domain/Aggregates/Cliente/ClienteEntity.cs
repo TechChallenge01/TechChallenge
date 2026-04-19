@@ -1,7 +1,6 @@
 ﻿using Domain.Aggregates.Cliente;
 using Domain.Aggregates.Cliente.ValueObjects;
 using Domain.Base;
-using System.Linq;
 
 namespace Domain.Agregates.Cliente
 {
@@ -12,92 +11,63 @@ namespace Domain.Agregates.Cliente
             cpfCnpj = new string(cpfCnpj.Where(char.IsDigit).ToArray());
             ValidarNome(nome);
 
+            Id = Guid.NewGuid();
             IdUsuarioCriacao = idUsuarioCriacao;
             Nome = nome;
             CpfCnpj = new CpfCnpj(cpfCnpj);
-
-            _emails = new List<Email>();
-            _telefones = new List<Telefone>();
-            _enderecos = new List<Endereco>();
-            _veiculos = new List<VeiculoEntity>();
         }
 
         protected ClienteEntity()
-        {
-            _emails = new List<Email>();
-            _telefones = new List<Telefone>();
-            _enderecos = new List<Endereco>();
-            _veiculos = new List<VeiculoEntity>();
-        }
+        { }
 
+        public Guid Id { get; private set; }
         public string Nome { get; private set; }
         public CpfCnpj CpfCnpj { get; private set; }
 
-        private readonly List<Email> _emails;
-        private readonly List<Telefone> _telefones;
-        private readonly List<Endereco> _enderecos;
-        private readonly List<VeiculoEntity> _veiculos;
+        public ICollection<Email> Emails { get; private set; } = new List<Email>();
+        public ICollection<Telefone> Telefones { get; private set; } = new List<Telefone>();
+        public ICollection<Endereco> Enderecos { get; private set; } = new List<Endereco>();
 
-        public IReadOnlyCollection<Email> Emails => _emails.AsReadOnly();
-        public IReadOnlyCollection<Telefone> Telefones => _telefones.AsReadOnly();
-        public IReadOnlyCollection<Endereco> Enderecos => _enderecos.AsReadOnly();
-        public IReadOnlyCollection<VeiculoEntity> Veiculos => _veiculos.AsReadOnly();
-        public void AdicionarEndereco(Endereco endereco)
+        public void AdicionarEndereco(List<Endereco> enderecos)
         {
-            if(endereco == null) throw new ArgumentNullException(nameof(endereco)) ;
+            if(enderecos == null) 
+                throw new ArgumentNullException(nameof(enderecos)) ;
 
-            bool enderecoExistente = _enderecos.Any(enderecoTemporario => 
-                enderecoTemporario.Logradouro.Equals(endereco.Logradouro, StringComparison.OrdinalIgnoreCase) &&
-                enderecoTemporario.Numero.Equals(endereco.Numero, StringComparison.OrdinalIgnoreCase) &&
-                enderecoTemporario.Cep.Equals(endereco.Cep, StringComparison.OrdinalIgnoreCase));
-
-            if (enderecoExistente) { throw new ArgumentException("Este endereço já está cadastrado."); }
-
-            _enderecos.Add(endereco);
+            Enderecos = enderecos;
         }
 
-        public void AdicionarEmail(Email email)
+        public void AdicionarEmail(List<Email> emails)
         {
-            if(email == null) throw new ArgumentNullException(nameof(email)) ;
+            if(emails == null) 
+                throw new ArgumentNullException(nameof(emails)) ;
 
-            bool emailExistente = _emails.Any(emailTemporario => emailTemporario.EnderecoEmail.Equals(email.EnderecoEmail, StringComparison.OrdinalIgnoreCase));
-
-            if(emailExistente) { throw new ArgumentException("Este e-mail já está cadastrado."); }
-
-            _emails.Add(email);
+            Emails = emails;
         }
 
-        public void AdicionarTelefone(Telefone telefone)
+        public void AdicionarTelefone(List<Telefone> telefones)
         {
-            if(telefone == null) throw new ArgumentNullException(nameof(telefone)) ;
+            if(telefones == null) 
+                throw new ArgumentNullException(nameof(telefones)) ;
 
-            bool telefoneExistente = _telefones.Any(telefoneTemporario => 
-                telefoneTemporario.DDD == telefone.DDD &&
-                telefoneTemporario.DDI == telefone.DDI &&
-                telefoneTemporario.Numero == telefone.Numero);
-
-            if (telefoneExistente) { throw new ArgumentException("Este telefone já está cadastrado."); }
-
-            _telefones.Add(telefone);
+            Telefones = telefones;
         }
 
-        public void AdicionarVeiculo(VeiculoEntity veiculo)
+        public void AlterarNome(string nome)
         {
-            if(veiculo == null) throw new ArgumentNullException(nameof(veiculo)) ;
+            ValidarNome(nome);
+            Nome = nome;
+        }
 
-            bool veiculoExistente = _veiculos.Any(veiculoTemporario => veiculoTemporario.Placa.Equals(veiculo.Placa, StringComparison.OrdinalIgnoreCase));
-
-            if (veiculoExistente) { throw new ArgumentException("Este veículo já está cadastrado."); }
-
-            _veiculos.Add(veiculo);
+        public void AlterarCpfCnpj(string cpfCnpj)
+        {
+            cpfCnpj = new string(cpfCnpj.Where(char.IsDigit).ToArray());
+            CpfCnpj = new CpfCnpj(cpfCnpj);
         }
 
         private void ValidarNome(string nome)
         {
             if(string.IsNullOrEmpty(nome))
-            {
                 throw new ArgumentException("O nome do cliente não pode ser vazio.");
-            }
         }
     }
 }

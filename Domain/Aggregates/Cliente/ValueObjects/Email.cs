@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Domain.Aggregates.Cliente.ValueObjects
+﻿namespace Domain.Aggregates.Cliente.ValueObjects
 {
     public class Email
     {

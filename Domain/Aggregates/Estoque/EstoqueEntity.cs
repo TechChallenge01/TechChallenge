@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Domain.Aggregates.Estoque;
+﻿namespace Domain.Aggregates.Estoque;
 public class EstoqueEntity : Base.BaseEntity
 {
     public Guid PecaId { get; private set; }

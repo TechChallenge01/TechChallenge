@@ -1,8 +1,4 @@
-﻿using Domain.Entities;
-using Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Domain.Enums;
 
 namespace Domain.Aggregates.OrdemServico;
 public class OrdemServicoEntity : Base.BaseEntity
