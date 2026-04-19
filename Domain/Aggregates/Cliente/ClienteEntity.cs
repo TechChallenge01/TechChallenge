@@ -33,7 +33,9 @@ namespace Domain.Agregates.Cliente
             if(enderecos == null) 
                 throw new ArgumentNullException(nameof(enderecos)) ;
 
-            Enderecos = enderecos;
+            Enderecos = enderecos
+                        .DistinctBy(e => new { e.Logradouro, e.Numero, e.Bairro, e.Cidade, e.Uf, e.Cep })
+                        .ToList();
         }
 
         public void AdicionarEmail(List<Email> emails)
@@ -41,7 +43,8 @@ namespace Domain.Agregates.Cliente
             if(emails == null) 
                 throw new ArgumentNullException(nameof(emails)) ;
 
-            Emails = emails;
+            Emails = emails
+                     .DistinctBy(e => e.EnderecoEmail).ToList();
         }
 
         public void AdicionarTelefone(List<Telefone> telefones)
@@ -49,7 +52,9 @@ namespace Domain.Agregates.Cliente
             if(telefones == null) 
                 throw new ArgumentNullException(nameof(telefones)) ;
 
-            Telefones = telefones;
+            Telefones = telefones
+                        .DistinctBy(t => new {t.DDD, t.Numero, t.DDI, t.Tipo})
+                        .ToList();
         }
 
         public void AlterarNome(string nome)
