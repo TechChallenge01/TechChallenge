@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Shared.Result.DTO
+﻿namespace Shared.Result.DTO
 {
     public class PagedResultDTO<T>
     {

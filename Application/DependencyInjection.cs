@@ -1,7 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Application.Clientes.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Application
 {
@@ -9,7 +7,7 @@ namespace Application
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            services.AddScoped<Cliente.Services.IClienteService, Cliente.Services.ClienteService>();
+            services.AddScoped<IClienteService, ClienteService>();
             return services;
         }
     }

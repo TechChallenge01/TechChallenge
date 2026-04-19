@@ -1,14 +1,20 @@
-using Application.Cliente.DTOs.Requests;
-using Application.Cliente.Services;
+using Application.Clientes.DTOs.Requests;
+using Application.Clientes.Services;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Result;
 
 namespace API.Controllers
 {
     [ApiController]
-    [Route("Cliente")]
-    public class ClienteController(IClienteService _clienteService) : ControllerBase
+    [Route("api/[controller]")]
+    public class ClienteController : ControllerBase
     {
+        private readonly IClienteService _clienteService;
+        public ClienteController(IClienteService clienteService)
+        {
+            _clienteService = clienteService;
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetPaginated([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken ct = default)
         {
@@ -24,16 +30,16 @@ namespace API.Controllers
             return response.ToResult();
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> Delete(Guid id, CancellationToken ct)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete([FromRoute]Guid id, CancellationToken ct)
         {
             var response = await _clienteService.Delete(id, ct);
 
             return response.ToResult();
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Update(Guid id, [FromBody] ClienteRequestDTO request, CancellationToken ct)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update([FromRoute]Guid id, [FromBody] ClienteRequestDTO request, CancellationToken ct)
         {
             var response = await _clienteService.Update(id, request, ct);
 
