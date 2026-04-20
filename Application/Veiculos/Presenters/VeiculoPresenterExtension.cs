@@ -1,8 +1,5 @@
 ﻿using Application.Veiculos.DTOs.Response;
 using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Application.Veiculos.Presenters
 {
@@ -13,10 +10,10 @@ namespace Application.Veiculos.Presenters
             return new VeiculoResponseDTO
             {
                 Id = servico.Id,
-                Marca = servico.NomeMarca,
+                MarcaVeiculo = servico.MarcaVeiculo,
                 Modelo = servico.Modelo,
                 Ano = servico.Ano,
-                Placa = servico.Placa,
+                Placa = servico.ValorPlaca,
                 Cor = servico.Cor,
                 NomeCliente = servico.NomeCliente
             };

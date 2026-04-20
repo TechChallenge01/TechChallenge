@@ -1,5 +1,4 @@
 ﻿using Application.Clientes.DTOs.Shared;
-using System.ComponentModel.DataAnnotations;
 
 namespace Application.Clientes.DTOs.Responses
 {

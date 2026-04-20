@@ -1,14 +1,12 @@
 ﻿using Application.Clientes.DTOs.Requests;
 using Application.Clientes.DTOs.Responses;
 using Application.Clientes.Presenters;
-using Application.Veiculos.DTOs.Response;
 using Domain.Aggregates.ClienteAggregates;
 using Domain.Aggregates.ClienteAggregates.Repositories;
 using Domain.Enums;
 using Domain.ValueObjects;
 using Shared.Result;
 using Shared.Result.DTO;
-using System.Diagnostics.CodeAnalysis;
 using System.Net;
 
 namespace Application.Clientes.Services
@@ -103,7 +101,12 @@ namespace Application.Clientes.Services
                 if(cliente is null)
                     return new CommandResult { StatusCode = HttpStatusCode.NotFound, Message = "Cliente não encontrado!" };
 
-                await _clienteRepository.Delete(cliente, ct);
+                //exclusão lógica
+                cliente.Inativar();
+                cliente.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
+
+                await _clienteRepository.Update(cliente, ct);
+
 
                 return new CommandResult { StatusCode = HttpStatusCode.NoContent, Message = "Cliente excluído com sucesso!" };
             }
@@ -139,6 +142,8 @@ namespace Application.Clientes.Services
                     cliente.AlterarEnderecos(request.Enderecos.Select(e => new Endereco(e.Logradouro, e.Numero, e.Complemento, e.Bairro, e.Cidade, e.Uf, e.Cep)).ToList());
 
                 cliente.AlterarNome(request.Nome);
+
+                cliente.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
 
                 await _clienteRepository.Update(cliente, ct);
 

@@ -22,6 +22,10 @@
         public bool Ativo { get; protected set; } = true;
 
         public void Inativar() => Ativo = false;
-
+        public void RastrearAlteracao(Guid idUsuarioAtualizacao, DateTime dataAtualizacao)
+        {
+            IdUsuarioAtualizacao = idUsuarioAtualizacao;
+            DataAtualizacao = dataAtualizacao;
+        }
     }
 }

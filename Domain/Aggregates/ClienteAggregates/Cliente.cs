@@ -6,11 +6,10 @@ namespace Domain.Aggregates.ClienteAggregates
 {
     public class Cliente : Base
     {
-        private Cliente(string nome, Guid idUsuarioCriacao, ICollection<Email> Emails, ICollection<Telefone> Telefones, ICollection<Endereco>? Enderecos)
+        private Cliente(string nome, Guid idUsuarioCriacao, ICollection<Email> Emails, ICollection<Telefone> Telefones, ICollection<Endereco>? Enderecos) : base(idUsuarioCriacao, DateTime.UtcNow, null, null)
         {
             ValidarNome(nome);
             Id = Guid.NewGuid();
-            IdUsuarioCriacao = idUsuarioCriacao;
             Nome = nome;
 
             Emails = Emails;
