@@ -1,6 +1,8 @@
-﻿namespace Domain.Entities
+﻿using Domain.BaseEntity;
+
+namespace Domain.Entities
 {
-    public class MarcaVeiculo : Base.Base
+    public class MarcaVeiculo : Base
     {
         protected MarcaVeiculo() { }
 

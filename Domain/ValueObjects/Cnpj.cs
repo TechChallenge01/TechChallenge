@@ -5,8 +5,8 @@
         protected Cnpj() { }
 
         public Cnpj(string cnpj) 
-        { 
-            cnpj = cnpj.Replace(".", "").Replace("-", "").Replace("/", "")
+        {
+            cnpj = cnpj.Replace(".", "").Replace("-", "").Replace("/", "");
             ValidarCnpj(cnpj);
 
             Valor = cnpj;

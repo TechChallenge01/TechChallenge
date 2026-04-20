@@ -1,7 +1,8 @@
-﻿using Domain.Enums;
+﻿using Domain.BaseEntity;
+using Domain.Enums;
 
 namespace Domain.Aggregates.OrdemServico;
-public class OrdemServico : Base.Base
+public class OrdemServico : Base
 {
     public Guid ClienteId { get; private set; }
 

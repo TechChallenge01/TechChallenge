@@ -1,8 +1,9 @@
-﻿using Domain.Enums;
+﻿using Domain.BaseEntity;
+using Domain.Enums;
 
 namespace Domain.Aggregates.Estoque;
 
-public class EstoqueHistorico : Base.Base
+public class EstoqueHistorico : Base
 {
     public Guid EstoqueId { get; private set; }
     public int Quantidade { get; private set; } 

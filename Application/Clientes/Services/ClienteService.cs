@@ -7,6 +7,7 @@ using Domain.Enums;
 using Domain.ValueObjects;
 using Shared.Result;
 using Shared.Result.DTO;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 
 namespace Application.Clientes.Services
@@ -52,27 +53,28 @@ namespace Application.Clientes.Services
         {
             try
             {
-                var entity = new Cliente(request.Nome, request.Cpf, request.Cnpj, Guid.Empty);
+                if(request.Cpf is null && request.Cnpj is null)
+                    return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = "É necessário informar ou o CPF ou o CNPJ do cliente!" };
+                else if(request.Cpf is not null && request.Cnpj is not null)
+                    return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = "Não é possível informar ambos CPF e CNPJ do cliente!" };
 
-                if (request.Emails.Count > 0)
-                    entity.AdicionarEmail(request.Emails.Select(e => new Email(e)).ToList());
+                Cliente entity;
+                var isCpf = request.Cpf is not null;
 
 
-                if (request.Telefones.Count > 0)
+                if (request.Telefones.Any(t => !Enum.TryParse<ETipoTelefone>(t.Tipo, true, out _)))
                 {
-                    foreach (var telefone in request.Telefones)
-                    {
-                        if (!Enum.TryParse<ETipoTelefone>(telefone.Tipo, true, out var TipoEnum))
-                            return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = "Tipo de telefone inválido!" };
-                    }
-
-                    entity.AdicionarTelefone(request.Telefones.Select(t => new Telefone(t.DDD, t.DDI, t.Numero, (ETipoTelefone)Enum.Parse(typeof(ETipoTelefone), t.Tipo))).ToList());
+                    return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = "Tipo de telefone inválido!" };
                 }
 
-                if (request.Enderecos.Count > 0)
-                {
-                    entity.AdicionarEndereco(request.Enderecos.Select(e => new Endereco(e.Logradouro, e.Numero, e.Complemento, e.Bairro, e.Cidade, e.Uf, e.Cep)).ToList());
-                }
+                var telefones = request.Telefones.Select(t => new Telefone(t.DDD, t.DDI, t.Numero, (ETipoTelefone)Enum.Parse(typeof(ETipoTelefone), t.Tipo))).ToList();
+                var enderecos = request.Enderecos.Select(e => new Endereco(e.Logradouro, e.Numero, e.Complemento, e.Bairro, e.Cidade, e.Uf, e.Cep)).ToList();
+                var emails = request.Emails.Select(e => new Email(e)).ToList();
+
+                if (isCpf)
+                    entity = new Cliente(request.Nome, new Cpf(request.Cpf), Guid.Empty, emails, telefones, enderecos);
+                else
+                    entity = new Cliente(request.Nome, new Cnpj(request.Cnpj), Guid.Empty, emails, telefones, enderecos);
 
                 await _clienteRepository.Create(entity, ct);
 
@@ -120,18 +122,16 @@ namespace Application.Clientes.Services
                 if(cliente is null)
                     return new CommandResult { StatusCode = HttpStatusCode.NotFound, Message = "Cliente não encontrado!" };
 
-                cliente.AdicionarEmail(request.Emails.Select(e => new Email(e)).ToList());
+                cliente.AlterarEmails(request.Emails.Select(e => new Email(e)).ToList());
 
-                foreach (var telefone in request.Telefones)
+                if (request.Telefones.Any(t => !Enum.TryParse<ETipoTelefone>(t.Tipo, true, out _)))
                 {
-                    if (!Enum.TryParse<ETipoTelefone>(telefone.Tipo, true, out var TipoEnum))
-                        return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = "Tipo de telefone inválido!" };
-
-                    telefone.Tipo = TipoEnum.ToString();
+                    return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = "Tipo de telefone inválido!" };
                 }
-                cliente.AdicionarTelefone(request.Telefones.Select(t => new Telefone(t.DDD, t.DDI, t.Numero, (ETipoTelefone)Enum.Parse(typeof(ETipoTelefone), t.Tipo))).ToList());
 
-                cliente.AdicionarEndereco(request.Enderecos.Select(e => new Endereco(e.Logradouro, e.Numero, e.Complemento, e.Bairro, e.Cidade, e.Uf, e.Cep)).ToList());
+                cliente.AlterarTelefones(request.Telefones.Select(t => new Telefone(t.DDD, t.DDI, t.Numero, (ETipoTelefone)Enum.Parse(typeof(ETipoTelefone), t.Tipo))).ToList());
+
+                cliente.AlterarEnderecos(request.Enderecos.Select(e => new Endereco(e.Logradouro, e.Numero, e.Complemento, e.Bairro, e.Cidade, e.Uf, e.Cep)).ToList());
 
                 cliente.AlterarNome(request.Nome);
 

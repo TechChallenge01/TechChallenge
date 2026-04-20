@@ -1,6 +1,8 @@
-﻿namespace Domain.Entities
+﻿using Domain.BaseEntity;
+
+namespace Domain.Entities
 {
-    public class Servico : Base.Base
+    public class Servico : Base
     {
         public Servico() { }
 

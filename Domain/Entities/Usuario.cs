@@ -1,9 +1,10 @@
-﻿using Domain.Enums;
+﻿using Domain.BaseEntity;
+using Domain.Enums;
 using Domain.ValueObjects;
 
 namespace Domain.Entities
 {
-    public class Usuario : Base.Base
+    public class Usuario : Base
     {
         public Usuario(string name, string email, string senha, EPerfilUsuario perfil, Guid idUsuarioCriacao)
         {

@@ -1,21 +1,31 @@
-﻿using Domain.ValueObjects;
+﻿using Domain.BaseEntity;
+using Domain.ValueObjects;
+
 
 namespace Domain.Aggregates.ClienteAggregates
 {
-    public class Cliente : Base.Base
+    public class Cliente : Base
     {
-        public Cliente(string nome, string? cpf, string? cnpj, Guid idUsuarioCriacao)
+        private Cliente(string nome, Guid idUsuarioCriacao, ICollection<Email> Emails, ICollection<Telefone> Telefones, ICollection<Endereco>? Enderecos)
         {
             ValidarNome(nome);
-
             Id = Guid.NewGuid();
             IdUsuarioCriacao = idUsuarioCriacao;
             Nome = nome;
 
-            if(cpf is not null)
-                Cpf = new Cpf(cpf);
-            else
-                Cnpj = new Cnpj(cnpj);
+            Emails = Emails;
+            Telefones = Telefones;
+            Enderecos = Enderecos;
+        }
+
+        public Cliente(string nome, Cpf cpf, Guid idUsuarioCriacao, ICollection<Email> Emails, ICollection<Telefone> Telefones, ICollection<Endereco>? Enderecos) : this(nome, idUsuarioCriacao, Emails, Telefones, Enderecos)
+        {
+            Cpf = cpf ?? throw new ArgumentNullException(nameof(cpf));
+        }
+
+        public Cliente(string nome, Cnpj cnpj, Guid idUsuarioCriacao, ICollection<Email> Emails, ICollection<Telefone> Telefones, ICollection<Endereco>? Enderecos) : this(nome, idUsuarioCriacao, Emails, Telefones, Enderecos)
+        {
+            Cnpj = cnpj ?? throw new ArgumentNullException(nameof(cnpj));
         }
 
         protected Cliente()
@@ -25,12 +35,11 @@ namespace Domain.Aggregates.ClienteAggregates
         public string Nome { get; private set; }
         public Cpf? Cpf { get; private set; }
         public Cnpj? Cnpj { get; private set; }
-
         public ICollection<Email> Emails { get; private set; } = new List<Email>();
         public ICollection<Telefone> Telefones { get; private set; } = new List<Telefone>();
         public ICollection<Endereco> Enderecos { get; private set; } = new List<Endereco>();
 
-        public void AdicionarEndereco(List<Endereco> enderecos)
+        public void AlterarEnderecos(List<Endereco> enderecos)
         {
             if(enderecos == null) 
                 throw new ArgumentNullException(nameof(enderecos)) ;
@@ -40,7 +49,7 @@ namespace Domain.Aggregates.ClienteAggregates
                         .ToList();
         }
 
-        public void AdicionarEmail(List<Email> emails)
+        public void AlterarEmails(List<Email> emails)
         {
             if(emails == null) 
                 throw new ArgumentNullException(nameof(emails)) ;
@@ -49,7 +58,7 @@ namespace Domain.Aggregates.ClienteAggregates
                      .DistinctBy(e => e.EnderecoEmail).ToList();
         }
 
-        public void AdicionarTelefone(List<Telefone> telefones)
+        public void AlterarTelefones(List<Telefone> telefones)
         {
             if(telefones == null) 
                 throw new ArgumentNullException(nameof(telefones)) ;

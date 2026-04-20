@@ -1,5 +1,7 @@
-﻿namespace Domain.Aggregates.Estoque;
-public class Estoque : Base.Base
+﻿using Domain.BaseEntity;
+
+namespace Domain.Aggregates.Estoque;
+public class Estoque : Base
 {
     public Guid PecaId { get; private set; }
     public int QuantidadeDisponivel { get; private set; }

@@ -1,8 +1,9 @@
 ﻿using Domain.Aggregates.ClienteAggregates;
+using Domain.BaseEntity;
 
 namespace Domain.Entities
 {
-    public class Veiculo : Base.Base
+    public class Veiculo : Base
     {
         public Veiculo(string modelo, Guid marcaVeiculoiD, Guid clienteId, int ano, string placa, string cor, Guid idUsuarioCriacao) : base(idUsuarioCriacao, DateTime.UtcNow, null, null)
         {

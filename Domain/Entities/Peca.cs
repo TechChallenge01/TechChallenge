@@ -1,6 +1,8 @@
-﻿namespace Domain.Entities
+﻿using Domain.BaseEntity;
+
+namespace Domain.Entities
 {
-    public class Peca : Base.Base
+    public class Peca : Base
     {
         public Peca(string name, string descricao, string marcaPeca, decimal precoVenda, Guid UsuarioCriacaoId, DateTime dataCriacao) : base(UsuarioCriacaoId, dataCriacao, null, null)
         {

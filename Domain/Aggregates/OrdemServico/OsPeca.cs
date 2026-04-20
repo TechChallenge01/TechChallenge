@@ -1,6 +1,8 @@
-﻿namespace Domain.Aggregates.OrdemServico;
+﻿using Domain.BaseEntity;
 
-public class OsPeca : Base.Base
+namespace Domain.Aggregates.OrdemServico;
+
+public class OsPeca : Base
 {
     public Guid OsId { get; private set; }
     public Guid PecaId { get; private set; }

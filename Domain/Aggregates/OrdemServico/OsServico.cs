@@ -1,8 +1,9 @@
-﻿using Domain.Enums;
+﻿using Domain.BaseEntity;
+using Domain.Enums;
 
 namespace Domain.Aggregates.OrdemServico;
 
-public class OsServico : Base.Base
+public class OsServico : Base
 {
     public Guid OsId { get; private set; }
     public Guid ServicoId { get; private set; }
