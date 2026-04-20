@@ -31,11 +31,13 @@ namespace Domain.Entities
         public string Cor { get; private set; }
         protected virtual MarcaVeiculo Marca { get; private set; }
         protected virtual Cliente Cliente { get; private set; }
+        public string NomeCliente => Cliente.Nome;
+        public string NomeMarca => Marca.Nome;
 
         private void ValidaModelo(string modelo) 
         {
             if(string.IsNullOrWhiteSpace(modelo)) 
-                throw new ArgumentNullException("O modelo do veículo é obrigatório.");
+                throw new ArgumentException("O modelo do veículo é obrigatório.");
         }
         private void ValidaAno(int ano) 
         {
@@ -45,7 +47,7 @@ namespace Domain.Entities
         private void ValidaPlaca(string placa) 
         {
             if (string.IsNullOrWhiteSpace(placa)) 
-                throw new ArgumentNullException("A placa do veículo é obrigatória.");
+                throw new ArgumentException("A placa do veículo é obrigatória.");
         }
     }
 }
