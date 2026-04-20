@@ -20,12 +20,12 @@ namespace Domain.Aggregates.ClienteAggregates
 
         public Cliente(string nome, Cpf cpf, Guid idUsuarioCriacao, ICollection<Email> Emails, ICollection<Telefone> Telefones, ICollection<Endereco>? Enderecos) : this(nome, idUsuarioCriacao, Emails, Telefones, Enderecos)
         {
-            Cpf = cpf ?? throw new ArgumentNullException(nameof(cpf));
+            Cpf = cpf ?? throw new ArgumentException("cpf não pode ser nulo!");
         }
 
         public Cliente(string nome, Cnpj cnpj, Guid idUsuarioCriacao, ICollection<Email> Emails, ICollection<Telefone> Telefones, ICollection<Endereco>? Enderecos) : this(nome, idUsuarioCriacao, Emails, Telefones, Enderecos)
         {
-            Cnpj = cnpj ?? throw new ArgumentNullException(nameof(cnpj));
+            Cnpj = cnpj ?? throw new ArgumentException("cnpj não pode ser nulo!");
         }
 
         protected Cliente()
@@ -42,7 +42,7 @@ namespace Domain.Aggregates.ClienteAggregates
         public void AlterarEnderecos(List<Endereco> enderecos)
         {
             if(enderecos == null) 
-                throw new ArgumentNullException(nameof(enderecos)) ;
+                throw new ArgumentException("enderecos não pode ser nulo!") ;
 
             Enderecos = enderecos
                         .DistinctBy(e => new { e.Logradouro, e.Numero, e.Bairro, e.Cidade, e.Uf, e.Cep })
@@ -52,7 +52,7 @@ namespace Domain.Aggregates.ClienteAggregates
         public void AlterarEmails(List<Email> emails)
         {
             if(emails == null) 
-                throw new ArgumentNullException(nameof(emails)) ;
+                throw new ArgumentException("emails não pode ser nulo!") ;
 
             Emails = emails
                      .DistinctBy(e => e.EnderecoEmail).ToList();
@@ -61,7 +61,7 @@ namespace Domain.Aggregates.ClienteAggregates
         public void AlterarTelefones(List<Telefone> telefones)
         {
             if(telefones == null) 
-                throw new ArgumentNullException(nameof(telefones)) ;
+                throw new ArgumentException("telefones não pode ser nulo!") ;
 
             Telefones = telefones
                         .DistinctBy(t => new {t.DDD, t.Numero, t.DDI, t.Tipo})

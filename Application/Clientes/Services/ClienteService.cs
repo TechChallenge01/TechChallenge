@@ -1,6 +1,7 @@
 ﻿using Application.Clientes.DTOs.Requests;
 using Application.Clientes.DTOs.Responses;
 using Application.Clientes.Presenters;
+using Application.Veiculos.DTOs.Response;
 using Domain.Aggregates.ClienteAggregates;
 using Domain.Aggregates.ClienteAggregates.Repositories;
 using Domain.Enums;
@@ -26,6 +27,9 @@ namespace Application.Clientes.Services
             {
                 var clientes = await _clienteRepository.GetPaginated(page, pageSize, ct);
 
+                if (clientes.Clientes.Count == 0)
+                    return new CommandResult<PagedResultDTO<ClienteResponseDTO>> { StatusCode = HttpStatusCode.NotFound, Message = "Nenhum cliente encontrado." };
+
                 var response = clientes.Clientes.ToListDTO();
 
                 var pagedResult = new PagedResultDTO<ClienteResponseDTO>
@@ -37,7 +41,7 @@ namespace Application.Clientes.Services
                     TotalPages = (int)Math.Ceiling(clientes.Total / (double)pageSize)
                 };
 
-                return new CommandResult<PagedResultDTO<ClienteResponseDTO>> { StatusCode = HttpStatusCode.OK, Message = "Pesquisa de clientes paginadas retornada com sucesso!", Data = pagedResult };
+                return new CommandResult<PagedResultDTO<ClienteResponseDTO>> { StatusCode = HttpStatusCode.OK, Message = "Pesquisa de clientes retornada com sucesso!", Data = pagedResult };
             }
             catch(ArgumentException ex)
             {
@@ -131,7 +135,8 @@ namespace Application.Clientes.Services
 
                 cliente.AlterarTelefones(request.Telefones.Select(t => new Telefone(t.DDD, t.DDI, t.Numero, (ETipoTelefone)Enum.Parse(typeof(ETipoTelefone), t.Tipo))).ToList());
 
-                cliente.AlterarEnderecos(request.Enderecos.Select(e => new Endereco(e.Logradouro, e.Numero, e.Complemento, e.Bairro, e.Cidade, e.Uf, e.Cep)).ToList());
+                if(request.Enderecos.Count > 0)
+                    cliente.AlterarEnderecos(request.Enderecos.Select(e => new Endereco(e.Logradouro, e.Numero, e.Complemento, e.Bairro, e.Cidade, e.Uf, e.Cep)).ToList());
 
                 cliente.AlterarNome(request.Nome);
 
