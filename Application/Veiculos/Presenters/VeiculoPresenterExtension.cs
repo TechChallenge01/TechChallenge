@@ -5,17 +5,17 @@ namespace Application.Veiculos.Presenters
 {
     public static class VeiculoPresenterExtension
     {
-        public static VeiculoResponseDTO ToDto(this Veiculo servico)
+        public static VeiculoResponseDTO ToDto(this Veiculo veiculos)
         {
             return new VeiculoResponseDTO
             {
-                Id = servico.Id,
-                MarcaVeiculo = servico.MarcaVeiculo,
-                Modelo = servico.Modelo,
-                Ano = servico.Ano,
-                Placa = servico.ValorPlaca,
-                Cor = servico.Cor,
-                NomeCliente = servico.NomeCliente
+                Id = veiculos.Id,
+                MarcaVeiculo = veiculos.MarcaVeiculo,
+                Modelo = veiculos.Modelo,
+                Ano = veiculos.Ano,
+                Placa = veiculos.ValorPlaca,
+                Cor = veiculos.Cor,
+                NomeCliente = veiculos.NomeCliente
             };
         }
 
