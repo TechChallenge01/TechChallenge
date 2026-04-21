@@ -13,7 +13,7 @@ namespace Domain.Entities
 
             Id = Guid.NewGuid();
 
-            Name = name;
+            Nome = name;
             MarcaPeca = marcaPeca;
             PrecoVenda = precoVenda;
             Descricao = descricao;
@@ -22,7 +22,7 @@ namespace Domain.Entities
         protected Peca() { }
 
         public Guid Id { get; private set; }
-        public string Name { get; private set; }
+        public string Nome { get; private set; }
         public string Descricao { get; private set; }
         public string MarcaPeca { get; private set; }
         public decimal PrecoVenda { get; private set; }
@@ -51,41 +51,32 @@ namespace Domain.Entities
                 throw new ArgumentException("O preço de venda deve ser maior que zero.");
         }
 
-        public void AlterarPrecoVenda(decimal novoPrecoVenda, Guid idUsuarioAtualizacao, DateTime dataAtualizacao)
+        public void AlterarPrecoVenda(decimal novoPrecoVenda)
         {
             ValidarPrecoVenda(novoPrecoVenda);
 
             PrecoVenda = novoPrecoVenda;
-
-            IdUsuarioAtualizacao = idUsuarioAtualizacao;
-            DataAtualizacao = dataAtualizacao;
         }
 
-        public void AlterarMarcaPeca(string novaMarcaPeca, Guid idUsuarioAtualizacao, DateTime dataAtualizacao)
+        public void AlterarMarcaPeca(string novaMarcaPeca)
         {
             ValidarMarcaPeca(novaMarcaPeca);
 
             MarcaPeca = novaMarcaPeca;
-            IdUsuarioAtualizacao = idUsuarioAtualizacao;
-            DataAtualizacao = dataAtualizacao;
         }
 
-        public void alterarNome(string novoNome, Guid idUsuarioAtualizacao, DateTime dataAtualizacao)
+        public void AlterarNome(string novoNome)
         {
             ValidarNome(novoNome);
 
-            Name = novoNome;
-            IdUsuarioAtualizacao = idUsuarioAtualizacao;
-            DataAtualizacao = dataAtualizacao;
+            Nome = novoNome;
         }
 
-        public void AlterarDescricao(string descricao, Guid idUsuarioAtualizacao, DateTime dataAtualizacao)
+        public void AlterarDescricao(string descricao)
         {
             ValidaDescricao(descricao);
 
             Descricao = descricao;
-            IdUsuarioAtualizacao = idUsuarioAtualizacao;
-            DataAtualizacao = dataAtualizacao;
         }
     }
 }

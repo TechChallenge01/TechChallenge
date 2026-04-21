@@ -89,8 +89,7 @@ namespace Application.Veiculos.Services
                     return new CommandResult { StatusCode = HttpStatusCode.NotFound, Message = "Veículo não encontrado." };
 
                 //Exclusão lógica
-                veiculo.Inativar();
-                veiculo.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
+                veiculo.Inativar(Guid.Empty, DateTime.UtcNow);
 
                 await _veiculoRepository.Update(veiculo, ct);
 
