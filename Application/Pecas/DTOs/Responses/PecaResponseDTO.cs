@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Application.Pecas.DTOs.Responses
+﻿namespace Application.Pecas.DTOs.Responses
 {
     public record PecaResponseDTO
     {

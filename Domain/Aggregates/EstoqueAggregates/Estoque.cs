@@ -1,23 +1,31 @@
 ﻿using Domain.BaseEntity;
+using Domain.Entities;
+using Domain.Enums;
 
-namespace Domain.Aggregates.Estoque;
+namespace Domain.Aggregates.EstoqueAggregates;
 public class Estoque : Base
 {
-    public Guid PecaId { get; private set; }
-    public int QuantidadeDisponivel { get; private set; }
-    public int QuantidadeReservada { get; private set; }
-    public int QuantidadeTotal => QuantidadeDisponivel + QuantidadeReservada;
     public Estoque(Guid pecaId, int quantidadeDisponivel, Guid UsuarioCriacaoId, DateTime dataCriacao) : base(UsuarioCriacaoId, dataCriacao, null, null)
     {
         ValidarPecaId(pecaId);
         ValidarQuantidadeDisponivel(quantidadeDisponivel);
 
+        Id = Guid.NewGuid();
         PecaId = pecaId;
         QuantidadeDisponivel = quantidadeDisponivel;
         QuantidadeReservada = 0;
     }
 
     protected Estoque() { }
+
+    public Guid Id { get; private set; }
+    public Guid PecaId { get; private set; }
+    public int QuantidadeDisponivel { get; private set; }
+    public int QuantidadeReservada { get; private set; }
+    public ICollection<EstoqueHistorico> Historicos { get; private set; } = new List<EstoqueHistorico>();
+    public virtual Peca Peca { get; private set; }
+    public int QuantidadeTotal => QuantidadeDisponivel + QuantidadeReservada;
+    public string NomePeca => Peca.Nome;
 
     private void ValidarPecaId(Guid pecaId)
     {
@@ -37,16 +45,15 @@ public class Estoque : Base
             throw new ArgumentException("A quantidade reservada não pode ser negativa.");
     }
 
-    public void AdicionarEstoque(int quantidade, Guid idUsuarioAtualizacao, DateTime dataAtualizacao)
+    public void AdicionarEstoque(int quantidade, Guid usuarioCriacaoId)
     {
         ValidarQuantidadeDisponivel(quantidade);
 
         QuantidadeDisponivel += quantidade;
-        IdUsuarioAtualizacao = idUsuarioAtualizacao;
-        DataAtualizacao = dataAtualizacao;
+        AdicionarMovimentacao(quantidade, "Adição de estoque", ETipoMovimentacao.Entrada, usuarioCriacaoId, DateTime.UtcNow);
     }
 
-    public void RetirarEstoque(int quantidade, Guid idUsuarioAtualizacao, DateTime dataAtualizacao)
+    public void RetirarEstoque(int quantidade, Guid usuarioCriacaoId)
     {
         ValidarQuantidadeDisponivel(quantidade);
 
@@ -54,11 +61,10 @@ public class Estoque : Base
             throw new InvalidOperationException("Não há estoque suficiente para retirar a quantidade solicitada.");
         
         QuantidadeDisponivel -= quantidade;
-        IdUsuarioAtualizacao = idUsuarioAtualizacao;
-        DataAtualizacao = dataAtualizacao;
+        AdicionarMovimentacao(quantidade, "Retirada de estoque", ETipoMovimentacao.Saida, usuarioCriacaoId, DateTime.UtcNow);
     }
 
-    public void ReservarEstoque(int quantidade, Guid idUsuarioAtualizacao, DateTime dataAtualizacao) 
+    public void ReservarEstoque(int quantidade) 
     {
         ValidarQuantidadeReservada(quantidade);
 
@@ -67,10 +73,8 @@ public class Estoque : Base
         
         QuantidadeDisponivel -= quantidade;
         QuantidadeReservada += quantidade;
-        IdUsuarioAtualizacao = idUsuarioAtualizacao;
-        DataAtualizacao = dataAtualizacao;
     }
-    public void LiberarReserva(int quantidade, Guid idUsuarioAtualizacao, DateTime dataAtualizacao) 
+    public void LiberarReserva(int quantidade) 
     {
         ValidarQuantidadeReservada(quantidade);
         if(quantidade > QuantidadeReservada)
@@ -78,7 +82,11 @@ public class Estoque : Base
        
         QuantidadeReservada -= quantidade;
         QuantidadeDisponivel += quantidade;
-        IdUsuarioAtualizacao = idUsuarioAtualizacao;
-        DataAtualizacao = dataAtualizacao;
+    }
+
+    private void AdicionarMovimentacao(int quantidade, string observacao, ETipoMovimentacao tipoMovimentacao, Guid UsuarioCriacaoId, DateTime dataCriacao)
+    {
+        var historico = new EstoqueHistorico(quantidade, observacao, tipoMovimentacao, UsuarioCriacaoId, dataCriacao);
+        Historicos.Add(historico);
     }
 }

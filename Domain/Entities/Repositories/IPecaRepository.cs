@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Domain.Entities.Repositories
+﻿namespace Domain.Entities.Repositories
 {
     public interface IPecaRepository
     {

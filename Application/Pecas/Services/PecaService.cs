@@ -1,25 +1,24 @@
 ﻿using Application.Pecas.DTOs.Requests;
 using Application.Pecas.DTOs.Responses;
 using Application.Pecas.Presenters;
+using Domain.Aggregates.EstoqueAggregates;
+using Domain.Aggregates.EstoqueAggregates.Repositories;
 using Domain.Entities;
 using Domain.Entities.Repositories;
 using Shared.Result;
 using Shared.Result.DTO;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design.Serialization;
 using System.Net;
-using System.Text;
 
 namespace Application.Pecas.Services
 {
     public class PecaService : IPecaService
     {
         private readonly IPecaRepository _pecaRepository;
-
-        public PecaService(IPecaRepository pecaRepository)
+        private readonly IEstoqueRepository _estoqueRepository;
+        public PecaService(IPecaRepository pecaRepository, IEstoqueRepository estoqueRepository)
         {
             _pecaRepository = pecaRepository;
+            _estoqueRepository = estoqueRepository;
         }
 
         public async Task<ICommandResult<PagedResultDTO<PecaResponseDTO>>> GetPaginated(int page, int pageSize, CancellationToken ct)
@@ -56,8 +55,10 @@ namespace Application.Pecas.Services
             try
             {
                 var peca = new Peca(request.Nome, request.Descricao, request.MarcaPeca, request.PrecoVenda, Guid.Empty, DateTime.UtcNow);
+                var estoque = new Estoque(peca.Id, 0, Guid.Empty, DateTime.UtcNow);
 
                 await _pecaRepository.Add(peca, ct);
+                await _estoqueRepository.Add(estoque, ct);
 
                 return new CommandResult<Guid> { StatusCode = HttpStatusCode.Created, Data = peca.Id, Message = "Peça criada com sucesso!" };
             }

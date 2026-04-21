@@ -2,6 +2,6 @@
 
 public enum ETipoMovimentacao
 {
-    Entrada = 1,
-    Saida = 2
+    Entrada,
+    Saida
 }

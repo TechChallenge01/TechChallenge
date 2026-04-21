@@ -1,8 +1,5 @@
 ﻿using Application.Pecas.DTOs.Responses;
 using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Application.Pecas.Presenters
 {

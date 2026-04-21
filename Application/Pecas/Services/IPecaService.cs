@@ -2,9 +2,6 @@
 using Application.Pecas.DTOs.Responses;
 using Shared.Result;
 using Shared.Result.DTO;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Application.Pecas.Services
 {
