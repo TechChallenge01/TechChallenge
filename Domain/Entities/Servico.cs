@@ -18,6 +18,8 @@ namespace Domain.Entities
             Nome = nome;
             Descricao = descricao;
             PrecoVenda = precoVenda;
+            IdUsuarioCriacao = idUsuarioCriacao;
+            DataCriacao = dataCriacao;
         }
 
         public Guid Id { get; private set; }
