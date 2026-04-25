@@ -13,7 +13,7 @@ namespace Application.Pecas.Presenters
                 Nome = peca.Nome,
                 Descricao = peca.Descricao,
                 MarcaPeca = peca.MarcaPeca,
-                PrecoVenda = peca.PrecoVenda
+                PrecoVenda = peca.ValorUnitario
             };
         }
         public static ICollection<PecaResponseDTO> ToDtoList(this ICollection<Peca> pecas)

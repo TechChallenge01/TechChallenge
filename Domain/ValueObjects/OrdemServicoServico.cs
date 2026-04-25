@@ -1,29 +1,39 @@
 ﻿using Domain.BaseEntity;
+using Domain.Entities;
 using Domain.Enums;
 
-namespace Domain.Aggregates.OrdemServico;
+namespace Domain.ValueObjects;
 
-public class OsServico : Base
+public class OrdemServicoServico : Base
 {
-    public Guid OsId { get; private set; }
+    public Guid OrdemServicoId { get; private set; }
     public Guid ServicoId { get; private set; }
-    public decimal Valor { get; private set; }
+    public decimal ValorUnitario { get; private set; }
     public EStatusOS Status { get; private set; }
     public DateTime? DataInicioExecucao { get; private set; }
     public DateTime? DataTerminoExecucao { get; private set; }
 
-    public OsServico(Guid osId, Guid servicoId, decimal valor, Guid idUsuarioCriacao)
-    {
-        if (valor <= 0) throw new ArgumentException("Valor do serviço deve ser positivo.");
+    public int Quantidade { get; private set; }
+    public decimal ValorTotal => ValorUnitario * Quantidade;
 
-        OsId = osId;
+    public virtual Servico Servico { get; private set; }
+    public string NomeServico => Servico?.Nome;
+    public string DescricaoServico => Servico?.Descricao;
+
+    public OrdemServicoServico(Guid osId, Guid servicoId, int quantidade, decimal valorUnitario, Guid idUsuarioCriacao)
+    {
+        if (valorUnitario <= 0) throw new ArgumentException("Valor do serviço deve ser positivo.");
+        if (quantidade <= 0) throw new ArgumentException("Quantidade do serviço deve ser positiva.");
+
+        OrdemServicoId = osId;
         ServicoId = servicoId;
-        Valor = valor;
+        ValorUnitario = valorUnitario;
+        Quantidade = quantidade;
         IdUsuarioCriacao = idUsuarioCriacao;
         DataCriacao = DateTime.UtcNow;
     }
 
-    protected OsServico() { }
+    protected OrdemServicoServico() { }
 
     public void IniciarExecucao()
     {

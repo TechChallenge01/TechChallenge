@@ -9,12 +9,15 @@
   <ItemGroup>
     <Compile Remove="DTOs\**" />
     <Compile Remove="Interfaces\**" />
+    <Compile Remove="OrdemServicos\Models\**" />
     <Compile Remove="Services\**" />
     <EmbeddedResource Remove="DTOs\**" />
     <EmbeddedResource Remove="Interfaces\**" />
+    <EmbeddedResource Remove="OrdemServicos\Models\**" />
     <EmbeddedResource Remove="Services\**" />
     <None Remove="DTOs\**" />
     <None Remove="Interfaces\**" />
+    <None Remove="OrdemServicos\Models\**" />
     <None Remove="Services\**" />
   </ItemGroup>
 

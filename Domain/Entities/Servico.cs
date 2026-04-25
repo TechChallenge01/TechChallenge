@@ -17,7 +17,7 @@ namespace Domain.Entities
 
             Nome = nome;
             Descricao = descricao;
-            PrecoVenda = precoVenda;
+            ValorUnitario = precoVenda;
             IdUsuarioCriacao = idUsuarioCriacao;
             DataCriacao = dataCriacao;
         }
@@ -25,7 +25,7 @@ namespace Domain.Entities
         public Guid Id { get; private set; }
         public string Nome { get; private set; }
         public string Descricao { get; private set; }
-        public decimal PrecoVenda { get; private set; }
+        public decimal ValorUnitario { get; private set; }
         public TimeSpan? TempoMedioExecucao { get; private set; }
 
 
@@ -46,30 +46,24 @@ namespace Domain.Entities
         }
 
 
-        public void AlterarPrecoVenda(decimal novoPrecoVenda, Guid idUsuarioAtualizacao, DateTime dataAtualizacao)
+        public void AlterarPrecoVenda(decimal novoPrecoVenda)
         {
 
             ValidarPrecoVenda(novoPrecoVenda);
 
-            PrecoVenda = novoPrecoVenda;
-            IdUsuarioAtualizacao = idUsuarioAtualizacao;
-            DataAtualizacao = dataAtualizacao;
+            ValorUnitario = novoPrecoVenda;
         }
-        public void AlterarDescricao(string novaDescricao, Guid idUsuarioAtualizacao, DateTime dataAtualizacao)
+        public void AlterarDescricao(string novaDescricao)
         {
             ValidarDescricao(novaDescricao);
 
             Descricao = novaDescricao;
-            IdUsuarioAtualizacao = idUsuarioAtualizacao;
-            DataAtualizacao = dataAtualizacao;
         }
-        public void AlterarNome(string novoNome, Guid idUsuarioAtualizacao, DateTime dataAtualizacao)
+        public void AlterarNome(string novoNome)
         {
             ValidarNome(novoNome);
 
             Nome = novoNome;
-            IdUsuarioAtualizacao = idUsuarioAtualizacao;
-            DataAtualizacao = dataAtualizacao;
         }
         public void AtualizarTempoMedio(List<TimeSpan> tempos)
         {

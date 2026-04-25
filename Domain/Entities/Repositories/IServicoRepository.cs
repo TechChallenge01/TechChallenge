@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Domain.Entities.Repositories;
+﻿namespace Domain.Entities.Repositories;
 
 public interface IServicoRepository
 {
@@ -11,4 +7,5 @@ public interface IServicoRepository
     Task Create(Servico servico, CancellationToken ct);
     Task Update(Servico servico, CancellationToken ct);
     Task Delete(Servico servico, CancellationToken ct);
+    Task<List<Servico>> GetByIds(List<Guid> idsServicos, CancellationToken ct);
 }

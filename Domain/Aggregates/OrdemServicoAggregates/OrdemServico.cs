@@ -1,11 +1,14 @@
-﻿using Domain.BaseEntity;
+﻿using Domain.Aggregates.ClienteAggregates;
+using Domain.BaseEntity;
+using Domain.Entities;
 using Domain.Enums;
+using Domain.ValueObjects;
 
-namespace Domain.Aggregates.OrdemServico;
+namespace Domain.Aggregates.OrdemServicoAggregates;
 public class OrdemServico : Base
 {
+    public Guid Id { get; private set; }
     public Guid ClienteId { get; private set; }
-
     public Guid VeiculoId { get; private set; }
 
     public EStatusOS StatusOS { get; private set; }
@@ -16,22 +19,28 @@ public class OrdemServico : Base
 
     public decimal ValorDesconto { get; private set; } = 0;
 
-    private readonly List<OsServico> _servicos;
-    private readonly List<OsPeca> _pecas;
+    public ICollection<OrdemServicoServico> Servicos { get; private set; } = new List<OrdemServicoServico>();
+    public ICollection<OrdemServicoPeca> Pecas { get; private set; } = new List<OrdemServicoPeca>();
+
+    public virtual Cliente Cliente { get; private set; }
+    public virtual Veiculo Veiculo { get; private set; }
+
+    public string NomeCliente => Cliente.Nome;  
+    public string ModeloVeiculo => Veiculo.Modelo;
+    public string PlacaVeiculo => Veiculo.Placa.Valor;
+    public string MarcaVeiculo => Veiculo.MarcaVeiculo;
+
     protected OrdemServico() 
     {
-        _servicos = new List<OsServico>();
-        _pecas = new List<OsPeca>();
+       
     }
-
-    public IReadOnlyCollection<OsServico> Servicos => _servicos.AsReadOnly();
-    public IReadOnlyCollection<OsPeca> Pecas => _pecas.AsReadOnly();
 
     public OrdemServico(Guid clienteId, Guid veiculoId,Guid idUsuarioCriacao) : base(idUsuarioCriacao, DateTime.UtcNow, null, null)
     {
         if(clienteId == Guid.Empty) throw new ArgumentException("O cliente é obrigatório.", nameof(clienteId));
         if(veiculoId == Guid.Empty) throw new ArgumentException("O veículo é obrigatório.", nameof(veiculoId));
 
+        Id = Guid.NewGuid();
         ClienteId = clienteId;
         VeiculoId = veiculoId;
         StatusOS = EStatusOS.Recebida;
@@ -39,9 +48,6 @@ public class OrdemServico : Base
         ValorTotal = 0;
         IdUsuarioCriacao = idUsuarioCriacao;
         DataCriacao = DataCriacao;
-
-        _servicos = new List<OsServico>();
-        _pecas = new List<OsPeca>();
     }
 
     public void IniciarDiagnostico(Guid idUsuarioAtualizacao)
@@ -69,7 +75,7 @@ public class OrdemServico : Base
     {
         ValidarTransicao(EStatusOS.EmDiagnostico, EStatusOS.AguardandoAprovacao);
 
-        if(!_servicos.Any() && !_pecas.Any())
+        if(!Servicos.Any() && !Pecas.Any())
             throw new InvalidOperationException("A OS deve ter ao menos um serviço ou peça antes de enviar para aprovação.");
 
         RecalcularValorTotal();
@@ -105,82 +111,44 @@ public class OrdemServico : Base
         DataAtualizacao = DateTime.UtcNow;
     }
 
-    public void Entregar(Guid idUsuario, Guid idUsuarioAtualizacao)
+    public void Entregar(Guid idUsuario)
     {
         ValidarTransicao(EStatusOS.Finalizada, EStatusOS.Entregue);
         StatusOS = EStatusOS.Entregue;
-        IdUsuarioAtualizacao = idUsuario;
-        DataAtualizacao = DateTime.UtcNow;
     }
 
     private void RecalcularValorTotal()
     {
-        var totalServicos = _servicos.Sum(s => s.Valor);
-        var totalPecas = _pecas.Sum(p => p.ValorUnitario * p.Quantidade);
+        var totalServicos = Servicos.Sum(s => s.ValorUnitario);
+        var totalPecas = Pecas.Sum(p => p.ValorUnitario * p.Quantidade);
         ValorTotal = totalServicos + totalPecas - ValorDesconto;
     }
 
-    public void AdicionarServico(OsServico osServico, Guid idUsuarioAtualizacao)
+    public void AlterarServico(List<OrdemServicoServico> osServico)
     {
         if (osServico == null)
             throw new ArgumentNullException(nameof(osServico));
 
         ValidarStatusParaEdicao();
 
-        bool jaExiste = _servicos.Any(s => s.ServicoId == osServico.ServicoId);
-        if (jaExiste)
-            throw new InvalidOperationException("Este serviço já foi adicionado à OS.");
+        Servicos = osServico.DistinctBy(os => os.ServicoId).ToList();
 
-        _servicos.Add(osServico);
         RecalcularValorTotal();
-        IdUsuarioAtualizacao = idUsuarioAtualizacao;
-        DataAtualizacao = DateTime.UtcNow;
     }
 
-    public void RemoverServico(Guid osServicoId, Guid idUsuarioAtualizacao)
-    {
-        ValidarStatusParaEdicao();
-        
-        var servico = _servicos.FirstOrDefault(s => s.ServicoId == osServicoId) ?? throw new InvalidOperationException("Serviço não encontrado na OS.");
-
-        _servicos.Remove(servico);
-        RecalcularValorTotal();
-        IdUsuarioAtualizacao = idUsuarioAtualizacao;
-        DataAtualizacao = DateTime.UtcNow;
-    }
-
-    public void AdicionarPeca(OsPeca osPeca, Guid idUsuarioAtualizacao)
+    public void AlterarPeca(List<OrdemServicoPeca> osPeca)
     {
         if (osPeca == null)
             throw new ArgumentNullException(nameof(osPeca));
 
         ValidarStatusParaEdicao();
 
-        var pecaExistente = _pecas.FirstOrDefault(p => p.PecaId == osPeca.PecaId);
-        if (pecaExistente != null)
-            throw new InvalidOperationException("Esta peça já foi adicionada à OS. Atualize a quantidade.");
+        Pecas = osPeca.DistinctBy(op => op.PecaId).ToList();
 
-        _pecas.Add(osPeca);
         RecalcularValorTotal();
-        IdUsuarioAtualizacao = idUsuarioAtualizacao;
-        DataAtualizacao = DateTime.UtcNow;
     }
 
-    public void RemoverPeca(Guid pecaId, Guid idUsuarioAtualizacao) 
-    {
-        ValidarStatusParaEdicao();
-
-        var peca = _pecas.FirstOrDefault(p => p.PecaId == pecaId)
-            ?? throw new InvalidOperationException("Peça não encontrada na OS.");
-
-        _pecas.Remove(peca);
-        RecalcularValorTotal();
-        IdUsuarioAtualizacao = idUsuarioAtualizacao;
-        DataAtualizacao = DateTime.UtcNow;
-    }
-
-
-    public void AplicarDesconto(decimal valorDesconto, Guid idUsuarioAtualizacao)
+    public void AplicarDesconto(decimal valorDesconto)
     {
         if (valorDesconto < 0)
             throw new ArgumentException("Valor de desconto não pode ser negativo.");
@@ -190,8 +158,6 @@ public class OrdemServico : Base
 
         ValorDesconto = valorDesconto;
         RecalcularValorTotal();
-        IdUsuarioAtualizacao = idUsuarioAtualizacao;
-        DataAtualizacao = DateTime.UtcNow;
     }
 
     private void ValidarStatusParaEdicao()

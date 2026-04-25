@@ -1,14 +1,12 @@
 ﻿using Application.Estoques.DTOs.Requests;
 using Application.Estoques.DTOs.Responses;
 using Application.Estoques.Presenters;
-using Domain.Aggregates.EstoqueAggregates;
 using Domain.Aggregates.EstoqueAggregates.Repositories;
 using Domain.Entities.Repositories;
 using Domain.Enums;
 using Shared.Result;
 using Shared.Result.DTO;
 using System.Net;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Application.Estoques.Services
 {

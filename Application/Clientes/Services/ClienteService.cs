@@ -102,11 +102,12 @@ namespace Application.Clientes.Services
                     return new CommandResult { StatusCode = HttpStatusCode.NotFound, Message = "Cliente não encontrado!" };
 
                 //exclusão lógica
-                cliente.Inativar(Guid.Empty, DateTime.UtcNow);
+                cliente.Inativar();
+
+                cliente.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
 
                 await _clienteRepository.Update(cliente, ct);
-
-
+                
                 return new CommandResult { StatusCode = HttpStatusCode.NoContent, Message = "Cliente excluído com sucesso!" };
             }
             catch(ArgumentException ex)

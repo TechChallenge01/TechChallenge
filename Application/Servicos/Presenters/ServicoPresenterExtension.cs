@@ -12,7 +12,7 @@ public static class ServicoPresenterExtension
             Id = servicos.Id,
             Nome = servicos.Nome,
             Descricao = servicos.Descricao,
-            PrecoVenda = servicos.PrecoVenda,
+            PrecoVenda = servicos.ValorUnitario,
             TempoMedioExecucao = servicos.TempoMedioExecucao
         };
     }

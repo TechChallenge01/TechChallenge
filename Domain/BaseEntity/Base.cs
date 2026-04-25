@@ -21,11 +21,9 @@
 
         public bool Ativo { get; protected set; } = true;
 
-        public void Inativar(Guid idUsuarioAtualizacao, DateTime dataAtualizacao)
+        public void Inativar()
         {
             Ativo = false;
-            IdUsuarioAtualizacao = idUsuarioAtualizacao;
-            DataAtualizacao = dataAtualizacao;
         } 
         public void RastrearAlteracao(Guid idUsuarioAtualizacao, DateTime dataAtualizacao)
         {

@@ -6,12 +6,14 @@ namespace Domain.Entities
 {
     public class Usuario : Base
     {
-        public Usuario(string name, string email, string senha, EPerfilUsuario perfil, Guid idUsuarioCriacao)
+        public Usuario(string name, string email, string senha, EPerfilUsuario perfil, Guid idUsuarioCriacao) 
         {
+
             ValidarNome(name);
             ValidarEmail(email);
             ValidarSenha(senha);
 
+            Id = Guid.NewGuid();
             IdUsuarioCriacao = idUsuarioCriacao;
             Nome = name;
             Email = new Email(email);
@@ -19,8 +21,12 @@ namespace Domain.Entities
             Perfil = perfil;
         }
 
-        public Usuario() { }
+        public Usuario() 
+        {
 
+        }
+
+        public Guid Id { get; private set; }
         public string Nome { get; private set; }
         public Email Email { get; private set; }
         public string SenhaHash { get; private set; }

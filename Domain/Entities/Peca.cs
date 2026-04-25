@@ -15,7 +15,7 @@ namespace Domain.Entities
 
             Nome = name;
             MarcaPeca = marcaPeca;
-            PrecoVenda = precoVenda;
+            ValorUnitario = precoVenda;
             Descricao = descricao;
         }
 
@@ -25,7 +25,7 @@ namespace Domain.Entities
         public string Nome { get; private set; }
         public string Descricao { get; private set; }
         public string MarcaPeca { get; private set; }
-        public decimal PrecoVenda { get; private set; }
+        public decimal ValorUnitario { get; private set; }
         
         private void ValidarNome(string name)
         {
@@ -55,7 +55,7 @@ namespace Domain.Entities
         {
             ValidarPrecoVenda(novoPrecoVenda);
 
-            PrecoVenda = novoPrecoVenda;
+            ValorUnitario = novoPrecoVenda;
         }
 
         public void AlterarMarcaPeca(string novaMarcaPeca)

@@ -95,9 +95,9 @@ public class ServicoService : IServicoService
             if (servico is null)
                 return new CommandResult<ICommandResult> { StatusCode = HttpStatusCode.NotFound, Message = "Serviço não encontrado." };
 
-            servico.AlterarNome(request.Nome, Guid.Empty, DateTime.UtcNow);
-            servico.AlterarDescricao(request.Descricao, Guid.Empty, DateTime.UtcNow);
-            servico.AlterarPrecoVenda(request.PrecoVenda, Guid.Empty, DateTime.UtcNow);
+            servico.AlterarNome(request.Nome);
+            servico.AlterarDescricao(request.Descricao);
+            servico.AlterarPrecoVenda(request.PrecoVenda);
 
             servico.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
 

@@ -80,7 +80,9 @@ namespace Application.Pecas.Services
 
                 if(peca is null)
                     return new CommandResult { StatusCode = HttpStatusCode.NotFound, Message = "Peça não encontrada." };
-                peca.Inativar(Guid.Empty, DateTime.UtcNow);
+
+                peca.Inativar();
+                peca.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
 
                 await _pecaRepository.Update(peca, ct);
 
