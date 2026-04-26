@@ -3,6 +3,7 @@ using Application.OrdemServicos.DTOs.Requests;
 using Application.OrdemServicos.DTOs.Responses;
 using Application.OrdemServicos.Presenters;
 using Domain.Aggregates.ClienteAggregates.Repositories;
+using Domain.Aggregates.EstoqueAggregates.Repositories;
 using Domain.Aggregates.OrdemServicoAggregates;
 using Domain.Aggregates.OrdemServicoAggregates.Repositories;
 using Domain.Entities;
@@ -24,13 +25,15 @@ public class OrdemServicoService : IOrdemServicoService
     private readonly IVeiculoRepository _veiculoRepository;
     private readonly IPecaRepository _pecaRepository;
     private readonly IServicoRepository _servicoRepository;
-    public OrdemServicoService(IOrdemServicoRepository ordemServicoRepository, IClienteRepository clienteRepository, IVeiculoRepository veiculoRepository, IPecaRepository pecaRepository, IServicoRepository servicoRepository)
+    private readonly IEstoqueRepository _estoqueRepository;
+    public OrdemServicoService(IOrdemServicoRepository ordemServicoRepository, IClienteRepository clienteRepository, IVeiculoRepository veiculoRepository, IPecaRepository pecaRepository, IServicoRepository servicoRepository, IEstoqueRepository estoqueRepository)
     {
         _ordemServicoRepository = ordemServicoRepository;
         _clienteRepository = clienteRepository;
         _veiculoRepository = veiculoRepository;
         _pecaRepository = pecaRepository;
         _servicoRepository = servicoRepository;
+        _estoqueRepository = estoqueRepository;
     }
 
     public async Task<ICommandResult> Aprovar(int id, CancellationToken ct)
@@ -67,6 +70,21 @@ public class OrdemServicoService : IOrdemServicoService
 
             if(ordemServico is null)
                 return new CommandResult { StatusCode = HttpStatusCode.NotFound, Message = "Ordem de serviço não encontrada." };
+
+            if(ordemServico.Pecas.Any())
+            {
+                var estoques = await _estoqueRepository.GetByPecaIds(ordemServico.Pecas.Select(x => x.PecaId).ToList(), ct);
+
+                foreach (var peca in ordemServico.Pecas)
+                {
+                    var estoque = estoques.FirstOrDefault(e => e.PecaId == peca.PecaId);
+
+                    if (estoque is not null)
+                    {
+                        estoque.LiberarReserva(peca.Quantidade);
+                    }
+                }
+            }
 
             ordemServico.CancelarOrdemServico();
 
@@ -162,6 +180,18 @@ public class OrdemServicoService : IOrdemServicoService
                 }).ToList();
 
                 entity.AlterarPeca(ordemPecas);
+
+                var estoques = await _estoqueRepository.GetByPecaIds(idsPecas, ct);
+
+                foreach(var peca in ordemPecas)
+                {
+                    var estoque = estoques.FirstOrDefault(e => e.PecaId == peca.PecaId);
+
+                    if (estoque is not null)
+                    {
+                        estoque.ReservarEstoque(peca.Quantidade);
+                    }
+                }
             }
             
             if (request.Servicos is not null && request.Servicos.Any())
