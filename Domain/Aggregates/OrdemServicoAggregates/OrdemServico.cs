@@ -57,8 +57,7 @@ public class OrdemServico : Base
         IdUsuarioAtualizacao = idUsuarioAtualizacao;
         DataAtualizacao = DateTime.UtcNow;
     }
-
-    public void RegistrarDiagnostico(string observacao, Guid idUsuarioAtualizacao) 
+    public void RegistrarDiagnostico(string observacao) 
     {
 
         if(StatusOS != EStatusOS.EmDiagnostico)
@@ -67,11 +66,8 @@ public class OrdemServico : Base
         if(string.IsNullOrWhiteSpace(observacao)) throw new InvalidOperationException("Observação é obrigatória para registrar um diagnóstico.");
 
         Observacao = observacao;
-        IdUsuarioAtualizacao = idUsuarioAtualizacao;
-        DataAtualizacao = DateTime.UtcNow;
     }
-
-    public void EnviarParaAprovacao(Guid idUsuarioAtualizacao)
+    public void EnviarParaAprovacao()
     {
         ValidarTransicao(EStatusOS.EmDiagnostico, EStatusOS.AguardandoAprovacao);
 
@@ -81,8 +77,6 @@ public class OrdemServico : Base
         RecalcularValorTotal();
 
         StatusOS = EStatusOS.AguardandoAprovacao;
-        IdUsuarioAtualizacao = idUsuarioAtualizacao;
-        DataAtualizacao = DateTime.UtcNow;
     }
 
     public void AorovarOrdemServico(Guid idUsuarioAtualizacao)
@@ -112,6 +106,39 @@ public class OrdemServico : Base
     }
 
     public void Entregar(Guid idUsuario)
+    {
+        ValidarTransicao(EStatusOS.Finalizada, EStatusOS.Entregue);
+    }
+
+    public void AprovarOrdemServico()
+    {
+        ValidarTransicao(EStatusOS.AguardandoAprovacao, EStatusOS.EmExecucao);
+
+        StatusOS = EStatusOS.EmExecucao;
+
+        Servicos.ToList().ForEach(s => s.IniciarExecucao());
+    }
+
+    public void CancelarOrdemServico()
+    {
+        ValidarTransicao(EStatusOS.AguardandoAprovacao, EStatusOS.Cancelada);
+
+        StatusOS = EStatusOS.Cancelada;
+    }
+
+    public void FinalizarOrdemServico(ICollection<Guid> servicosId)
+    {
+        ValidarTransicao(EStatusOS.EmExecucao, EStatusOS.Finalizada);
+
+        var servicos = Servicos.Where(s => servicosId.Contains(s.ServicoId)).ToList();
+
+        servicos.ForEach(s => s.ConcluirExecucao());
+
+        if(!Servicos.Any(s => s.Status == EStatusOS.EmExecucao))
+            StatusOS = EStatusOS.Finalizada;
+    }
+
+    public void Entregar()
     {
         ValidarTransicao(EStatusOS.Finalizada, EStatusOS.Entregue);
         StatusOS = EStatusOS.Entregue;

@@ -65,7 +65,7 @@ namespace Domain.Entities
 
             Nome = novoNome;
         }
-        public void AtualizarTempoMedio(List<TimeSpan> tempos)
+        public void AtualizarTempoMedio(ICollection<TimeSpan> tempos)
         {
             if (!tempos.Any())
                 return;

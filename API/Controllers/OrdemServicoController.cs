@@ -33,10 +33,27 @@ public class OrdemServicoController : ControllerBase
         return response.ToResult();
     }
 
-    [HttpPost("{id}/Cancelamento")]
+    [HttpPost("{id}/Cancelar")]
     public async Task<IActionResult> Cancelar([FromRoute] int id, CancellationToken ct)
     {
         var response = await _ordemService.Cancelar(id, ct);
+
+        return response.ToResult();
+    }
+
+    [HttpPost("{id}/Aprovar")]
+    public async Task<IActionResult> Aprovar([FromRoute] int id, CancellationToken ct)
+    {
+        var response = await _ordemService.Aprovar(id, ct);
+
+        return response.ToResult();
+    }
+
+    [HttpPost("{id}/FinalizarServico")]
+    public async Task<IActionResult> FinalizarServico([FromRoute] int id, [FromBody] FinalizarServicoDTO dto, CancellationToken ct)
+    {
+        var response = await _ordemService.FinalizarServico(id, dto, ct);
+
         return response.ToResult();
     }
 }

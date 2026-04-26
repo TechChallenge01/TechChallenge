@@ -48,9 +48,4 @@ public class OrdemServicoServico : Base
         DataTerminoExecucao = DateTime.UtcNow;
         Status = EStatusOS.Finalizada;
     }
-
-    public double? TempoExecucaoMinutos =>
-        DataInicioExecucao.HasValue && DataTerminoExecucao.HasValue
-            ? (DataTerminoExecucao.Value - DataInicioExecucao.Value).TotalMinutes
-            : null;
 }

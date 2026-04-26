@@ -7,5 +7,5 @@ public interface IServicoRepository
     Task Create(Servico servico, CancellationToken ct);
     Task Update(Servico servico, CancellationToken ct);
     Task Delete(Servico servico, CancellationToken ct);
-    Task<List<Servico>> GetByIds(List<Guid> idsServicos, CancellationToken ct);
+    Task<ICollection<Servico>> GetByIds(ICollection<Guid> idsServicos, CancellationToken ct);
 }

@@ -33,6 +33,32 @@ public class OrdemServicoService : IOrdemServicoService
         _servicoRepository = servicoRepository;
     }
 
+    public async Task<ICommandResult> Aprovar(int id, CancellationToken ct)
+    {
+        try
+        {
+            var ordemServico = await _ordemServicoRepository.GetById(id, ct);
+
+            if (ordemServico is null)
+                return new CommandResult { StatusCode = HttpStatusCode.NotFound, Message = "Ordem de serviço não encontrada." };
+
+            ordemServico.AprovarOrdemServico();
+
+            ordemServico.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
+
+            await _ordemServicoRepository.Update(ordemServico, ct);
+
+            return new CommandResult { StatusCode = HttpStatusCode.NoContent, Message = "Ordem de serviço aprovada com sucesso." };
+        }
+        catch (ArgumentException ex)
+        {
+            return new CommandResult { StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
+        }
+        catch (Exception ex)
+        {
+            return new CommandResult { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
+        }
+    }
     public async Task<ICommandResult> Cancelar(int id, CancellationToken ct)
     {
         try
@@ -42,9 +68,56 @@ public class OrdemServicoService : IOrdemServicoService
             if(ordemServico is null)
                 return new CommandResult { StatusCode = HttpStatusCode.NotFound, Message = "Ordem de serviço não encontrada." };
 
-            ordemServico.CancelarOrdemServico(Guid.Empty);
+            ordemServico.CancelarOrdemServico();
+
+            ordemServico.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
+
+            await _ordemServicoRepository.Update(ordemServico, ct);
 
             return new CommandResult { StatusCode = HttpStatusCode.NoContent, Message = "Ordem de serviço cancelada com sucesso." };
+        }
+        catch (ArgumentException ex)
+        {
+            return new CommandResult { StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
+        }
+        catch (Exception ex)
+        {
+            return new CommandResult { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
+        }
+    }
+
+    public async Task<ICommandResult> FinalizarServico(int id, FinalizarServicoDTO dto, CancellationToken ct)
+    {
+        try
+        {
+            var ordemServico = await _ordemServicoRepository.GetById(id, ct);
+
+            if (ordemServico is null)
+                return new CommandResult { StatusCode = HttpStatusCode.NotFound, Message = "Ordem de serviço não encontrada." };
+
+            var servicosEntities = await _servicoRepository.GetByIds(dto.ServicosId, ct);
+
+            if (servicosEntities.Count() != dto.ServicosId.Count())
+                return new CommandResult<Guid> { StatusCode = HttpStatusCode.NotFound, Message = "Um ou mais serviços não foram encontrados." };
+
+            ordemServico.FinalizarOrdemServico(dto.ServicosId);
+
+            var tempos = await _ordemServicoRepository.GetByIdsSTimeSpanDataExecucao(dto.ServicosId, ct);
+
+            var dataAlteracao = DateTime.UtcNow;
+            var usuarioAuditoria = Guid.Empty;
+
+            foreach (var servico in servicosEntities)
+            {
+                servico.AtualizarTempoMedio(tempos);
+                servico.RastrearAlteracao(usuarioAuditoria, dataAlteracao);
+            }
+
+            ordemServico.RastrearAlteracao(usuarioAuditoria, dataAlteracao);
+
+            await _ordemServicoRepository.Update(ordemServico, ct);
+
+            return new CommandResult<Guid> { StatusCode = HttpStatusCode.NoContent, Message = "Serviço finalizado com sucesso." };
         }
         catch (ArgumentException ex)
         {
