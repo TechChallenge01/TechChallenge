@@ -32,4 +32,11 @@ public class OrdemServicoController : ControllerBase
 
         return response.ToResult();
     }
+
+    [HttpPost("{id}/Cancelamento")]
+    public async Task<IActionResult> Cancelar([FromRoute] int id, CancellationToken ct)
+    {
+        var response = await _ordemService.Cancelar(id, ct);
+        return response.ToResult();
+    }
 }

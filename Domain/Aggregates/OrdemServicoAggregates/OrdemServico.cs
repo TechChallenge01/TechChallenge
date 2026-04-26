@@ -93,7 +93,7 @@ public class OrdemServico : Base
         DataAtualizacao = DateTime.UtcNow;
     }
 
-    public void RecusarOrdemServico(Guid idUsuarioAtualizacao)
+    public void CancelarOrdemServico(Guid idUsuarioAtualizacao)
     {
         if (StatusOS != EStatusOS.AguardandoAprovacao)
             throw new InvalidOperationException("Só é possível recusar uma OS em Aguardando Aprovação.");
