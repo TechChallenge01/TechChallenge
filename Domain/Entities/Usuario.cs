@@ -1,0 +1,53 @@
+﻿using Domain.BaseEntity;
+using Domain.Enums;
+using Domain.ValueObjects;
+
+namespace Domain.Entities
+{
+    public class Usuario : Base
+    {
+        public Usuario(string name, string email, string senha, EPerfilUsuario perfil, Guid idUsuarioCriacao) 
+        {
+
+            ValidarNome(name);
+            ValidarEmail(email);
+            ValidarSenha(senha);
+
+            Id = Guid.NewGuid();
+            IdUsuarioCriacao = idUsuarioCriacao;
+            Nome = name;
+            Email = new Email(email);
+            SenhaHash = senha;
+            Perfil = perfil;
+        }
+
+        public Usuario() 
+        {
+
+        }
+
+        public Guid Id { get; private set; }
+        public string Nome { get; private set; }
+        public Email Email { get; private set; }
+        public string SenhaHash { get; private set; }
+        public EPerfilUsuario Perfil { get; private set; }
+        
+
+        private void ValidarNome(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("O nome do usuário não pode ser nulo ou vazio.");
+        }
+
+        private void ValidarEmail(string email) 
+        {
+            Email = new Email(email);
+        }
+
+        private void ValidarSenha(string senha)
+        {
+            if (string.IsNullOrWhiteSpace(senha) || senha.Length < 6 )
+                throw new ArgumentException("A senha deve ter pelo menos 6 caracteres.");
+        }
+    }
+}
