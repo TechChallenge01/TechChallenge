@@ -11,5 +11,6 @@ namespace Application.Veiculos.Services
         Task<ICommandResult<Guid>> Create(VeiculoRequestDTO request, CancellationToken ct);
         Task<ICommandResult> Delete(Guid Id, CancellationToken ct);
         Task<ICommandResult> Update(Guid Id, VeiculoRequestDTO request, CancellationToken ct);
+        Task<ICommandResult<VeiculoResponseDTO>> GetById(Guid Id, CancellationToken ct);
     }
 }

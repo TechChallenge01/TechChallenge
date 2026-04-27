@@ -57,6 +57,7 @@ public class OrdemServicoService : IOrdemServicoService
             return new CommandResult { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
         }
     }
+
     public async Task<ICommandResult> Cancelar(int id, CancellationToken ct)
     {
         try
@@ -253,6 +254,29 @@ public class OrdemServicoService : IOrdemServicoService
         catch (Exception ex)
         {
             return new CommandResult<PagedResultDTO<OrdemServicoResponseDTO>> { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
+        }
+    }
+
+    public async Task<ICommandResult<OrdemServicoResponseDTO>> GetById(int id, CancellationToken ct)
+    {
+        try 
+        { 
+            var ordemServico = await _ordemServicoRepository.GetById(id, ct);
+
+            if(ordemServico is null)
+                return new CommandResult<OrdemServicoResponseDTO> { StatusCode = HttpStatusCode.NotFound, Message = "Ordem de serviço não encontrada." };
+            
+            var response = ordemServico.ToDTO();
+
+            return new CommandResult<OrdemServicoResponseDTO> { StatusCode = HttpStatusCode.OK, Message = "Ordem de serviço retornada com sucesso.", Data = response };
+        }
+        catch (ArgumentException ex)
+        {
+            return new CommandResult<OrdemServicoResponseDTO> { StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
+        }
+        catch (Exception ex)
+        {
+            return new CommandResult<OrdemServicoResponseDTO>  { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
         }
     }
 }

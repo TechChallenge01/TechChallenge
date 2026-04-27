@@ -56,4 +56,12 @@ public class OrdemServicoController : ControllerBase
 
         return response.ToResult();
     }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById([FromRoute] int id, CancellationToken ct)
+    {
+        var response = await _ordemService.GetById(id, ct);
+
+        return response.ToResult();
+    }
 }

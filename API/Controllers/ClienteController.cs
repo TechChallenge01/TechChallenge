@@ -31,7 +31,7 @@ namespace API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete([FromRoute]Guid id, CancellationToken ct)
+        public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken ct)
         {
             var response = await _clienteService.Delete(id, ct);
 
@@ -39,9 +39,17 @@ namespace API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update([FromRoute]Guid id, [FromBody] ClienteRequestDTO request, CancellationToken ct)
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] ClienteRequestDTO request, CancellationToken ct)
         {
             var response = await _clienteService.Update(id, request, ct);
+
+            return response.ToResult();
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById([FromRoute] Guid id, CancellationToken ct)
+        {
+            var response = await _clienteService.GetById(id, ct);
 
             return response.ToResult();
         }

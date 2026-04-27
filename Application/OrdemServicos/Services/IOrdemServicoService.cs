@@ -12,4 +12,5 @@ public interface IOrdemServicoService
     Task<ICommandResult> Cancelar(int id, CancellationToken ct);
     Task<ICommandResult> Aprovar(int id, CancellationToken ct);
     Task<ICommandResult> FinalizarServico(int id, FinalizarServicoDTO dto, CancellationToken ct);
+    Task<ICommandResult<OrdemServicoResponseDTO>> GetById(int id, CancellationToken ct);
 }

@@ -46,5 +46,13 @@ namespace API.Controllers
 
             return result.ToResult();
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById([FromRoute] Guid id, CancellationToken ct = default)
+        {
+            var result = await _pecaService.GetById(id, ct);
+
+            return result.ToResult();
+        }
     }
 }

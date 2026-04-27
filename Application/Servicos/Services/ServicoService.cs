@@ -54,6 +54,29 @@ public class ServicoService : IServicoService
 
     }
 
+    public async Task<ICommandResult<ServicoResponseDTO>> GetById(Guid Id, CancellationToken ct)
+    {
+        try 
+        {
+            var servico = await _servico.GetById(Id, ct);
+
+            if (servico is null)
+                return new CommandResult<ServicoResponseDTO> { StatusCode = HttpStatusCode.NotFound, Message = "Serviço não encontrado." };
+
+            var response = servico.ToDto();
+
+            return new CommandResult<ServicoResponseDTO> { StatusCode = HttpStatusCode.OK, Data = response, Message = "Serviço recuperado com sucesso." };
+        }
+        catch (ArgumentException ex)
+        {
+            return new CommandResult<ServicoResponseDTO> { StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
+        }
+        catch (Exception ex)
+        {
+            return new CommandResult<ServicoResponseDTO> { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
+        }
+    }
+
     public async Task<ICommandResult<PagedResultDTO<ServicoResponseDTO>>> GetPaginated(int page, int pageSize, CancellationToken ct)
     {
         try
