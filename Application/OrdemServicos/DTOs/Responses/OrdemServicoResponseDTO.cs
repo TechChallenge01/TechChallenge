@@ -1,6 +1,4 @@
-﻿using Domain.Enums;
-
-namespace Application.OrdemServicos.DTOs.Responses;
+﻿namespace Application.OrdemServicos.DTOs.Responses;
 
 public record OrdemServicoResponseDTO
 {

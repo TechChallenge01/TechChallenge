@@ -1,20 +1,15 @@
-﻿using Application.Clientes.DTOs.Responses;
-using Application.OrdemServicos.DTOs.Requests;
+﻿using Application.OrdemServicos.DTOs.Requests;
 using Application.OrdemServicos.DTOs.Responses;
 using Application.OrdemServicos.Presenters;
 using Domain.Aggregates.ClienteAggregates.Repositories;
 using Domain.Aggregates.EstoqueAggregates.Repositories;
 using Domain.Aggregates.OrdemServicoAggregates;
 using Domain.Aggregates.OrdemServicoAggregates.Repositories;
-using Domain.Entities;
 using Domain.Entities.Repositories;
 using Domain.ValueObjects;
 using Shared.Result;
 using Shared.Result.DTO;
-using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Text;
 
 namespace Application.OrdemServicos.Services;
 

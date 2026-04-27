@@ -9,8 +9,9 @@
         public string Cep { get; private set; }
         public string Cidade { get; private set; }
         public string Uf { get; private set; }
+        public Guid ClienteId { get; private set; }
 
-        public Endereco(string logradouro, string numero, string complemento, string bairro , string cidade, string uf, string cep)
+        public Endereco(string logradouro, string numero, string complemento, string bairro , string cidade, string uf, string cep, Guid clienteId)
         {
             if (string.IsNullOrWhiteSpace(logradouro)) throw new ArgumentException("Logradouro é obrigatório.");
             if (string.IsNullOrWhiteSpace(numero)) throw new ArgumentException("Número é obrigatório.");
@@ -21,6 +22,7 @@
             Logradouro = logradouro.Trim();
             Numero = numero.Trim();
             Complemento = complemento?.Trim() ?? string.Empty;
+            ClienteId = clienteId;
             Bairro = bairro?.Trim();
             Cidade = cidade.Trim();
             Uf = uf.Trim().ToUpper();

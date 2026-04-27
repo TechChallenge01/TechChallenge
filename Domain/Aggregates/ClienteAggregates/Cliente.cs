@@ -6,7 +6,7 @@ namespace Domain.Aggregates.ClienteAggregates
 {
     public class Cliente : Base
     {
-        private Cliente(string nome, Guid idUsuarioCriacao, ICollection<Email> Emails, ICollection<Telefone> Telefones, ICollection<Endereco>? Enderecos) : base(idUsuarioCriacao, DateTime.UtcNow, null, null)
+        private Cliente(string nome, Guid idUsuarioCriacao) : base(idUsuarioCriacao, DateTime.UtcNow, null, null)
         {
             ValidarNome(nome);
             Id = Guid.NewGuid();
@@ -17,12 +17,12 @@ namespace Domain.Aggregates.ClienteAggregates
             Enderecos = Enderecos;
         }
 
-        public Cliente(string nome, Cpf cpf, Guid idUsuarioCriacao, ICollection<Email> Emails, ICollection<Telefone> Telefones, ICollection<Endereco>? Enderecos) : this(nome, idUsuarioCriacao, Emails, Telefones, Enderecos)
+        public Cliente(string nome, Cpf cpf, Guid idUsuarioCriacao) : this(nome, idUsuarioCriacao)
         {
             Cpf = cpf ?? throw new ArgumentException("cpf não pode ser nulo!");
         }
 
-        public Cliente(string nome, Cnpj cnpj, Guid idUsuarioCriacao, ICollection<Email> Emails, ICollection<Telefone> Telefones, ICollection<Endereco>? Enderecos) : this(nome, idUsuarioCriacao, Emails, Telefones, Enderecos)
+        public Cliente(string nome, Cnpj cnpj, Guid idUsuarioCriacao) : this(nome, idUsuarioCriacao)
         {
             Cnpj = cnpj ?? throw new ArgumentException("cnpj não pode ser nulo!");
         }

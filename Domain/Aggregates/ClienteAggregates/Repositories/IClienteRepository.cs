@@ -6,6 +6,5 @@
         Task Create(Cliente entity, CancellationToken ct);
         Task<Cliente> GetById(Guid Id, CancellationToken ct);
         Task Delete(Cliente cliente, CancellationToken ct);
-        Task Update(Cliente cliente, CancellationToken ct);
     }
 }

@@ -16,7 +16,7 @@ namespace Domain.Entities
             Id = Guid.NewGuid();
             IdUsuarioCriacao = idUsuarioCriacao;
             Nome = name;
-            Email = new Email(email);
+            Email = email;
             SenhaHash = senha;
             Perfil = perfil;
         }
@@ -28,7 +28,7 @@ namespace Domain.Entities
 
         public Guid Id { get; private set; }
         public string Nome { get; private set; }
-        public Email Email { get; private set; }
+        public string Email { get; private set; }
         public string SenhaHash { get; private set; }
         public EPerfilUsuario Perfil { get; private set; }
         
@@ -39,9 +39,16 @@ namespace Domain.Entities
                 throw new ArgumentException("O nome do usuário não pode ser nulo ou vazio.");
         }
 
-        private void ValidarEmail(string email) 
+        private void ValidarEmail(string email)
         {
-            Email = new Email(email);
+            try
+            {
+                new System.Net.Mail.MailAddress(email);
+            }
+            catch
+            {
+                throw new ArgumentException("O email fornecido é inválido.");
+            }
         }
 
         private void ValidarSenha(string senha)

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Domain.Aggregates.OrdemServicoAggregates.Repositories;
+﻿namespace Domain.Aggregates.OrdemServicoAggregates.Repositories;
 
 public interface IOrdemServicoRepository
 {

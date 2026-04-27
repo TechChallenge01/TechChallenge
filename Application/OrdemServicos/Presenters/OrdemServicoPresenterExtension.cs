@@ -1,8 +1,5 @@
 ﻿using Application.OrdemServicos.DTOs.Responses;
 using Domain.Aggregates.OrdemServicoAggregates;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Application.OrdemServicos.Presenters;
 
