@@ -5,6 +5,7 @@ using Domain.Aggregates.EstoqueAggregates;
 using Domain.Aggregates.EstoqueAggregates.Repositories;
 using Domain.Entities;
 using Domain.Entities.Repositories;
+using Domain.UnitOfWork;
 using Shared.Result;
 using Shared.Result.DTO;
 using System.Net;
@@ -15,10 +16,12 @@ namespace Application.Pecas.Services
     {
         private readonly IPecaRepository _pecaRepository;
         private readonly IEstoqueRepository _estoqueRepository;
-        public PecaService(IPecaRepository pecaRepository, IEstoqueRepository estoqueRepository)
+        private readonly IUnitOfWork _unitOfWork;
+        public PecaService(IPecaRepository pecaRepository, IEstoqueRepository estoqueRepository, IUnitOfWork unitOfWork)
         {
             _pecaRepository = pecaRepository;
             _estoqueRepository = estoqueRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<ICommandResult<PagedResultDTO<PecaResponseDTO>>> GetPaginated(int page, int pageSize, CancellationToken ct)
@@ -84,7 +87,7 @@ namespace Application.Pecas.Services
                 peca.Inativar();
                 peca.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
 
-                await _pecaRepository.Update(peca, ct);
+                await _unitOfWork.SaveChangesAsync(ct);
 
                 return new CommandResult { StatusCode = HttpStatusCode.OK, Message = "Peça excluída com sucesso!" };
             }
@@ -114,7 +117,7 @@ namespace Application.Pecas.Services
 
                 peca.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
 
-                await _pecaRepository.Update(peca, ct);
+                await _unitOfWork.SaveChangesAsync(ct);
 
                 return new CommandResult { StatusCode = HttpStatusCode.OK, Message = "Peça atualizada com sucesso!" };
             }
