@@ -3,6 +3,7 @@ using Domain.Entities;
 using Domain.UnitOfWork;
 using Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Infra.Context
 {
@@ -15,6 +16,7 @@ namespace Infra.Context
         public DbSet<Email> Emails { get; set; }
         public DbSet<Endereco> Enderecos { get; set; }
         public DbSet<Peca> Pecas { get; set; }
+        public DbSet<Servico> Servicos { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

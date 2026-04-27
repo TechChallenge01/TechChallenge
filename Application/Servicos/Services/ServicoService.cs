@@ -3,6 +3,7 @@ using Application.Servicos.DTOs.Response;
 using Application.Servicos.Presenters;
 using Domain.Entities;
 using Domain.Entities.Repositories;
+using Domain.UnitOfWork;
 using Shared.Result;
 using Shared.Result.DTO;
 using System.Net;
@@ -12,10 +13,11 @@ namespace Application.Servicos.Services;
 public class ServicoService : IServicoService
 {
     private readonly IServicoRepository _servico;
-
-    public ServicoService(IServicoService servicoRepository, IServicoRepository servico)
+    private readonly IUnitOfWork _unitOfWork;
+    public ServicoService(IServicoRepository servico, IUnitOfWork unitOfWork)
     {
         _servico = servico;
+        _unitOfWork = unitOfWork;
     }
     public async Task<ICommandResult<Guid>> Create(ServicoRequestDTO request, CancellationToken ct)
     {
@@ -48,7 +50,7 @@ public class ServicoService : IServicoService
         servico.Inativar();
         servico.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
 
-        await _servico.Update(servico, ct);
+        await _unitOfWork.SaveChangesAsync(ct);
 
         return new CommandResult<Guid> { StatusCode = HttpStatusCode.NoContent, Message = "Serviço deletado com sucesso." };
 
@@ -124,7 +126,7 @@ public class ServicoService : IServicoService
 
             servico.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
 
-            await _servico.Update(servico, ct); 
+            await _unitOfWork.SaveChangesAsync(ct);
 
             return new CommandResult<ICommandResult> { StatusCode = HttpStatusCode.OK, Message = "Serviço atualizado com sucesso." };
 
