@@ -141,5 +141,28 @@ namespace Application.Veiculos.Services
                 return new CommandResult { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
             }
         }
+
+        public async Task<ICommandResult<VeiculoResponseDTO>> GetById(Guid Id, CancellationToken ct)
+        {
+            try
+            {
+                var veiculo = await _veiculoRepository.GetById(Id, ct);
+
+                if (veiculo is null)
+                    return new CommandResult<VeiculoResponseDTO> { StatusCode = HttpStatusCode.NotFound, Message = "Veículo não encontrado." };
+
+                var response = veiculo.ToDto();
+
+                return new CommandResult<VeiculoResponseDTO> { StatusCode = HttpStatusCode.OK, Data = response, Message = "Veículo recuperado com sucesso." };
+            }
+            catch (ArgumentException ex)
+            {
+                return new CommandResult<VeiculoResponseDTO> { StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
+            }
+            catch (Exception ex)
+            {
+                return new CommandResult<VeiculoResponseDTO> { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
+            }
+        }
     }
 }

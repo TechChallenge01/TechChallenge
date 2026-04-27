@@ -46,4 +46,12 @@ public class ServicoController : ControllerBase
 
         return response.ToResult();
     }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById([FromRoute] Guid id, CancellationToken ct)
+    {
+        var response = await _servicoService.GetById(id, ct);
+
+        return response.ToResult();
+    }
 }

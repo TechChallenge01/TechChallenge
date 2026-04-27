@@ -1,6 +1,6 @@
-﻿using Application.Pecas.DTOs.Requests;
+﻿using Application.Pecas.Presenters;
+using Application.Pecas.DTOs.Requests;
 using Application.Pecas.DTOs.Responses;
-using Application.Pecas.Presenters;
 using Domain.Aggregates.EstoqueAggregates;
 using Domain.Aggregates.EstoqueAggregates.Repositories;
 using Domain.Entities;
@@ -128,6 +128,33 @@ namespace Application.Pecas.Services
             catch (Exception ex)
             {
                 return new CommandResult { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
+            }
+        }
+
+        public async Task<ICommandResult<PecaResponseDTO>> GetById(Guid id, CancellationToken ct)
+        {
+            try
+            {
+                var peca = await _pecaRepository.GetById(id, ct);
+
+                if (peca is null)
+                    return new CommandResult<PecaResponseDTO>
+                    {
+                        StatusCode = HttpStatusCode.NotFound,
+                        Message = "Peça não encontrada."
+                    };
+
+                var response = peca.ToDto();
+
+                return new CommandResult<PecaResponseDTO> { StatusCode = HttpStatusCode.OK, Data = response, Message = "Peça retornada com sucesso!" };
+            }
+            catch (ArgumentException ex)
+            {
+                return new CommandResult<PecaResponseDTO> { StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
+            }
+            catch (Exception ex)
+            {
+                return new CommandResult<PecaResponseDTO> { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
             }
         }
     }

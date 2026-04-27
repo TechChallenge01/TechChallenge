@@ -11,4 +11,5 @@ public interface IServicoService
     Task<ICommandResult<Guid>> Create(ServicoRequestDTO request, CancellationToken ct);
     Task<ICommandResult> Delete(Guid Id, CancellationToken ct);
     Task<ICommandResult> Update(Guid Id, ServicoRequestDTO request, CancellationToken ct);
+    Task<ICommandResult<ServicoResponseDTO>> GetById(Guid Id, CancellationToken ct);
 }

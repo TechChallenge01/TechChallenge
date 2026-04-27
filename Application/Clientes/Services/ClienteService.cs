@@ -44,13 +44,13 @@ namespace Application.Clientes.Services
 
                 return new CommandResult<PagedResultDTO<ClienteResponseDTO>> { StatusCode = HttpStatusCode.OK, Message = "Pesquisa de clientes retornada com sucesso!", Data = pagedResult };
             }
-            catch(ArgumentException ex)
+            catch (ArgumentException ex)
             {
-                return new CommandResult<PagedResultDTO<ClienteResponseDTO>>{ StatusCode = HttpStatusCode.BadRequest, Message = ex.Message};
+                return new CommandResult<PagedResultDTO<ClienteResponseDTO>> { StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return new CommandResult<PagedResultDTO<ClienteResponseDTO>> { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}"};
+                return new CommandResult<PagedResultDTO<ClienteResponseDTO>> { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
             }
         }
 
@@ -58,9 +58,9 @@ namespace Application.Clientes.Services
         {
             try
             {
-                if(request.Cpf is null && request.Cnpj is null)
+                if (request.Cpf is null && request.Cnpj is null)
                     return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = "É necessário informar ou o CPF ou o CNPJ do cliente!" };
-                else if(request.Cpf is not null && request.Cnpj is not null)
+                else if (request.Cpf is not null && request.Cnpj is not null)
                     return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = "Não é possível informar ambos CPF e CNPJ do cliente!" };
 
                 Cliente entity;
@@ -105,7 +105,7 @@ namespace Application.Clientes.Services
             {
                 var cliente = await _clienteRepository.GetById(id, ct);
 
-                if(cliente is null)
+                if (cliente is null)
                     return new CommandResult { StatusCode = HttpStatusCode.NotFound, Message = "Cliente não encontrado!" };
 
                 //exclusão lógica
@@ -114,14 +114,14 @@ namespace Application.Clientes.Services
                 cliente.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
 
                 await _unitOfWork.SaveChangesAsync(ct);
-                
+
                 return new CommandResult { StatusCode = HttpStatusCode.NoContent, Message = "Cliente excluído com sucesso!" };
             }
-            catch(ArgumentException ex)
+            catch (ArgumentException ex)
             {
                 return new CommandResult { StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return new CommandResult { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
             }
@@ -133,7 +133,7 @@ namespace Application.Clientes.Services
             {
                 var cliente = await _clienteRepository.GetById(id, ct);
 
-                if(cliente is null)
+                if (cliente is null)
                     return new CommandResult { StatusCode = HttpStatusCode.NotFound, Message = "Cliente não encontrado!" };
 
                 cliente.AlterarEmails(request.Emails.Select(e => new Email(e, cliente.Id)).ToList());
@@ -145,7 +145,7 @@ namespace Application.Clientes.Services
 
                 cliente.AlterarTelefones(request.Telefones.Select(t => new Telefone(t.DDD, t.DDI, t.Numero, (ETipoTelefone)Enum.Parse(typeof(ETipoTelefone), t.Tipo), cliente.Id)).ToList());
 
-                if(request.Enderecos.Count > 0)
+                if (request.Enderecos.Count > 0)
                     cliente.AlterarEnderecos(request.Enderecos.Select(e => new Endereco(e.Logradouro, e.Numero, e.Complemento, e.Bairro, e.Cidade, e.Uf, e.Cep, cliente.Id)).ToList());
 
                 cliente.AlterarNome(request.Nome);
@@ -156,13 +156,37 @@ namespace Application.Clientes.Services
 
                 return new CommandResult { StatusCode = HttpStatusCode.NoContent, Message = "Cliente atualizado com sucesso!" };
             }
-            catch(ArgumentException ex)
+            catch (ArgumentException ex)
             {
                 return new CommandResult { StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return new CommandResult { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
+            }
+        }
+
+        public async Task<ICommandResult<ClienteResponseDTO>> GetById(Guid id, CancellationToken ct)
+        {
+            try
+            {
+                var cliente = await _clienteRepository.GetById(id, ct);
+
+                if (cliente is null)
+                    return new CommandResult<ClienteResponseDTO> { StatusCode = HttpStatusCode.NotFound, Message = "Cliente não encontrado!" };
+
+                var response = cliente.ToDto();
+
+                return new CommandResult<ClienteResponseDTO> { StatusCode = HttpStatusCode.OK, Data = response, Message = "Cliente encontrado com sucesso!" };
+
+            }
+            catch (ArgumentException ex)
+            {
+                return new CommandResult<ClienteResponseDTO> { StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
+            }
+            catch (Exception ex)
+            {
+                return new CommandResult<ClienteResponseDTO> { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
             }
         }
     }
