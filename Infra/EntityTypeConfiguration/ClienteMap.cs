@@ -44,6 +44,11 @@ namespace Infra.EntityTypeConfiguration
                 .WithOne()
                 .HasForeignKey("ClienteId")
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(c => c.Veiculos)
+                .WithOne()
+                .HasForeignKey("Cliente")
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

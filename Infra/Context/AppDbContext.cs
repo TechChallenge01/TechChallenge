@@ -17,6 +17,7 @@ namespace Infra.Context
         public DbSet<Endereco> Enderecos { get; set; }
         public DbSet<Peca> Pecas { get; set; }
         public DbSet<Servico> Servicos { get; set; }
+        public DbSet<Veiculo> Veiculos { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

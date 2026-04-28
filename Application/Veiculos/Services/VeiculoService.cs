@@ -4,6 +4,7 @@ using Application.Veiculos.Presenters;
 using Domain.Aggregates.ClienteAggregates.Repositories;
 using Domain.Entities;
 using Domain.Entities.Repositories;
+using Domain.ValueObjects;
 using Shared.Result;
 using Shared.Result.DTO;
 using System.Net;
@@ -63,7 +64,7 @@ namespace Application.Veiculos.Services
                 if(cliente is null)
                     return new CommandResult<Guid> { StatusCode = HttpStatusCode.NotFound, Message = "Cliente não encontrado." };
 
-                var entity = new Veiculo(request.Modelo, request.MarcaVeiculo, request.ClienteId, request.Ano, request.Placa, request.Cor, Guid.Empty);
+                var entity = new Veiculo(request.Modelo, request.MarcaVeiculo, request.ClienteId, request.Ano, new Placa(request.Placa), request.Cor, Guid.Empty);
 
                 await _veiculoRepository.Add(entity, ct);
 

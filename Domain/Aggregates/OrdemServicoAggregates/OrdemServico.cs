@@ -27,7 +27,7 @@ public class OrdemServico : Base
 
     public string NomeCliente => Cliente.Nome;  
     public string ModeloVeiculo => Veiculo.Modelo;
-    public string PlacaVeiculo => Veiculo.Placa.Valor;
+    public string PlacaVeiculo => Veiculo.Placa;
     public string MarcaVeiculo => Veiculo.MarcaVeiculo;
 
     protected OrdemServico() 

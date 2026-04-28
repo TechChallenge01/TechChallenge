@@ -6,12 +6,12 @@ namespace Domain.Entities
 {
     public class Veiculo : Base
     {
-        public Veiculo(string modelo, string marcaVeiculo, Guid clienteId, int ano, string placa, string cor, Guid idUsuarioCriacao) : base(idUsuarioCriacao, DateTime.UtcNow, null, null)
+        public Veiculo(string modelo, string marcaVeiculo, Guid clienteId, int ano, Placa placa, string cor, Guid idUsuarioCriacao) : base(idUsuarioCriacao, DateTime.UtcNow, null, null)
         {
             ValidaModelo(modelo);
             ValidaAno(ano);
             ValidaMarcaVeiculo(marcaVeiculo);
-            ValidaPlaca(placa);
+            ValidaPlaca(placa.ToString());
             ValidarCor(cor);
 
 
@@ -20,7 +20,7 @@ namespace Domain.Entities
             MarcaVeiculo = marcaVeiculo;
             ClienteId = clienteId;
             Ano = ano;
-            Placa = new Placa(placa);
+            Placa = placa.ToString();
             Cor = cor;
         }
 
@@ -31,10 +31,9 @@ namespace Domain.Entities
         public string MarcaVeiculo { get; private set; }
         public Guid ClienteId { get; private set; }
         public int Ano { get; private set; }
-        public Placa Placa { get; private set; }
+        public string Placa { get; private set; }
         public string Cor { get; private set; }
-        protected virtual Cliente Cliente { get; private set; }
-        public string ValorPlaca => Placa.Valor;
+        public virtual Cliente Cliente { get; private set; }
         public string NomeCliente => Cliente.Nome;
 
         private void ValidaModelo(string modelo) 

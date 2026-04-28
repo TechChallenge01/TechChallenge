@@ -13,7 +13,7 @@ namespace Application.Veiculos.Presenters
                 MarcaVeiculo = veiculos.MarcaVeiculo,
                 Modelo = veiculos.Modelo,
                 Ano = veiculos.Ano,
-                Placa = veiculos.ValorPlaca,
+                Placa = veiculos.Placa,
                 Cor = veiculos.Cor,
                 NomeCliente = veiculos.NomeCliente
             };

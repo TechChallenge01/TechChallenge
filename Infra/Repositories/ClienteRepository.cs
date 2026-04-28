@@ -32,6 +32,7 @@ namespace Infra.Repositories
                                       .Include(c => c.Emails)
                                       .Include(c => c.Enderecos)
                                       .Include(c => c.Telefones)
+                                      .Include(c => c.Veiculos)
                                       .FirstOrDefaultAsync(c => c.Id == Id, ct);
         }
 

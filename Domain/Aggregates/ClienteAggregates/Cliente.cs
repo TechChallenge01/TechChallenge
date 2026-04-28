@@ -1,4 +1,5 @@
 ﻿using Domain.BaseEntity;
+using Domain.Entities;
 using Domain.ValueObjects;
 
 
@@ -37,6 +38,7 @@ namespace Domain.Aggregates.ClienteAggregates
         public ICollection<Email> Emails { get; private set; } = new List<Email>();
         public ICollection<Telefone> Telefones { get; private set; } = new List<Telefone>();
         public ICollection<Endereco> Enderecos { get; private set; } = new List<Endereco>();
+        public ICollection<Veiculo>? Veiculos { get; private set; }
 
         public void AlterarEnderecos(List<Endereco> enderecos)
         {
