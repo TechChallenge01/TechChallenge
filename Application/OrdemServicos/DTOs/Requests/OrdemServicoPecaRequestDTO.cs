@@ -9,5 +9,6 @@ public record OrdemServicoPecaRequestDTO
     public Guid PecaId { get; set; }
 
     [Required(ErrorMessage = "O campo Quantidade é obrigatório.")]
+    [Range(1, int.MaxValue, ErrorMessage = "Quantidade deve ser maior que zero.")]
     public int Quantidade { get; set; }
 }

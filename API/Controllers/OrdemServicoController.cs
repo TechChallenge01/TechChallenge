@@ -64,4 +64,11 @@ public class OrdemServicoController : ControllerBase
 
         return response.ToResult();
     }
+
+    [HttpPost("{id:guid}/diagnostico")]
+    public async Task<IActionResult> RealizarDiagnostico([FromRoute] int id, [FromBody] DiagnosticoRequestDTO request, CancellationToken ct)
+    {
+        var response = await _ordemService.RealizarDiagnostico(id, request, ct);
+        return response.ToResult();
+    }
 }

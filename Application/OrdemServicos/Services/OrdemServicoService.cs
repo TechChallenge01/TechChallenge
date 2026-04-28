@@ -3,6 +3,7 @@ using Application.OrdemServicos.DTOs.Responses;
 using Application.OrdemServicos.Presenters;
 using Domain.Aggregates.ClienteAggregates;
 using Domain.Aggregates.ClienteAggregates.Repositories;
+using Domain.Aggregates.EstoqueAggregates;
 using Domain.Aggregates.EstoqueAggregates.Repositories;
 using Domain.Aggregates.OrdemServicoAggregates;
 using Domain.Aggregates.OrdemServicoAggregates.Repositories;
@@ -11,6 +12,7 @@ using Domain.ValueObjects;
 using Shared.Result;
 using Shared.Result.DTO;
 using System.Net;
+using System.Security;
 
 namespace Application.OrdemServicos.Services;
 
@@ -65,10 +67,10 @@ public class OrdemServicoService : IOrdemServicoService
         {
             var ordemServico = await _ordemServicoRepository.GetById(id, ct);
 
-            if(ordemServico is null)
+            if (ordemServico is null)
                 return new CommandResult { StatusCode = HttpStatusCode.NotFound, Message = "Ordem de serviço não encontrada." };
 
-            if(ordemServico.Pecas.Any())
+            if (ordemServico.Pecas.Any())
             {
                 var estoques = await _estoqueRepository.GetByPecaIds(ordemServico.Pecas.Select(x => x.PecaId).ToList(), ct);
 
@@ -148,7 +150,7 @@ public class OrdemServicoService : IOrdemServicoService
     {
         try
         {
-            if(request.Cpf is null && request.Cnpj is null)
+            if (request.Cpf is null && request.Cnpj is null)
                 return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = "CPF ou CNPJ deve ser informado." };
 
             if (request.Cpf is not null && request.Cnpj is not null)
@@ -177,7 +179,7 @@ public class OrdemServicoService : IOrdemServicoService
             if (veiculo is null)
                 return new CommandResult<Guid> { StatusCode = HttpStatusCode.NotFound, Message = "Veículo não encontrado." };
 
-            if(veiculo.ClienteId != cliente.Id)
+            if (veiculo.ClienteId != cliente.Id)
                 return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = "O veículo informado não pertence ao cliente informado." };
 
             var entity = new OrdemServico(cliente.Id, veiculo.Id, Guid.Empty);
@@ -195,7 +197,8 @@ public class OrdemServicoService : IOrdemServicoService
                 if (pecasEntities.Count() != idsPecas.Count)
                     return new CommandResult<Guid> { StatusCode = HttpStatusCode.NotFound, Message = "Uma ou mais peças não foram encontradas." };
 
-                var ordemPecas = pecasAgrupadas.Select(p => {
+                var ordemPecas = pecasAgrupadas.Select(p =>
+                {
                     var valorUnitario = pecasEntities.First(e => e.Id == p.PecaId).ValorUnitario;
                     return new OrdemServicoPeca(entity.Id, p.PecaId, p.QuantidadeTotal, valorUnitario, Guid.Empty);
                 }).ToList();
@@ -204,7 +207,7 @@ public class OrdemServicoService : IOrdemServicoService
 
                 var estoques = await _estoqueRepository.GetByPecaIds(idsPecas, ct);
 
-                foreach(var peca in ordemPecas)
+                foreach (var peca in ordemPecas)
                 {
                     var estoque = estoques.FirstOrDefault(e => e.PecaId == peca.PecaId);
 
@@ -214,7 +217,7 @@ public class OrdemServicoService : IOrdemServicoService
                     }
                 }
             }
-            
+
             if (request.Servicos is not null && request.Servicos.Any())
             {
                 var servicosAgrupados = request.Servicos
@@ -228,7 +231,8 @@ public class OrdemServicoService : IOrdemServicoService
                 if (servicosEntities.Count() != idsServicos.Count)
                     return new CommandResult<Guid> { StatusCode = HttpStatusCode.NotFound, Message = "Um ou mais serviços não foram encontrados." };
 
-                var ordemServicos = servicosAgrupados.Select(s => {
+                var ordemServicos = servicosAgrupados.Select(s =>
+                {
                     var valorUnitario = servicosEntities.First(e => e.Id == s.ServicoId).ValorUnitario;
                     return new OrdemServicoServico(entity.Id, s.ServicoId, s.QuantidadeTotal, valorUnitario, Guid.Empty);
                 }).ToList();
@@ -252,11 +256,11 @@ public class OrdemServicoService : IOrdemServicoService
 
     public async Task<ICommandResult<PagedResultDTO<OrdemServicoResponseDTO>>> GetPaginated(int page, int pageSize, CancellationToken ct)
     {
-        try 
+        try
         {
             var ordemServico = await _ordemServicoRepository.GetPaginated(page, pageSize, ct);
 
-            if(ordemServico.OrdemServicos is null || ordemServico.OrdemServicos.Count == 0)
+            if (ordemServico.OrdemServicos is null || ordemServico.OrdemServicos.Count == 0)
                 return new CommandResult<PagedResultDTO<OrdemServicoResponseDTO>> { StatusCode = HttpStatusCode.NotFound, Message = "Nenhuma ordem de serviço encontrada." };
 
             var response = ordemServico.OrdemServicos.ToListDTO();
@@ -284,13 +288,13 @@ public class OrdemServicoService : IOrdemServicoService
 
     public async Task<ICommandResult<OrdemServicoResponseDTO>> GetById(int id, CancellationToken ct)
     {
-        try 
-        { 
+        try
+        {
             var ordemServico = await _ordemServicoRepository.GetById(id, ct);
 
-            if(ordemServico is null)
+            if (ordemServico is null)
                 return new CommandResult<OrdemServicoResponseDTO> { StatusCode = HttpStatusCode.NotFound, Message = "Ordem de serviço não encontrada." };
-            
+
             var response = ordemServico.ToDTO();
 
             return new CommandResult<OrdemServicoResponseDTO> { StatusCode = HttpStatusCode.OK, Message = "Ordem de serviço retornada com sucesso.", Data = response };
@@ -301,7 +305,102 @@ public class OrdemServicoService : IOrdemServicoService
         }
         catch (Exception ex)
         {
-            return new CommandResult<OrdemServicoResponseDTO>  { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
+            return new CommandResult<OrdemServicoResponseDTO> { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
+        }
+    }
+
+    public async Task<ICommandResult> RealizarDiagnostico(int id, DiagnosticoRequestDTO request, CancellationToken ct)
+    {
+        try
+        {
+            var ordemServico = await _ordemServicoRepository.GetById(id, ct);
+
+            if (ordemServico is null)
+                return new CommandResult { StatusCode = HttpStatusCode.NotFound, Message = "Ordem de serviço não encontrada." };
+
+            var possuiServico = request.Servicos is not null && request.Servicos.Any();
+            var possuiPeca = request.Pecas is not null && request.Pecas.Any();
+
+            if (!possuiServico && !possuiPeca)
+                return new CommandResult { StatusCode = HttpStatusCode.BadRequest, Message = "O diagnóstico deve conter ao menos um serviço ou uma peça."};
+
+            var ordemPecas = new List<OrdemServicoPeca>();
+            var estoques = new List<Estoque>();
+
+            if (possuiPeca)
+            {
+                var pecasAgrupadas = request.Pecas
+                    .GroupBy(p => p.PecaId)
+                    .Select(g => new { PecaId = g.Key, QuantidadeTotal = g.Sum(x => x.Quantidade) })
+                    .ToList();
+
+                var idsPecas = pecasAgrupadas.Select(p => p.PecaId).ToList();
+                var pecasEntities = await _pecaRepository.GetByIds(idsPecas, ct);
+
+                if (pecasEntities.Count() != idsPecas.Count)
+                    return new CommandResult<Guid> { StatusCode = HttpStatusCode.NotFound, Message = "Uma ou mais peças não foram encontradas." };
+
+                estoques = (await _estoqueRepository.GetByPecaIds(idsPecas, ct)).ToList();
+
+                ordemPecas = pecasAgrupadas.Select(p =>
+                {
+                    var valorUnitario = pecasEntities.First(e => e.Id == p.PecaId).ValorUnitario;
+                    return new OrdemServicoPeca(ordemServico.Id, p.PecaId, p.QuantidadeTotal, valorUnitario, Guid.Empty);
+                }).ToList();
+            }
+
+            var ordemServicos = new List<OrdemServicoServico>();
+
+            if (possuiServico)
+            {
+                var servicosAgrupados = request.Servicos
+                    .GroupBy(s => s.ServicoId)
+                    .Select(g => new { ServicoId = g.Key, QuantidadeTotal = g.Sum(x => x.Quantidade) })
+                    .ToList();
+
+                var idsServicos = servicosAgrupados.Select(s => s.ServicoId).ToList();
+                var servicosEntities = await _servicoRepository.GetByIds(idsServicos, ct);
+
+                if (servicosEntities.Count() != idsServicos.Count)
+                    return new CommandResult<Guid> { StatusCode = HttpStatusCode.NotFound, Message = "Um ou mais serviços não foram encontrados." };
+
+                ordemServicos = servicosAgrupados.Select(s =>
+                {
+                    var valorUnitario = servicosEntities.First(e => e.Id == s.ServicoId).ValorUnitario;
+                    return new OrdemServicoServico(ordemServico.Id, s.ServicoId, s.QuantidadeTotal, valorUnitario, Guid.Empty);
+                }).ToList();
+            }
+
+            ordemServico.IniciarDiagnostico(Guid.Empty);
+
+            if (ordemServicos.Any())
+                ordemServico.AlterarServico(ordemServicos);
+
+            if (ordemPecas.Any())
+                ordemServico.AlterarPeca(ordemPecas);
+
+            if(!string.IsNullOrEmpty(request.Observacao))
+                ordemServico.RegistrarDiagnostico(request.Observacao);
+
+            foreach (var peca in ordemPecas)
+            {
+                var estoque = estoques.First(e => e.PecaId == peca.PecaId);
+                estoque.RetirarEstoque(peca.Quantidade, Guid.Empty);
+            }
+
+            ordemServico.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
+
+            await _ordemServicoRepository.Update(ordemServico, ct);
+
+            return new CommandResult {  StatusCode = HttpStatusCode.NoContent, Message = "Diagnóstico realizado. Status atualizado para Em Diagnóstico."};
+        }
+        catch (ArgumentException ex)
+        {
+            return new CommandResult { StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
+        }
+        catch (Exception ex)
+        {
+            return new CommandResult { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
         }
     }
 }
