@@ -4,15 +4,15 @@ namespace Application.OrdemServicos.DTOs.Requests;
 
 public record OrdemServicoRequestDTO
 {
-    [Required(ErrorMessage = "O campo Id do Cliente é obrigatório.")]
-    public Guid ClienteId { get; set; }
+    public string? Cpf { get; init; }
+    public string? Cnpj { get; init; }
 
     [Required(ErrorMessage = "O campo Id do Veículo é obrigatório.")]
-    public Guid VeiculoId { get; set; }
+    public Guid VeiculoId { get; init; }
 
-    public string? Observacao { get; set; }
+    public string? Observacao { get; init; }
 
-    public decimal ValorDesconto { get; set; } = 0;
+    public decimal ValorDesconto { get; init; } = 0;
 
     public ICollection<OrdemServicoPecaRequestDTO>? Pecas { get; init; }
     public ICollection<OrdemServicoServicoRequestDTO>? Servicos { get; init; }

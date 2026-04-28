@@ -1,5 +1,6 @@
 ﻿using Domain.Aggregates.ClienteAggregates;
 using Domain.Aggregates.ClienteAggregates.Repositories;
+using Domain.ValueObjects;
 using Infra.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,6 +25,24 @@ namespace Infra.Repositories
         {
             _appDbContext.Clientes.Remove(cliente);
             await _appDbContext.SaveChangesAsync(ct);
+        }
+
+        public async Task<Cliente?> GetByCnpj(Cnpj cnpj, CancellationToken ct = default)
+        {
+            return await _appDbContext.Clientes
+                                        .Include(c => c.Emails)
+                                        .Include(c => c.Enderecos)
+                                        .Include(c => c.Telefones)
+                                        .FirstOrDefaultAsync(c => c.Cnpj != null && c.Cnpj.Valor == cnpj.Valor, ct);
+        }
+
+        public async Task<Cliente?> GetByCpf(Cpf cpf, CancellationToken ct = default)
+        {
+            return await _appDbContext.Clientes
+                                        .Include(c => c.Emails)
+                                        .Include(c => c.Enderecos)
+                                        .Include(c => c.Telefones)
+                                        .FirstOrDefaultAsync(c => c.Cpf != null && c.Cpf.Valor == cpf.Valor, ct);
         }
 
         public async Task<Cliente> GetById(Guid Id, CancellationToken ct)

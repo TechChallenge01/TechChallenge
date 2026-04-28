@@ -1,6 +1,7 @@
 ﻿using Application.OrdemServicos.DTOs.Requests;
 using Application.OrdemServicos.DTOs.Responses;
 using Application.OrdemServicos.Presenters;
+using Domain.Aggregates.ClienteAggregates;
 using Domain.Aggregates.ClienteAggregates.Repositories;
 using Domain.Aggregates.EstoqueAggregates.Repositories;
 using Domain.Aggregates.OrdemServicoAggregates;
@@ -147,13 +148,37 @@ public class OrdemServicoService : IOrdemServicoService
     {
         try
         {
-            var cliente = await _clienteRepository.GetById(request.ClienteId, ct);
+            if(request.Cpf is null && request.Cnpj is null)
+                return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = "CPF ou CNPJ deve ser informado." };
+
+            if (request.Cpf is not null && request.Cnpj is not null)
+                return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = "Não é possível informar ambos CPF e CNPJ do cliente!" };
+
+            var isCpf = request.Cpf is not null;
+
+            Cliente? cliente;
+
+            if (isCpf)
+            {
+                var cpf = new Cpf(request.Cpf!);
+                cliente = await _clienteRepository.GetByCpf(cpf, ct);
+            }
+            else
+            {
+                var cnpj = new Cnpj(request.Cnpj!);
+                cliente = await _clienteRepository.GetByCnpj(cnpj, ct);
+            }
+
             if (cliente is null)
-                return new CommandResult<Guid> { StatusCode = HttpStatusCode.NotFound, Message = "Cliente não encontrado." };
+                return new CommandResult<Guid> { StatusCode = HttpStatusCode.NotFound, Message = "Cliente não encontrado. Realize o cadastro antes de abrir uma OS." };
 
             var veiculo = await _veiculoRepository.GetById(request.VeiculoId, ct);
+
             if (veiculo is null)
                 return new CommandResult<Guid> { StatusCode = HttpStatusCode.NotFound, Message = "Veículo não encontrado." };
+
+            if(veiculo.ClienteId != cliente.Id)
+                return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = "O veículo informado não pertence ao cliente informado." };
 
             var entity = new OrdemServico(cliente.Id, veiculo.Id, Guid.Empty);
 

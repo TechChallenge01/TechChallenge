@@ -10,8 +10,7 @@
             ValidarCnpj(cnpj);
 
             Valor = cnpj;
-        }    
-
+        }
 
         public string Valor { get; private set; }
         private void ValidarCnpj(string cnpj)
