@@ -47,6 +47,7 @@ namespace Infra.Repositories
             var servicos = await _appDbContext.Servicos
                                               .Skip(page)
                                               .Take(pageSize)
+                                              .AsNoTracking()
                                               .ToListAsync(ct);
 
             var total = await _appDbContext.Servicos.CountAsync(ct);

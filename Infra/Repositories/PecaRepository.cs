@@ -47,6 +47,7 @@ namespace Infra.Repositories
             var pecas = await _appDbContext.Pecas
                         .Skip((page - 1) * pageSize)
                         .Take(pageSize)
+                        .AsNoTracking()
                         .ToListAsync(ct);
 
             var total = await _appDbContext.Pecas.CountAsync(ct);
