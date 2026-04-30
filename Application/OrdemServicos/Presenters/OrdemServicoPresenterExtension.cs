@@ -17,7 +17,7 @@ public static class OrdemServicoPresenterExtension
             Observacao = ordemServico.Observacao,
             ValorTotal = ordemServico.ValorTotal,
             ValorDesconto = ordemServico.ValorDesconto,
-
+            TempoExecucao = ordemServico.TempoExecucao,
             Pecas = ordemServico.Pecas != null ? null : ordemServico.Pecas.Select(p => new OrdemServicoPecaResponseDTO
             {
                 PecaId = p.PecaId,

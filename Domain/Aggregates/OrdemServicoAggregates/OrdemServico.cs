@@ -10,14 +10,12 @@ public class OrdemServico : Base
     public Guid Id { get; private set; }
     public Guid ClienteId { get; private set; }
     public Guid VeiculoId { get; private set; }
-
     public EStatusOS StatusOS { get; private set; }
-
     public string? Observacao { get; private set; }
-
     public decimal ValorTotal { get; private set; }
-
     public decimal ValorDesconto { get; private set; } = 0;
+    public DateTime InicioExecucao { get; private set; }
+    public DateTime? TerminoExecucao { get; private set; }
 
     public ICollection<OrdemServicoServico> Servicos { get; private set; } = new List<OrdemServicoServico>();
     public ICollection<OrdemServicoPeca> Pecas { get; private set; } = new List<OrdemServicoPeca>();
@@ -25,6 +23,7 @@ public class OrdemServico : Base
     public virtual Cliente Cliente { get; private set; }
     public virtual Veiculo Veiculo { get; private set; }
 
+    public TimeSpan TempoExecucao => TerminoExecucao.HasValue ? TerminoExecucao.Value - InicioExecucao : TimeSpan.Zero;
     public string NomeCliente => Cliente.Nome;  
     public string ModeloVeiculo => Veiculo.Modelo;
     public string PlacaVeiculo => Veiculo.Placa;
@@ -50,64 +49,28 @@ public class OrdemServico : Base
         DataCriacao = DataCriacao;
     }
 
-    public void IniciarDiagnostico(Guid idUsuarioAtualizacao)
+    public void IniciarDiagnostico()
     {
         ValidarTransicao(EStatusOS.Recebida, EStatusOS.EmDiagnostico);
         StatusOS = EStatusOS.EmDiagnostico;
-        IdUsuarioAtualizacao = idUsuarioAtualizacao;
-        DataAtualizacao = DateTime.UtcNow;
     }
+
     public void RegistrarDiagnostico(string observacao) 
-    {
-
-        if(StatusOS != EStatusOS.EmDiagnostico)
-            throw new InvalidOperationException("A OS precisa estar Em Diagnóstico para registrar observações.");
-
-        if(string.IsNullOrWhiteSpace(observacao)) throw new InvalidOperationException("Observação é obrigatória para registrar um diagnóstico.");
-
-        Observacao = observacao;
-    }
-    public void EnviarParaAprovacao()
     {
         ValidarTransicao(EStatusOS.EmDiagnostico, EStatusOS.AguardandoAprovacao);
 
-        if(!Servicos.Any() && !Pecas.Any())
-            throw new InvalidOperationException("A OS deve ter ao menos um serviço ou peça antes de enviar para aprovação.");
+        if(string.IsNullOrWhiteSpace(observacao)) 
+            throw new InvalidOperationException("Observação é obrigatória para registrar um diagnóstico.");
 
-        RecalcularValorTotal();
-
+        Observacao = observacao;
         StatusOS = EStatusOS.AguardandoAprovacao;
     }
 
-    public void AorovarOrdemServico(Guid idUsuarioAtualizacao)
-    {
-        ValidarTransicao(EStatusOS.AguardandoAprovacao, EStatusOS.EmExecucao);
-        StatusOS = EStatusOS.EmExecucao;
-        IdUsuarioAtualizacao = idUsuarioAtualizacao;
-        DataAtualizacao = DateTime.UtcNow;
-    }
-
-    public void CancelarOrdemServico(Guid idUsuarioAtualizacao)
-    {
-        if (StatusOS != EStatusOS.AguardandoAprovacao)
-            throw new InvalidOperationException("Só é possível recusar uma OS em Aguardando Aprovação.");
-
-        StatusOS = EStatusOS.Cancelada;
-        IdUsuarioAtualizacao = idUsuarioAtualizacao;
-        DataAtualizacao = DateTime.UtcNow;
-    }
-
-    public void FinalizarOrdemServico(Guid idUsuarioAtualizacao)
-    {
-        ValidarTransicao(EStatusOS.EmExecucao, EStatusOS.Finalizada);
-        StatusOS = EStatusOS.Finalizada;
-        IdUsuarioAtualizacao = idUsuarioAtualizacao;
-        DataAtualizacao = DateTime.UtcNow;
-    }
-
-    public void Entregar(Guid idUsuario)
+    public void Entregar()
     {
         ValidarTransicao(EStatusOS.Finalizada, EStatusOS.Entregue);
+
+        StatusOS = EStatusOS.Entregue;
     }
 
     public void AprovarOrdemServico()
@@ -115,6 +78,7 @@ public class OrdemServico : Base
         ValidarTransicao(EStatusOS.AguardandoAprovacao, EStatusOS.EmExecucao);
 
         StatusOS = EStatusOS.EmExecucao;
+        InicioExecucao = DateTime.UtcNow;
 
         Servicos.ToList().ForEach(s => s.IniciarExecucao());
     }
@@ -134,14 +98,11 @@ public class OrdemServico : Base
 
         servicos.ForEach(s => s.ConcluirExecucao());
 
-        if(!Servicos.Any(s => s.Status == EStatusOS.EmExecucao))
+        if (!Servicos.Any(s => s.Status == EStatusOS.EmExecucao))
+        {
             StatusOS = EStatusOS.Finalizada;
-    }
-
-    public void Entregar()
-    {
-        ValidarTransicao(EStatusOS.Finalizada, EStatusOS.Entregue);
-        StatusOS = EStatusOS.Entregue;
+            TerminoExecucao = DateTime.UtcNow;
+        }
     }
 
     private void RecalcularValorTotal()

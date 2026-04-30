@@ -10,6 +10,7 @@ public record OrdemServicoResponseDTO
     public string? Observacao { get;  set; }
     public decimal ValorTotal { get;  set; }
     public decimal ValorDesconto { get;  set; } = 0;
+    public TimeSpan TempoExecucao { get; set; }
     public ICollection<OrdemServicoPecaResponseDTO>? Pecas { get; set; }
     public ICollection<OrdemServicoServicoResponseDTO>? Servicos { get; set; }
 }

@@ -65,7 +65,7 @@ public class OrdemServicoController : ControllerBase
         return response.ToResult();
     }
 
-    [HttpPost("{id:guid}/diagnostico")]
+    [HttpPost("{id:guid}/Diagnostico")]
     public async Task<IActionResult> RealizarDiagnostico([FromRoute] int id, [FromBody] DiagnosticoRequestDTO request, CancellationToken ct)
     {
         var response = await _ordemService.RealizarDiagnostico(id, request, ct);

@@ -57,28 +57,32 @@ public class Estoque : Base
     {
         ValidarQuantidadeDisponivel(quantidade);
 
-        if (quantidade > QuantidadeDisponivel)
+        if (quantidade > QuantidadeReservada)
             throw new InvalidOperationException("Não há estoque suficiente para retirar a quantidade solicitada.");
-        
-        QuantidadeDisponivel -= quantidade;
+
+        LiberarReserva(quantidade, usuarioCriacaoId);
         AdicionarMovimentacao(quantidade, "Retirada de estoque", ETipoMovimentacao.Saida, usuarioCriacaoId, DateTime.UtcNow);
     }
 
-    public void ReservarEstoque(int quantidade) 
+    public void ReservarEstoque(int quantidade, Guid usuarioCriacaoId) 
     {
         ValidarQuantidadeReservada(quantidade);
 
-        if(quantidade > QuantidadeDisponivel)
-            throw new InvalidOperationException("Não há estoque suficiente para reservar a quantidade solicitada.");
-        
+        if (quantidade > QuantidadeDisponivel)
+        {
+            Console.WriteLine("Solicitação de compra criada e realizada com sucesso!");//mock de requisicao de compra
+            AdicionarEstoque(quantidade, usuarioCriacaoId);
+        }
         QuantidadeDisponivel -= quantidade;
         QuantidadeReservada += quantidade;
     }
-    public void LiberarReserva(int quantidade) 
+    public void LiberarReserva(int quantidade, Guid usuarioCriacaoId) 
     {
         ValidarQuantidadeReservada(quantidade);
+
         if(quantidade > QuantidadeReservada)
-            throw new InvalidOperationException("Não há estoque reservado suficiente para liberar a quantidade solicitada.");
+            Console.WriteLine("Não há estoque reservado suficiente para liberar a quantidade solicitada.");
+        
        
         QuantidadeReservada -= quantidade;
         QuantidadeDisponivel += quantidade;

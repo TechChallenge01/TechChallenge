@@ -80,7 +80,7 @@ public class OrdemServicoService : IOrdemServicoService
 
                     if (estoque is not null)
                     {
-                        estoque.LiberarReserva(peca.Quantidade);
+                        estoque.LiberarReserva(peca.Quantidade, Guid.NewGuid());
                     }
                 }
             }
@@ -174,15 +174,10 @@ public class OrdemServicoService : IOrdemServicoService
             if (cliente is null)
                 return new CommandResult<Guid> { StatusCode = HttpStatusCode.NotFound, Message = "Cliente não encontrado. Realize o cadastro antes de abrir uma OS." };
 
-            var veiculo = await _veiculoRepository.GetById(request.VeiculoId, ct);
-
-            if (veiculo is null)
+            if (!cliente.Veiculos.Any(v => v.Id == request.VeiculoId))
                 return new CommandResult<Guid> { StatusCode = HttpStatusCode.NotFound, Message = "Veículo não encontrado." };
 
-            if (veiculo.ClienteId != cliente.Id)
-                return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = "O veículo informado não pertence ao cliente informado." };
-
-            var entity = new OrdemServico(cliente.Id, veiculo.Id, Guid.Empty);
+            var entity = new OrdemServico(cliente.Id, request.VeiculoId, Guid.Empty);
 
             if (request.Pecas is not null && request.Pecas.Any())
             {
@@ -213,7 +208,7 @@ public class OrdemServicoService : IOrdemServicoService
 
                     if (estoque is not null)
                     {
-                        estoque.ReservarEstoque(peca.Quantidade);
+                        estoque.ReservarEstoque(peca.Quantidade, Guid.NewGuid());
                     }
                 }
             }
