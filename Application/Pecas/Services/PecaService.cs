@@ -7,8 +7,8 @@ using Domain.Entities;
 using Domain.Entities.Repositories;
 using Domain.UnitOfWork;
 using Shared.Result;
-using Shared.Result.DTO;
 using System.Net;
+using Shared.DTO;
 
 namespace Application.Pecas.Services
 {

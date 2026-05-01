@@ -1,7 +1,7 @@
 ﻿using Application.Estoques.DTOs.Requests;
 using Application.Estoques.DTOs.Responses;
+using Shared.DTO;
 using Shared.Result;
-using Shared.Result.DTO;
 
 namespace Application.Estoques.Services
 {

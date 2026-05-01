@@ -6,8 +6,8 @@ using Domain.Aggregates.ClienteAggregates.Repositories;
 using Domain.Enums;
 using Domain.UnitOfWork;
 using Domain.ValueObjects;
+using Shared.DTO;
 using Shared.Result;
-using Shared.Result.DTO;
 using System.Net;
 
 namespace Application.Clientes.Services

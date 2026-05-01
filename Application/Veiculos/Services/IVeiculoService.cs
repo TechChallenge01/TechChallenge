@@ -1,7 +1,7 @@
 ﻿using Application.Veiculos.DTOs.Requests;
 using Application.Veiculos.DTOs.Response;
+using Shared.DTO;
 using Shared.Result;
-using Shared.Result.DTO;
 
 namespace Application.Veiculos.Services
 {

@@ -4,8 +4,9 @@ using Application.Estoques.Presenters;
 using Domain.Aggregates.EstoqueAggregates.Repositories;
 using Domain.Entities.Repositories;
 using Domain.Enums;
+using Domain.UnitOfWork;
+using Shared.DTO;
 using Shared.Result;
-using Shared.Result.DTO;
 using System.Net;
 
 namespace Application.Estoques.Services
@@ -14,11 +15,13 @@ namespace Application.Estoques.Services
     {
         private readonly IEstoqueRepository _estoqueRepository;
         private readonly IPecaRepository _pecaRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public EstoqueService(IEstoqueRepository estoqueRepository, IPecaRepository pecaRepository)
+        public EstoqueService(IEstoqueRepository estoqueRepository, IPecaRepository pecaRepository, IUnitOfWork unitOfWork)
         {
             _estoqueRepository = estoqueRepository;
-            _pecaRepository = pecaRepository;   
+            _pecaRepository = pecaRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<ICommandResult<PagedResultDTO<EstoqueResponseDTO>>> GetPaginated(int page, int pageSize, CancellationToken ct)
@@ -103,7 +106,7 @@ namespace Application.Estoques.Services
 
                 estoque.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
 
-                await _estoqueRepository.Update(estoque, ct);
+                await _unitOfWork.SaveChangesAsync(ct);
 
                 return new CommandResult<Guid> { StatusCode = HttpStatusCode.Created, Data = estoque.Id, Message = "Movimentação realizada com sucesso!" };
             }

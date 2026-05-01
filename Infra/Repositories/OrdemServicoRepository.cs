@@ -47,10 +47,4 @@ public class OrdemServicoRepository : IOrdemServicoRepository
 
         return (ordemServicos, total);
     }
-
-    public async Task Update(OrdemServico ordemServico, CancellationToken ct)
-    {
-        _appDbContext.OrdensServico.Update(ordemServico);
-        await _appDbContext.SaveChangesAsync(ct);
-    }
 }

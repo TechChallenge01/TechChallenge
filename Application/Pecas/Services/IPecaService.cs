@@ -1,8 +1,8 @@
 ﻿using Application.Estoques.DTOs.Responses;
 using Application.Pecas.DTOs.Requests;
 using Application.Pecas.DTOs.Responses;
+using Shared.DTO;
 using Shared.Result;
-using Shared.Result.DTO;
 
 namespace Application.Pecas.Services
 {

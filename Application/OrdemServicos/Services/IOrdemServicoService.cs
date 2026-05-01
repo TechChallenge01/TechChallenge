@@ -1,7 +1,7 @@
 ﻿using Application.OrdemServicos.DTOs.Requests;
 using Application.OrdemServicos.DTOs.Responses;
+using Shared.DTO;
 using Shared.Result;
-using Shared.Result.DTO;
 
 namespace Application.OrdemServicos.Services;
 
@@ -13,5 +13,6 @@ public interface IOrdemServicoService
     Task<ICommandResult> Aprovar(Guid id, CancellationToken ct);
     Task<ICommandResult> FinalizarServico(Guid id, FinalizarServicoDTO dto, CancellationToken ct);
     Task<ICommandResult<OrdemServicoResponseDTO>> GetById(Guid id, CancellationToken ct);
+    Task<ICommandResult> IniciarDiagnostico(Guid id, CancellationToken ct);
     Task<ICommandResult> RealizarDiagnostico(Guid id, DiagnosticoRequestDTO request, CancellationToken ct);
 }

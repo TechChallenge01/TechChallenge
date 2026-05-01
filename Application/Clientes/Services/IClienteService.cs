@@ -1,7 +1,7 @@
 ﻿using Application.Clientes.DTOs.Requests;
 using Application.Clientes.DTOs.Responses;
+using Shared.DTO;
 using Shared.Result;
-using Shared.Result.DTO;
 
 namespace Application.Clientes.Services
 {

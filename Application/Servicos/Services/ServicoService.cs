@@ -4,8 +4,8 @@ using Application.Servicos.Presenters;
 using Domain.Entities;
 using Domain.Entities.Repositories;
 using Domain.UnitOfWork;
+using Shared.DTO;
 using Shared.Result;
-using Shared.Result.DTO;
 using System.Net;
 
 namespace Application.Servicos.Services;

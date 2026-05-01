@@ -49,10 +49,4 @@ public class EstoqueRepository : IEstoqueRepository
 
         return (estoque, total);
     }
-
-    public async Task Update(Estoque estoque, CancellationToken ct)
-    {
-        _appDbContext.Estoques.Update(estoque);
-        await _appDbContext.SaveChangesAsync(ct);
-    }
 }

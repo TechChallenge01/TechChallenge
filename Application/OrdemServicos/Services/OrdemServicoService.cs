@@ -8,9 +8,12 @@ using Domain.Aggregates.EstoqueAggregates.Repositories;
 using Domain.Aggregates.OrdemServicoAggregates;
 using Domain.Aggregates.OrdemServicoAggregates.Repositories;
 using Domain.Entities.Repositories;
+using Domain.Services;
+using Domain.UnitOfWork;
 using Domain.ValueObjects;
+using Shared.DTO;
+using Shared.DTOs;
 using Shared.Result;
-using Shared.Result.DTO;
 using System.Net;
 using System.Security;
 
@@ -20,18 +23,20 @@ public class OrdemServicoService : IOrdemServicoService
 {
     private readonly IOrdemServicoRepository _ordemServicoRepository;
     private readonly IClienteRepository _clienteRepository;
-    private readonly IVeiculoRepository _veiculoRepository;
     private readonly IPecaRepository _pecaRepository;
     private readonly IServicoRepository _servicoRepository;
     private readonly IEstoqueRepository _estoqueRepository;
-    public OrdemServicoService(IOrdemServicoRepository ordemServicoRepository, IClienteRepository clienteRepository, IVeiculoRepository veiculoRepository, IPecaRepository pecaRepository, IServicoRepository servicoRepository, IEstoqueRepository estoqueRepository)
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IEmailService _emailService;
+    public OrdemServicoService(IOrdemServicoRepository ordemServicoRepository, IClienteRepository clienteRepository, IPecaRepository pecaRepository, IServicoRepository servicoRepository, IEstoqueRepository estoqueRepository, IUnitOfWork unitOfWork, IEmailService emailService)
     {
         _ordemServicoRepository = ordemServicoRepository;
         _clienteRepository = clienteRepository;
-        _veiculoRepository = veiculoRepository;
         _pecaRepository = pecaRepository;
         _servicoRepository = servicoRepository;
         _estoqueRepository = estoqueRepository;
+        _unitOfWork = unitOfWork;
+        _emailService = emailService;
     }
 
     public async Task<ICommandResult> Aprovar(Guid id, CancellationToken ct)
@@ -47,7 +52,7 @@ public class OrdemServicoService : IOrdemServicoService
 
             ordemServico.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
 
-            await _ordemServicoRepository.Update(ordemServico, ct);
+            await _unitOfWork.SaveChangesAsync(ct);
 
             return new CommandResult { StatusCode = HttpStatusCode.NoContent, Message = "Ordem de serviço aprovada com sucesso." };
         }
@@ -60,7 +65,6 @@ public class OrdemServicoService : IOrdemServicoService
             return new CommandResult { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
         }
     }
-
     public async Task<ICommandResult> Cancelar(Guid id, CancellationToken ct)
     {
         try
@@ -89,7 +93,7 @@ public class OrdemServicoService : IOrdemServicoService
 
             ordemServico.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
 
-            await _ordemServicoRepository.Update(ordemServico, ct);
+            await _unitOfWork.SaveChangesAsync(ct);
 
             return new CommandResult { StatusCode = HttpStatusCode.NoContent, Message = "Ordem de serviço cancelada com sucesso." };
         }
@@ -102,7 +106,6 @@ public class OrdemServicoService : IOrdemServicoService
             return new CommandResult { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
         }
     }
-
     public async Task<ICommandResult> FinalizarServico(Guid id, FinalizarServicoDTO dto, CancellationToken ct)
     {
         try
@@ -132,7 +135,7 @@ public class OrdemServicoService : IOrdemServicoService
 
             ordemServico.RastrearAlteracao(usuarioAuditoria, dataAlteracao);
 
-            await _ordemServicoRepository.Update(ordemServico, ct);
+            await _unitOfWork.SaveChangesAsync(ct);
 
             return new CommandResult<Guid> { StatusCode = HttpStatusCode.NoContent, Message = "Serviço finalizado com sucesso." };
         }
@@ -145,7 +148,6 @@ public class OrdemServicoService : IOrdemServicoService
             return new CommandResult<Guid> { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
         }
     }
-
     public async Task<ICommandResult<Guid>> Create(OrdemServicoRequestDTO request, CancellationToken ct)
     {
         try
@@ -248,7 +250,6 @@ public class OrdemServicoService : IOrdemServicoService
             return new CommandResult<Guid> { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
         }
     }
-
     public async Task<ICommandResult<PagedResultDTO<OrdemServicoResponseDTO>>> GetPaginated(int page, int pageSize, CancellationToken ct)
     {
         try
@@ -280,7 +281,6 @@ public class OrdemServicoService : IOrdemServicoService
             return new CommandResult<PagedResultDTO<OrdemServicoResponseDTO>> { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
         }
     }
-
     public async Task<ICommandResult<OrdemServicoResponseDTO>> GetById(Guid id, CancellationToken ct)
     {
         try
@@ -303,7 +303,6 @@ public class OrdemServicoService : IOrdemServicoService
             return new CommandResult<OrdemServicoResponseDTO> { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
         }
     }
-
     public async Task<ICommandResult> RealizarDiagnostico(Guid id, DiagnosticoRequestDTO request, CancellationToken ct)
     {
         try
@@ -366,26 +365,25 @@ public class OrdemServicoService : IOrdemServicoService
                 }).ToList();
             }
 
-            ordemServico.IniciarDiagnostico();
-
             if (ordemServicos.Any())
                 ordemServico.AlterarServico(ordemServicos);
 
             if (ordemPecas.Any())
                 ordemServico.AlterarPeca(ordemPecas);
 
-            if(!string.IsNullOrEmpty(request.Observacao))
-                ordemServico.RegistrarDiagnostico(request.Observacao);
+            ordemServico.RegistrarDiagnostico(request.Observacao ?? string.Empty);
 
             foreach (var peca in ordemPecas)
             {
                 var estoque = estoques.First(e => e.PecaId == peca.PecaId);
-                estoque.RetirarEstoque(peca.Quantidade, Guid.Empty);
+                estoque.ReservarEstoque(peca.Quantidade, Guid.Empty);
             }
 
             ordemServico.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
 
-            await _ordemServicoRepository.Update(ordemServico, ct);
+            await _unitOfWork.SaveChangesAsync(ct);
+
+            await EnviarEmail(ordemServico, ct);
 
             return new CommandResult {  StatusCode = HttpStatusCode.NoContent, Message = "Diagnóstico realizado. Status atualizado para Em Diagnóstico."};
         }
@@ -396,6 +394,65 @@ public class OrdemServicoService : IOrdemServicoService
         catch (Exception ex)
         {
             return new CommandResult { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
+        }
+    }
+    public async Task<ICommandResult> IniciarDiagnostico(Guid id, CancellationToken ct)
+    {
+        try
+        { 
+            var ordemServico = await _ordemServicoRepository.GetById(id, ct);
+
+            if (ordemServico is null)
+                return new CommandResult { StatusCode = HttpStatusCode.NotFound, Message = "Ordem de serviço não encontrada." };
+
+            ordemServico.IniciarDiagnostico();
+            ordemServico.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
+
+            await _unitOfWork.SaveChangesAsync(ct);
+
+            return new CommandResult { StatusCode = HttpStatusCode.NoContent, Message = "Diagnóstico iniciado com sucesso." };
+        }
+        catch (ArgumentException ex)
+        {
+            return new CommandResult { StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
+        }
+        catch (Exception ex)
+        {
+            return new CommandResult { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
+        }
+    }
+    private async Task EnviarEmail(OrdemServico ordemServico, CancellationToken ct)
+    {
+        try
+        {
+            var orcamento = $"""
+                            ORÇAMENTO
+
+                            PEÇAS:
+                            {string.Join("\n", ordemServico.Pecas.Select(p =>
+                                    $"  {p.Quantidade}x {p.NomePeca} | Unit: {p.ValorUnitario:C} | Total: {p.ValorTotal:C}"))}
+
+                            SERVIÇOS:
+                            {string.Join("\n", ordemServico.Servicos.Select(s =>
+                                    $"  {s.Quantidade}x {s.NomeServico} | Unit: {s.ValorUnitario:C} | Total: {s.ValorTotal:C}"))}
+
+                            Desconto:    {ordemServico.ValorDesconto:C}
+                            Valor Total: {ordemServico.ValorTotal:C}
+                            """;
+
+            var payloadEmail = new EmailPayloadDTO
+            {
+                To = ordemServico.Cliente.Emails.Select(e => e.ToString()).ToList(),
+                Body = $"Olá {ordemServico.Cliente.Nome}, o diagnóstico da sua ordem de serviço (ID: {ordemServico.Id}) foi realizado. segue o orçamento:\n{orcamento}",
+                Subject = "Orçamento da Ordem de Serviço"
+            };
+
+            await _emailService.Send(payloadEmail, ct);
+        }
+        catch (Exception ex)
+        {
+            // Log do erro de envio de email, mas não interrompe o fluxo principal
+            Console.WriteLine($"Erro ao enviar email: {ex.Message}");
         }
     }
 }
