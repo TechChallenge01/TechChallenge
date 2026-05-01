@@ -61,7 +61,7 @@ namespace Application.Pecas.Services
                 var estoque = new Estoque(peca.Id, 0, Guid.Empty, DateTime.UtcNow);
 
                 await _pecaRepository.Add(peca, ct);
-                await _estoqueRepository.Add(estoque, ct);
+                await _estoqueRepository.Create(estoque, ct);
 
                 return new CommandResult<Guid> { StatusCode = HttpStatusCode.Created, Data = peca.Id, Message = "Peça criada com sucesso!" };
             }

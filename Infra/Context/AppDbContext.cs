@@ -1,4 +1,6 @@
 ﻿using Domain.Aggregates.ClienteAggregates;
+using Domain.Aggregates.EstoqueAggregates;
+using Domain.Aggregates.OrdemServicoAggregates;
 using Domain.Entities;
 using Domain.UnitOfWork;
 using Domain.ValueObjects;
@@ -18,7 +20,11 @@ namespace Infra.Context
         public DbSet<Peca> Pecas { get; set; }
         public DbSet<Servico> Servicos { get; set; }
         public DbSet<Veiculo> Veiculos { get; set; }
-
+        public DbSet<OrdemServicoPeca> OrdemServicoPecas { get; set; }
+        public DbSet<OrdemServicoServico> OrdemServicoServicos { get; set; }
+        public DbSet<OrdemServico> OrdensServico { get; set; }
+        public DbSet<Estoque> Estoques { get; set; }
+        public DbSet<EstoqueHistorico> EstoqueHistoricos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

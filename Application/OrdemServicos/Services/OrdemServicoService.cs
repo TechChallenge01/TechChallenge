@@ -34,7 +34,7 @@ public class OrdemServicoService : IOrdemServicoService
         _estoqueRepository = estoqueRepository;
     }
 
-    public async Task<ICommandResult> Aprovar(int id, CancellationToken ct)
+    public async Task<ICommandResult> Aprovar(Guid id, CancellationToken ct)
     {
         try
         {
@@ -61,7 +61,7 @@ public class OrdemServicoService : IOrdemServicoService
         }
     }
 
-    public async Task<ICommandResult> Cancelar(int id, CancellationToken ct)
+    public async Task<ICommandResult> Cancelar(Guid id, CancellationToken ct)
     {
         try
         {
@@ -103,7 +103,7 @@ public class OrdemServicoService : IOrdemServicoService
         }
     }
 
-    public async Task<ICommandResult> FinalizarServico(int id, FinalizarServicoDTO dto, CancellationToken ct)
+    public async Task<ICommandResult> FinalizarServico(Guid id, FinalizarServicoDTO dto, CancellationToken ct)
     {
         try
         {
@@ -281,7 +281,7 @@ public class OrdemServicoService : IOrdemServicoService
         }
     }
 
-    public async Task<ICommandResult<OrdemServicoResponseDTO>> GetById(int id, CancellationToken ct)
+    public async Task<ICommandResult<OrdemServicoResponseDTO>> GetById(Guid id, CancellationToken ct)
     {
         try
         {
@@ -304,7 +304,7 @@ public class OrdemServicoService : IOrdemServicoService
         }
     }
 
-    public async Task<ICommandResult> RealizarDiagnostico(int id, DiagnosticoRequestDTO request, CancellationToken ct)
+    public async Task<ICommandResult> RealizarDiagnostico(Guid id, DiagnosticoRequestDTO request, CancellationToken ct)
     {
         try
         {
@@ -366,7 +366,7 @@ public class OrdemServicoService : IOrdemServicoService
                 }).ToList();
             }
 
-            ordemServico.IniciarDiagnostico(Guid.Empty);
+            ordemServico.IniciarDiagnostico();
 
             if (ordemServicos.Any())
                 ordemServico.AlterarServico(ordemServicos);

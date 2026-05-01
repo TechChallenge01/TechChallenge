@@ -34,7 +34,7 @@ public class OrdemServicoController : ControllerBase
     }
 
     [HttpPost("{id}/Cancelar")]
-    public async Task<IActionResult> Cancelar([FromRoute] int id, CancellationToken ct)
+    public async Task<IActionResult> Cancelar([FromRoute] Guid id, CancellationToken ct)
     {
         var response = await _ordemService.Cancelar(id, ct);
 
@@ -42,7 +42,7 @@ public class OrdemServicoController : ControllerBase
     }
 
     [HttpPost("{id}/Aprovar")]
-    public async Task<IActionResult> Aprovar([FromRoute] int id, CancellationToken ct)
+    public async Task<IActionResult> Aprovar([FromRoute] Guid id, CancellationToken ct)
     {
         var response = await _ordemService.Aprovar(id, ct);
 
@@ -50,7 +50,7 @@ public class OrdemServicoController : ControllerBase
     }
 
     [HttpPost("{id}/FinalizarServico")]
-    public async Task<IActionResult> FinalizarServico([FromRoute] int id, [FromBody] FinalizarServicoDTO dto, CancellationToken ct)
+    public async Task<IActionResult> FinalizarServico([FromRoute] Guid id, [FromBody] FinalizarServicoDTO dto, CancellationToken ct)
     {
         var response = await _ordemService.FinalizarServico(id, dto, ct);
 
@@ -58,7 +58,7 @@ public class OrdemServicoController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetById([FromRoute] int id, CancellationToken ct)
+    public async Task<IActionResult> GetById([FromRoute] Guid id, CancellationToken ct)
     {
         var response = await _ordemService.GetById(id, ct);
 
@@ -66,7 +66,7 @@ public class OrdemServicoController : ControllerBase
     }
 
     [HttpPost("{id:guid}/Diagnostico")]
-    public async Task<IActionResult> RealizarDiagnostico([FromRoute] int id, [FromBody] DiagnosticoRequestDTO request, CancellationToken ct)
+    public async Task<IActionResult> RealizarDiagnostico([FromRoute] Guid id, [FromBody] DiagnosticoRequestDTO request, CancellationToken ct)
     {
         var response = await _ordemService.RealizarDiagnostico(id, request, ct);
         return response.ToResult();
