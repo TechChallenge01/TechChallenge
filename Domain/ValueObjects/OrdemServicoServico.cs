@@ -9,7 +9,7 @@ public class OrdemServicoServico : Base
     public Guid OrdemServicoId { get; private set; }
     public Guid ServicoId { get; private set; }
     public decimal ValorUnitario { get; private set; }
-    public EStatusOS Status { get; private set; }
+    public string Status { get; private set; }
     public DateTime? DataInicioExecucao { get; private set; }
     public DateTime? DataTerminoExecucao { get; private set; }
 
@@ -31,6 +31,7 @@ public class OrdemServicoServico : Base
         Quantidade = quantidade;
         IdUsuarioCriacao = idUsuarioCriacao;
         DataCriacao = DateTime.UtcNow;
+        Status = EStatusOS.AguardandoAprovacao.ToString();
     }
 
     protected OrdemServicoServico() { }
@@ -38,7 +39,7 @@ public class OrdemServicoServico : Base
     public void IniciarExecucao()
     {
         DataInicioExecucao = DateTime.UtcNow;
-        Status = EStatusOS.EmExecucao;
+        Status = EStatusOS.EmExecucao.ToString();
     }
     public void ConcluirExecucao()
     {
@@ -46,6 +47,6 @@ public class OrdemServicoServico : Base
             throw new InvalidOperationException("Serviço ainda não foi iniciado.");
 
         DataTerminoExecucao = DateTime.UtcNow;
-        Status = EStatusOS.Finalizada;
+        Status = EStatusOS.Finalizada.ToString();
     }
 }

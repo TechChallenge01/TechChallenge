@@ -17,7 +17,6 @@ public class EstoqueHistoricoMap : IEntityTypeConfiguration<EstoqueHistorico>
 
         builder.Property(e => e.TipoMovimentacao)
                         .IsRequired()
-                        .HasConversion<string>()
                         .HasMaxLength(20);
 
         builder.Property(e => e.Observacao)

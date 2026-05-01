@@ -20,7 +20,7 @@ namespace Application.Clientes.Presenters
                     DDD = t.DDD,
                     DDI = t.DDI,
                     Numero = t.Numero,
-                    Tipo = t.TipoTelefone.ToString()
+                    Tipo = t.Tipo
                 }).ToList() : new List<TelefoneDTO>(),
 
                 Enderecos = cliente.Enderecos != null ? cliente.Enderecos.Select(e => new EnderecoDTO

@@ -17,7 +17,7 @@ namespace Domain.ValueObjects
             DDD = ddd.Trim();
             DDI = ddi.Trim();
             Numero = numero.Trim();
-            Tipo = (int)tipo;
+            Tipo = tipo.ToString();
             ClienteId = clienteId;
         }
 
@@ -26,8 +26,7 @@ namespace Domain.ValueObjects
         public string DDD { get; private set; }
         public string DDI { get; private set; }
         public string Numero { get; private set; }
-        public int Tipo { get; private set; }
-        public ETipoTelefone TipoTelefone => (ETipoTelefone)Tipo;
+        public string Tipo { get; private set; }
         public Guid ClienteId { get; private set; }
 
         public override bool Equals(object obj)

@@ -10,7 +10,7 @@ public class OrdemServico : Base
     public Guid Id { get; private set; }
     public Guid ClienteId { get; private set; }
     public Guid VeiculoId { get; private set; }
-    public EStatusOS StatusOS { get; private set; }
+    public string StatusOS { get; private set; }
     public string? Observacao { get; private set; }
     public decimal ValorTotal { get; private set; }
     public decimal ValorDesconto { get; private set; } = 0;
@@ -42,7 +42,7 @@ public class OrdemServico : Base
         Id = Guid.NewGuid();
         ClienteId = clienteId;
         VeiculoId = veiculoId;
-        StatusOS = EStatusOS.Recebida;
+        StatusOS = EStatusOS.Recebida.ToString();
         ValorDesconto = 0;
         ValorTotal = 0;
         IdUsuarioCriacao = idUsuarioCriacao;
@@ -52,7 +52,7 @@ public class OrdemServico : Base
     public void IniciarDiagnostico()
     {
         ValidarTransicao(EStatusOS.Recebida, EStatusOS.EmDiagnostico);
-        StatusOS = EStatusOS.EmDiagnostico;
+        StatusOS = EStatusOS.EmDiagnostico.ToString();
     }
 
     public void RegistrarDiagnostico(string observacao) 
@@ -63,21 +63,21 @@ public class OrdemServico : Base
             throw new InvalidOperationException("Observação é obrigatória para registrar um diagnóstico.");
 
         Observacao = observacao;
-        StatusOS = EStatusOS.AguardandoAprovacao;
+        StatusOS = EStatusOS.AguardandoAprovacao.ToString()     ;
     }
 
     public void Entregar()
     {
         ValidarTransicao(EStatusOS.Finalizada, EStatusOS.Entregue);
 
-        StatusOS = EStatusOS.Entregue;
+        StatusOS = EStatusOS.Entregue.ToString();
     }
 
     public void AprovarOrdemServico()
     {
         ValidarTransicao(EStatusOS.AguardandoAprovacao, EStatusOS.EmExecucao);
 
-        StatusOS = EStatusOS.EmExecucao;
+        StatusOS = EStatusOS.EmExecucao.ToString();
         InicioExecucao = DateTime.UtcNow;
 
         Servicos.ToList().ForEach(s => s.IniciarExecucao());
@@ -87,7 +87,7 @@ public class OrdemServico : Base
     {
         ValidarTransicao(EStatusOS.AguardandoAprovacao, EStatusOS.Cancelada);
 
-        StatusOS = EStatusOS.Cancelada;
+        StatusOS = EStatusOS.Cancelada.ToString();
     }
 
     public void FinalizarOrdemServico(ICollection<Guid> servicosId)
@@ -98,9 +98,9 @@ public class OrdemServico : Base
 
         servicos.ForEach(s => s.ConcluirExecucao());
 
-        if (!Servicos.Any(s => s.Status == EStatusOS.EmExecucao))
+        if (!Servicos.Any(s => s.Status == EStatusOS.EmExecucao.ToString()))
         {
-            StatusOS = EStatusOS.Finalizada;
+            StatusOS = EStatusOS.Finalizada.ToString();
             TerminoExecucao = DateTime.UtcNow;
         }
     }
@@ -152,8 +152,8 @@ public class OrdemServico : Base
     {
         var statusEditaveis = new[]
         {
-            EStatusOS.Recebida,
-            EStatusOS.EmDiagnostico
+            EStatusOS.Recebida.ToString(),
+            EStatusOS.EmDiagnostico.ToString()
         };
 
         if (!statusEditaveis.Contains(StatusOS))
@@ -163,8 +163,8 @@ public class OrdemServico : Base
 
     private void ValidarTransicao(EStatusOS statusEsperado, EStatusOS proximoStatus)
     {
-        if (StatusOS != statusEsperado)
+        if (StatusOS != statusEsperado.ToString())
             throw new InvalidOperationException(
-                $"Transição inválida: OS está '{StatusOS}', esperado '{statusEsperado}' para ir para '{proximoStatus}'.");
+                $"Transição inválida: OS está '{StatusOS}', esperado '{statusEsperado.ToString()}' para ir para '{proximoStatus.ToString()}'.");
     }
 }

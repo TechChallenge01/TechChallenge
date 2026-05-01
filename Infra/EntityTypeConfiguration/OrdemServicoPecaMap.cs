@@ -14,8 +14,6 @@ namespace Infra.EntityTypeConfiguration
         {
             builder.ToTable("OrdemServicoPecas");
 
-            builder.HasKey(osp => new { osp.OrdemServicoId, osp.PecaId });
-
             builder.Property(osp => osp.OrdemServicoId)
                             .IsRequired();
 
@@ -28,11 +26,6 @@ namespace Infra.EntityTypeConfiguration
             builder.Property(osp => osp.ValorUnitario)
                             .HasColumnType("decimal(10,2)")
                             .IsRequired();
-
-            builder.HasOne<OrdemServico>()
-                    .WithMany(os => os.Pecas)
-                    .HasForeignKey(osp => osp.OrdemServicoId)
-                    .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(osp => osp.Peca)
                            .WithMany()

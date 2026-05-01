@@ -12,8 +12,6 @@ public class OrdemServicoServicoMap : IEntityTypeConfiguration<OrdemServicoServi
     {
         builder.ToTable("OrdemServicoServicos");
 
-        builder.HasKey(oss => new { oss.OrdemServicoId, oss.ServicoId });
-
         builder.Property(oss => oss.OrdemServicoId)
                         .IsRequired();
 
@@ -27,20 +25,12 @@ public class OrdemServicoServicoMap : IEntityTypeConfiguration<OrdemServicoServi
                         .HasColumnType("decimal(10,2)")
                         .IsRequired();
 
-        builder.Property(oss => oss.DataInicioExecucao)
-                        .IsRequired(false);
+        builder.Property(oss => oss.DataInicioExecucao);
 
-        builder.Property(oss => oss.DataTerminoExecucao)
-                        .IsRequired(false);
+        builder.Property(oss => oss.DataTerminoExecucao);
 
         builder.Property(oss => oss.Status)
-                        .HasConversion<string>()
                         .HasMaxLength(30);
-
-        builder.HasOne<OrdemServico>()
-               .WithMany(os => os.Servicos)
-               .HasForeignKey(oss => oss.OrdemServicoId)
-               .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(oss => oss.Servico)
                         .WithMany()

@@ -12,7 +12,7 @@ public class EstoqueHistorico : Base
         Id = Guid.NewGuid();
         Quantidade = quantidade;
         Observacao = observacao;
-        TipoMovimentacao = tipoMovimentacao;
+        TipoMovimentacao = tipoMovimentacao.ToString();
     }
 
     protected EstoqueHistorico() { }
@@ -20,7 +20,7 @@ public class EstoqueHistorico : Base
     public Guid Id { get; private set; }
     public int Quantidade { get; private set; } 
     public string Observacao { get; private set; } = string.Empty;
-    public ETipoMovimentacao TipoMovimentacao { get; private set; }
+    public string TipoMovimentacao { get; private set; }
 
     private void ValidarQuantidade(int quantidade)
     {

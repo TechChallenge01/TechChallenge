@@ -23,7 +23,6 @@ public class OrdemServicoMap : IEntityTypeConfiguration<OrdemServico>
 
         builder.Property(os => os.StatusOS)
                         .IsRequired()
-                        .HasConversion<string>()
                         .HasMaxLength(30);
 
         builder.Property(os => os.Observacao)
@@ -38,11 +37,9 @@ public class OrdemServicoMap : IEntityTypeConfiguration<OrdemServico>
                         .HasDefaultValue(0);
 
         builder.Property(os => os.InicioExecucao)
-                        .HasColumnType("datetime")
                         .IsRequired();
 
-        builder.Property(os => os.TerminoExecucao)
-                        .HasColumnType("datetime");
+        builder.Property(os => os.TerminoExecucao);
 
         builder.Ignore(os => os.NomeCliente)
                .Ignore(os => os.ModeloVeiculo)
@@ -62,12 +59,12 @@ public class OrdemServicoMap : IEntityTypeConfiguration<OrdemServico>
 
         builder.HasMany(os => os.Servicos)
                         .WithOne()
-                        .HasForeignKey("OsId")
+                        .HasForeignKey("OrdemServicoId")
                         .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(os => os.Pecas)
                         .WithOne()
-                        .HasForeignKey("OsId")
+                        .HasForeignKey("OrdemServicoId")
                         .OnDelete(DeleteBehavior.Cascade);
     }
 }
