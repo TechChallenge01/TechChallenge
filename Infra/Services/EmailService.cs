@@ -1,11 +1,8 @@
 ﻿using Domain.Services;
 using Microsoft.Extensions.Configuration;
 using Shared.DTOs;
-using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Mail;
-using System.Text;
 
 namespace Infra.Services
 {

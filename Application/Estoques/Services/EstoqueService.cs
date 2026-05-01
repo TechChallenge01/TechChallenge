@@ -1,11 +1,11 @@
 ﻿using Application.Estoques.DTOs.Requests;
 using Application.Estoques.DTOs.Responses;
 using Application.Estoques.Presenters;
+using Application.UnitOfWork;
 using Domain.Aggregates.EstoqueAggregates.Repositories;
 using Domain.Entities.Repositories;
 using Domain.Enums;
-using Domain.UnitOfWork;
-using Shared.DTO;
+using Shared.DTOs;
 using Shared.Result;
 using System.Net;
 

@@ -1,9 +1,5 @@
 ﻿using Domain.Aggregates.OrdemServicoAggregates;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Infra.EntityTypeConfiguration;
 
@@ -57,14 +53,7 @@ public class OrdemServicoMap : IEntityTypeConfiguration<OrdemServico>
                         .HasForeignKey(os => os.VeiculoId)
                         .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasMany(os => os.Servicos)
-                        .WithOne()
-                        .HasForeignKey("OrdemServicoId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasMany(os => os.Pecas)
-                        .WithOne()
-                        .HasForeignKey("OrdemServicoId")
-                        .OnDelete(DeleteBehavior.Cascade);
+        builder.ConfigurarOrdemServicoPecas();
+        builder.ConfigureOrdemServicoServicos();
     }
 }

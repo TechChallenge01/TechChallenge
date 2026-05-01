@@ -1,41 +1,35 @@
 ﻿using Domain.Aggregates.OrdemServicoAggregates;
-using Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Infra.EntityTypeConfiguration
 {
-    public class OrdemServicoPecaMap : IEntityTypeConfiguration<OrdemServicoPeca>
+    public static class OrdemServicoPecaMap
     {
-        public void Configure(EntityTypeBuilder<OrdemServicoPeca> builder)
+        public static void ConfigurarOrdemServicoPecas(this EntityTypeBuilder<OrdemServico> builder)
         {
-            builder.ToTable("OrdemServicoPecas");
+            builder.OwnsMany(os => os.Pecas, osp =>
+            {
+                osp.ToTable("OrdemServicoPecas");
 
-            builder.Property(osp => osp.OrdemServicoId)
-                            .IsRequired();
+                osp.WithOwner().HasForeignKey("OrdemServicoId");
 
-            builder.Property(osp => osp.PecaId)
-                            .IsRequired();
+                osp.Property<Guid>("Id").ValueGeneratedOnAdd();
+                osp.HasKey("Id");
 
-            builder.Property(osp => osp.Quantidade)
-                        .IsRequired();
+                osp.Property(p => p.PecaId).IsRequired();
 
-            builder.Property(osp => osp.ValorUnitario)
-                            .HasColumnType("decimal(10,2)")
-                            .IsRequired();
+                osp.Property(p => p.Quantidade).IsRequired();
 
-            builder.HasOne(osp => osp.Peca)
-                           .WithMany()
-                           .HasForeignKey(osp => osp.PecaId)
-                           .OnDelete(DeleteBehavior.Restrict);
+                osp.Property(p => p.ValorUnitario)
+                   .HasColumnType("decimal(10,2)")
+                   .IsRequired();
 
-            builder.Ignore(osp => osp.ValorTotal)
-                   .Ignore(osp => osp.NomePeca)
-                   .Ignore(osp => osp.DescricaoPeca)
-                   .Ignore(osp => osp.ValorUnitarioPeca);
+                osp.Ignore(p => p.ValorTotal);
+                osp.Ignore(p => p.NomePeca);
+                osp.Ignore(p => p.DescricaoPeca);
+                osp.Ignore(p => p.ValorUnitarioPeca);
+            });
         }
     }
 }

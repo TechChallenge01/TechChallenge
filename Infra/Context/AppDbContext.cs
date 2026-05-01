@@ -1,11 +1,10 @@
-﻿using Domain.Aggregates.ClienteAggregates;
+﻿using Application.UnitOfWork;
+using Domain.Aggregates.ClienteAggregates;
 using Domain.Aggregates.EstoqueAggregates;
 using Domain.Aggregates.OrdemServicoAggregates;
 using Domain.Entities;
-using Domain.UnitOfWork;
 using Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Infra.Context
 {

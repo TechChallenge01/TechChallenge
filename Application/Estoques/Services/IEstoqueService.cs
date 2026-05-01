@@ -1,6 +1,6 @@
 ﻿using Application.Estoques.DTOs.Requests;
 using Application.Estoques.DTOs.Responses;
-using Shared.DTO;
+using Shared.DTOs;
 using Shared.Result;
 
 namespace Application.Estoques.Services

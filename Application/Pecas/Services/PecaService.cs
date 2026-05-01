@@ -5,10 +5,10 @@ using Domain.Aggregates.EstoqueAggregates;
 using Domain.Aggregates.EstoqueAggregates.Repositories;
 using Domain.Entities;
 using Domain.Entities.Repositories;
-using Domain.UnitOfWork;
 using Shared.Result;
 using System.Net;
-using Shared.DTO;
+using Application.UnitOfWork;
+using Shared.DTOs;
 
 namespace Application.Pecas.Services
 {

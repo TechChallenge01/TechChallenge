@@ -5,7 +5,7 @@ namespace Domain.ValueObjects
     public class Telefone
     {
 
-        public Telefone(string ddd, string ddi, string numero, ETipoTelefone tipo, Guid clienteId)
+        public Telefone(string ddd, string ddi, string numero, ETipoTelefone tipo)
         {
             if (string.IsNullOrWhiteSpace(ddd))
                 throw new ArgumentException("O DDD não pode ser nulo ou vazio.");
@@ -18,7 +18,6 @@ namespace Domain.ValueObjects
             DDI = ddi.Trim();
             Numero = numero.Trim();
             Tipo = tipo.ToString();
-            ClienteId = clienteId;
         }
 
         protected Telefone() { }
@@ -27,7 +26,6 @@ namespace Domain.ValueObjects
         public string DDI { get; private set; }
         public string Numero { get; private set; }
         public string Tipo { get; private set; }
-        public Guid ClienteId { get; private set; }
 
         public override bool Equals(object obj)
         {

@@ -12,10 +12,6 @@ namespace Domain.Aggregates.ClienteAggregates
             ValidarNome(nome);
             Id = Guid.NewGuid();
             Nome = nome;
-
-            Emails = Emails;
-            Telefones = Telefones;
-            Enderecos = Enderecos;
         }
 
         public Cliente(string nome, Cpf cpf, Guid idUsuarioCriacao) : this(nome, idUsuarioCriacao)

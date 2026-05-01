@@ -2,7 +2,7 @@
 {
     public class Email
     {
-        public Email(string email, Guid clienteId)
+        public Email(string email)
         {
             if (string.IsNullOrEmpty(email))
                 throw new ArgumentException("O email não pode ser nulo ou vazio.");
@@ -11,10 +11,7 @@
                 throw new ArgumentException("Formato do email inválido.");
 
             EnderecoEmail = email.ToLower().Trim(); ;
-            ClienteId = clienteId;
         }
-
-        public Guid ClienteId { get; private set; }
         public string EnderecoEmail { get; private set; }
 
         private bool ValidaEmail(string email)

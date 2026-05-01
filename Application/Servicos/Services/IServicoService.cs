@@ -1,7 +1,6 @@
-﻿using Application.OrdemServicos.DTOs.Requests;
-using Application.Servicos.DTOs.Requests;
+﻿using Application.Servicos.DTOs.Requests;
 using Application.Servicos.DTOs.Response;
-using Shared.DTO;
+using Shared.DTOs;
 using Shared.Result;
 
 namespace Application.Servicos.Services;

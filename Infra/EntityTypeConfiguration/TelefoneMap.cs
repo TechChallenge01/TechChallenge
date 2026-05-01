@@ -1,29 +1,45 @@
-﻿using Domain.ValueObjects;
+﻿using Domain.Aggregates.ClienteAggregates;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infra.EntityTypeConfiguration
 {
-    public class TelefoneMap : IEntityTypeConfiguration<Telefone>
+    public static class TelefoneMap
     {
-        public void Configure(EntityTypeBuilder<Telefone> builder)
+        public static void ConfigurarTelefones(this EntityTypeBuilder<Cliente> builder)
         {
-            builder.ToTable("Telefones");
+            builder.OwnsMany(c => c.Telefones, telefone =>
+            {
+                telefone.ToTable("ClientesTelefones");
 
-            builder.Property(t => t.DDD)
-                .IsRequired()
-                .HasMaxLength(3);
+                telefone.WithOwner()
+                    .HasForeignKey("ClienteId");
 
-            builder.Property(t => t.DDI)
-                .IsRequired()
-                .HasMaxLength(3);
+                telefone.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd();
 
-            builder.Property(t => t.Tipo)
-                .IsRequired();
+                telefone.HasKey("Id");
 
-            builder.Property(t => t.Numero)
-                .IsRequired()
-                .HasMaxLength(10);
+                telefone.Property(t => t.DDI)
+                    .HasColumnName("DDI")
+                    .HasMaxLength(4)
+                    .IsRequired();
+
+                telefone.Property(t => t.DDD)
+                    .HasColumnName("DDD")
+                    .HasMaxLength(3)
+                    .IsRequired();
+
+                telefone.Property(t => t.Numero)
+                    .HasColumnName("Numero")
+                    .HasMaxLength(9)
+                    .IsRequired();
+
+                telefone.Property(t => t.Tipo)
+                    .HasColumnName("Tipo")
+                    .HasMaxLength(20)
+                    .IsRequired();
+            });
         }
     }
 }

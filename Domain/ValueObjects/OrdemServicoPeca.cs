@@ -4,8 +4,7 @@ using Domain.Entities;
 namespace Domain.ValueObjects;
 
 public class OrdemServicoPeca : Base
-{
-    public Guid OrdemServicoId { get; private set; }
+{    
     public Guid PecaId { get; private set; }
     public int Quantidade { get; private set; }
     public decimal ValorUnitario { get; private set; }
@@ -16,12 +15,11 @@ public class OrdemServicoPeca : Base
 
     public decimal ValorUnitarioPeca => Peca?.ValorUnitario ?? 0;
 
-    public OrdemServicoPeca(Guid osId, Guid pecaId, int quantidade, decimal valorUnitario, Guid idUsuarioCriacao)
+    public OrdemServicoPeca(Guid pecaId, int quantidade, decimal valorUnitario, Guid idUsuarioCriacao)
     {
         if (quantidade <= 0) throw new ArgumentException("Quantidade deve ser maior que zero.");
         if (valorUnitario <= 0) throw new ArgumentException("Valor unitário deve ser positivo.");
-
-        OrdemServicoId = osId;
+        
         PecaId = pecaId;
         Quantidade = quantidade;
         ValorUnitario = valorUnitario;

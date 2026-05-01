@@ -5,7 +5,7 @@ using Domain.Aggregates.ClienteAggregates.Repositories;
 using Domain.Entities;
 using Domain.Entities.Repositories;
 using Domain.ValueObjects;
-using Shared.DTO;
+using Shared.DTOs;
 using Shared.Result;
 using System.Net;
 

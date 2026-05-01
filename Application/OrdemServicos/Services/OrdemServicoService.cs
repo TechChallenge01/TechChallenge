@@ -1,6 +1,7 @@
 ﻿using Application.OrdemServicos.DTOs.Requests;
 using Application.OrdemServicos.DTOs.Responses;
 using Application.OrdemServicos.Presenters;
+using Application.UnitOfWork;
 using Domain.Aggregates.ClienteAggregates;
 using Domain.Aggregates.ClienteAggregates.Repositories;
 using Domain.Aggregates.EstoqueAggregates;
@@ -9,13 +10,10 @@ using Domain.Aggregates.OrdemServicoAggregates;
 using Domain.Aggregates.OrdemServicoAggregates.Repositories;
 using Domain.Entities.Repositories;
 using Domain.Services;
-using Domain.UnitOfWork;
 using Domain.ValueObjects;
-using Shared.DTO;
 using Shared.DTOs;
 using Shared.Result;
 using System.Net;
-using System.Security;
 
 namespace Application.OrdemServicos.Services;
 
@@ -197,7 +195,7 @@ public class OrdemServicoService : IOrdemServicoService
                 var ordemPecas = pecasAgrupadas.Select(p =>
                 {
                     var valorUnitario = pecasEntities.First(e => e.Id == p.PecaId).ValorUnitario;
-                    return new OrdemServicoPeca(entity.Id, p.PecaId, p.QuantidadeTotal, valorUnitario, Guid.Empty);
+                    return new OrdemServicoPeca(p.PecaId, p.QuantidadeTotal, valorUnitario, Guid.Empty);
                 }).ToList();
 
                 entity.AlterarPeca(ordemPecas);
@@ -231,7 +229,7 @@ public class OrdemServicoService : IOrdemServicoService
                 var ordemServicos = servicosAgrupados.Select(s =>
                 {
                     var valorUnitario = servicosEntities.First(e => e.Id == s.ServicoId).ValorUnitario;
-                    return new OrdemServicoServico(entity.Id, s.ServicoId, s.QuantidadeTotal, valorUnitario, Guid.Empty);
+                    return new OrdemServicoServico(s.ServicoId, s.QuantidadeTotal, valorUnitario, Guid.Empty);
                 }).ToList();
 
                 entity.AlterarServico(ordemServicos);
@@ -339,7 +337,7 @@ public class OrdemServicoService : IOrdemServicoService
                 ordemPecas = pecasAgrupadas.Select(p =>
                 {
                     var valorUnitario = pecasEntities.First(e => e.Id == p.PecaId).ValorUnitario;
-                    return new OrdemServicoPeca(ordemServico.Id, p.PecaId, p.QuantidadeTotal, valorUnitario, Guid.Empty);
+                    return new OrdemServicoPeca(p.PecaId, p.QuantidadeTotal, valorUnitario, Guid.Empty);
                 }).ToList();
             }
 
@@ -361,7 +359,7 @@ public class OrdemServicoService : IOrdemServicoService
                 ordemServicos = servicosAgrupados.Select(s =>
                 {
                     var valorUnitario = servicosEntities.First(e => e.Id == s.ServicoId).ValorUnitario;
-                    return new OrdemServicoServico(ordemServico.Id, s.ServicoId, s.QuantidadeTotal, valorUnitario, Guid.Empty);
+                    return new OrdemServicoServico(s.ServicoId, s.QuantidadeTotal, valorUnitario, Guid.Empty);
                 }).ToList();
             }
 

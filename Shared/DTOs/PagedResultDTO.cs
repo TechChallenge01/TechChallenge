@@ -1,4 +1,4 @@
-﻿namespace Shared.DTO
+﻿namespace Shared.DTOs
 {
     public class PagedResultDTO<T>
     {

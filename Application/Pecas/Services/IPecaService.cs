@@ -1,7 +1,6 @@
-﻿using Application.Estoques.DTOs.Responses;
-using Application.Pecas.DTOs.Requests;
+﻿using Application.Pecas.DTOs.Requests;
 using Application.Pecas.DTOs.Responses;
-using Shared.DTO;
+using Shared.DTOs;
 using Shared.Result;
 
 namespace Application.Pecas.Services

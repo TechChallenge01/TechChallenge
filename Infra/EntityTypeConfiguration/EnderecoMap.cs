@@ -1,40 +1,58 @@
-﻿using Domain.ValueObjects;
+﻿using Domain.Aggregates.ClienteAggregates;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infra.EntityTypeConfiguration
 {
-    public class EnderecoMap : IEntityTypeConfiguration<Endereco>
+    public static class EnderecoMap
     {
-        public void Configure(EntityTypeBuilder<Endereco> builder)
+        public static void ConfigurarEnderecos(this EntityTypeBuilder<Cliente> builder)
         {
-            builder.ToTable("Enderecos");
+            builder.OwnsMany(c => c.Enderecos, endereco =>
+            {
+                endereco.ToTable("ClientesEnderecos");
 
-            builder.Property(e => e.Logradouro)
-                .HasMaxLength(200)
-                .IsRequired();
+                endereco.WithOwner()
+                        .HasForeignKey("ClienteId");
 
-            builder.Property(e => e.Numero)
-                .HasMaxLength(100);
+                endereco.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
 
-            builder.Property(e => e.Complemento)
-                .HasMaxLength(200);
+                endereco.HasKey("Id");
 
-            builder.Property(e => e.Bairro)
-                .IsRequired() 
-                .HasMaxLength(200);
+                endereco.Property(e => e.Logradouro)
+                        .HasColumnName("Logradouro")
+                        .HasMaxLength(200)
+                        .IsRequired();
 
-            builder.Property(e => e.Uf)
-                .IsRequired()
-                .HasMaxLength(2);
+                endereco.Property(e => e.Numero)
+                        .HasColumnName("Numero")
+                        .HasMaxLength(20)
+                        .IsRequired();
 
-            builder.Property(e => e.Cidade)
-                .IsRequired()
-                .HasMaxLength(200);
+                endereco.Property(e => e.Complemento)
+                        .HasColumnName("Complemento")
+                        .HasMaxLength(100);
 
-            builder.Property(e => e.Cep)
-                .IsRequired()
-                .HasMaxLength(20);
+                endereco.Property(e => e.Bairro)
+                        .HasColumnName("Bairro")
+                        .HasMaxLength(100);
+
+                endereco.Property(e => e.Cidade)
+                        .HasColumnName("Cidade")
+                        .HasMaxLength(100)
+                        .IsRequired();
+
+                endereco.Property(e => e.Uf)
+                        .HasColumnName("Uf")
+                        .HasMaxLength(2)
+                        .IsRequired();
+
+                endereco.Property(e => e.Cep)
+                        .HasColumnName("Cep")
+                        .HasMaxLength(8)
+                        .IsRequired();
+            });
         }
     }
 }

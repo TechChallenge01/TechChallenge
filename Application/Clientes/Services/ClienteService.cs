@@ -1,12 +1,12 @@
 ﻿using Application.Clientes.DTOs.Requests;
 using Application.Clientes.DTOs.Responses;
 using Application.Clientes.Presenters;
+using Application.UnitOfWork;
 using Domain.Aggregates.ClienteAggregates;
 using Domain.Aggregates.ClienteAggregates.Repositories;
 using Domain.Enums;
-using Domain.UnitOfWork;
 using Domain.ValueObjects;
-using Shared.DTO;
+using Shared.DTOs;
 using Shared.Result;
 using System.Net;
 
@@ -77,9 +77,9 @@ namespace Application.Clientes.Services
                 else
                     entity = new Cliente(request.Nome, new Cnpj(request.Cnpj), Guid.Empty);
 
-                var telefones = request.Telefones.Select(t => new Telefone(t.DDD, t.DDI, t.Numero, (ETipoTelefone)Enum.Parse(typeof(ETipoTelefone), t.Tipo), entity.Id)).ToList();
-                var enderecos = request.Enderecos.Select(e => new Endereco(e.Logradouro, e.Numero, e.Complemento, e.Bairro, e.Cidade, e.Uf, e.Cep, entity.Id)).ToList();
-                var emails = request.Emails.Select(e => new Email(e, entity.Id)).ToList();
+                var telefones = request.Telefones.Select(t => new Telefone(t.DDD, t.DDI, t.Numero, (ETipoTelefone)Enum.Parse(typeof(ETipoTelefone), t.Tipo))).ToList();
+                var enderecos = request.Enderecos.Select(e => new Endereco(e.Logradouro, e.Numero, e.Complemento, e.Bairro, e.Cidade, e.Uf, e.Cep)).ToList();
+                var emails = request.Emails.Select(e => new Email(e)).ToList();
 
                 entity.AlterarTelefones(telefones);
                 entity.AlterarEnderecos(enderecos);
@@ -136,17 +136,17 @@ namespace Application.Clientes.Services
                 if (cliente is null)
                     return new CommandResult { StatusCode = HttpStatusCode.NotFound, Message = "Cliente não encontrado!" };
 
-                cliente.AlterarEmails(request.Emails.Select(e => new Email(e, cliente.Id)).ToList());
+                cliente.AlterarEmails(request.Emails.Select(e => new Email(e)).ToList());
 
                 if (request.Telefones.Any(t => !Enum.TryParse<ETipoTelefone>(t.Tipo, true, out _)))
                 {
                     return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = "Tipo de telefone inválido!" };
                 }
 
-                cliente.AlterarTelefones(request.Telefones.Select(t => new Telefone(t.DDD, t.DDI, t.Numero, (ETipoTelefone)Enum.Parse(typeof(ETipoTelefone), t.Tipo), cliente.Id)).ToList());
+                cliente.AlterarTelefones(request.Telefones.Select(t => new Telefone(t.DDD, t.DDI, t.Numero, (ETipoTelefone)Enum.Parse(typeof(ETipoTelefone), t.Tipo))).ToList());
 
                 if (request.Enderecos.Count > 0)
-                    cliente.AlterarEnderecos(request.Enderecos.Select(e => new Endereco(e.Logradouro, e.Numero, e.Complemento, e.Bairro, e.Cidade, e.Uf, e.Cep, cliente.Id)).ToList());
+                    cliente.AlterarEnderecos(request.Enderecos.Select(e => new Endereco(e.Logradouro, e.Numero, e.Complemento, e.Bairro, e.Cidade, e.Uf, e.Cep)).ToList());
 
                 cliente.AlterarNome(request.Nome);
 

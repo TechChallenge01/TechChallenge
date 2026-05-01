@@ -9,7 +9,6 @@ namespace Infra.EntityTypeConfiguration
         public void Configure(EntityTypeBuilder<Cliente> builder)
         {
             builder.ToTable("Clientes");
-
             builder.HasKey(c => c.Id);
 
             builder.Property(c => c.Nome)
@@ -18,36 +17,21 @@ namespace Infra.EntityTypeConfiguration
 
             builder.OwnsOne(c => c.Cpf, cpf =>
             {
-                cpf.Property(c => c.Valor)
-                    .HasColumnName("Cpf")
-                    .HasMaxLength(11);
+                cpf.Property(c => c.Valor).HasColumnName("Cpf").HasMaxLength(11);
             });
 
             builder.OwnsOne(c => c.Cnpj, cnpj =>
             {
-                cnpj.Property(c => c.Valor)
-                    .HasColumnName("Cnpj")
-                    .HasMaxLength(14);
+                cnpj.Property(c => c.Valor).HasColumnName("Cnpj").HasMaxLength(14);
             });
 
-            builder.HasMany(c => c.Emails)
-                .WithOne()
-                .HasForeignKey("ClienteId")
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.HasMany(c => c.Telefones)
-                .WithOne()
-                .HasForeignKey("ClienteId")
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.HasMany(c => c.Enderecos)
-                .WithOne()
-                .HasForeignKey("ClienteId")
-                .OnDelete(DeleteBehavior.Cascade);
+            builder.ConfigurarEmails();
+            builder.ConfigurarTelefones();
+            builder.ConfigurarEnderecos();
 
             builder.HasMany(c => c.Veiculos)
                 .WithOne()
-                .HasForeignKey("Cliente")
+                .HasForeignKey("ClienteId")
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }
