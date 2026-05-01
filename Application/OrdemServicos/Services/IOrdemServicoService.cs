@@ -15,4 +15,5 @@ public interface IOrdemServicoService
     Task<ICommandResult<OrdemServicoResponseDTO>> GetById(Guid id, CancellationToken ct);
     Task<ICommandResult> IniciarDiagnostico(Guid id, CancellationToken ct);
     Task<ICommandResult> RealizarDiagnostico(Guid id, DiagnosticoRequestDTO request, CancellationToken ct);
+    Task<ICommandResult> RegistrarEntrega(Guid id, CancellationToken ct);
 }

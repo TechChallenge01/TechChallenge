@@ -148,6 +148,13 @@ public class OrdemServico : Base
         RecalcularValorTotal();
     }
 
+    public void RegistrarEntrega()
+    {
+        ValidarTransicao(EStatusOS.Finalizada, EStatusOS.Entregue);
+        
+        StatusOS = EStatusOS.Entregue.ToString();
+    }
+
     private void ValidarStatusParaEdicao()
     {
         var statusEditaveis = new[]
