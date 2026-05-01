@@ -16,4 +16,5 @@ public record OrdemServicoRequestDTO
 
     public ICollection<OrdemServicoPecaRequestDTO>? Pecas { get; init; }
     public ICollection<OrdemServicoServicoRequestDTO>? Servicos { get; init; }
+    public ICollection<OrdemServicoInsumoRequestDTO>?  Insumos { get; init; }
 }

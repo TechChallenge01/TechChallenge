@@ -19,6 +19,7 @@ public class OrdemServico : Base
 
     public ICollection<OrdemServicoServico> Servicos { get; private set; } = new List<OrdemServicoServico>();
     public ICollection<OrdemServicoPeca> Pecas { get; private set; } = new List<OrdemServicoPeca>();
+    public ICollection<OrdemServicoInsumo> Insumos { get; private set; } = new List<OrdemServicoInsumo>();
 
     public virtual Cliente Cliente { get; private set; }
     public virtual Veiculo Veiculo { get; private set; }
@@ -109,7 +110,8 @@ public class OrdemServico : Base
     {
         var totalServicos = Servicos.Sum(s => s.ValorUnitario);
         var totalPecas = Pecas.Sum(p => p.ValorUnitario * p.Quantidade);
-        ValorTotal = totalServicos + totalPecas - ValorDesconto;
+        var totalInsumos = Insumos.Sum(i => i.CustoUnitario * i.Quantidade);
+        ValorTotal = totalServicos + totalPecas + totalInsumos - ValorDesconto;
     }
 
     public void AlterarServico(List<OrdemServicoServico> osServico)
@@ -132,6 +134,18 @@ public class OrdemServico : Base
         ValidarStatusParaEdicao();
 
         Pecas = osPeca.DistinctBy(op => op.PecaId).ToList();
+
+        RecalcularValorTotal();
+    }
+
+    public void AlterarInsumo(List<OrdemServicoInsumo> osInsumo)
+    {
+        if (osInsumo == null)
+            throw new ArgumentNullException(nameof(osInsumo));
+
+        ValidarStatusParaEdicao();
+
+        Insumos = osInsumo.DistinctBy(oi => oi.ServicoId).ToList();
 
         RecalcularValorTotal();
     }

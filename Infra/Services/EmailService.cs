@@ -1,4 +1,4 @@
-﻿using Domain.Services;
+﻿using Application.EmailServices;
 using Microsoft.Extensions.Configuration;
 using Shared.DTOs;
 using System.Net;

@@ -36,6 +36,15 @@ public static class OrdemServicoPresenterExtension
                 Quantidade = s.Quantidade,
                 ValorUnitario = s.ValorUnitario,
                 ValorTotal = s.ValorTotal
+            }).ToList(),
+            Insumos = ordemServico.Insumos != null ? null : ordemServico.Insumos.Select(i => new OrdemServicoInsumoResponseDTO
+            {
+                InsumoId = i.ServicoId,
+                CustoTotal = i.ValorTotal,
+                CustoUnitario = i.CustoUnitario,
+                DescricaoInsumo = i.DescricaoInsumo,
+                NomeInsumo = i.NomeInsumo,
+                Quantidade = i.Quantidade
             }).ToList()
         };
     }

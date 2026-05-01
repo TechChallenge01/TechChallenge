@@ -13,4 +13,5 @@ public record OrdemServicoResponseDTO
     public TimeSpan TempoExecucao { get; set; }
     public ICollection<OrdemServicoPecaResponseDTO>? Pecas { get; set; }
     public ICollection<OrdemServicoServicoResponseDTO>? Servicos { get; set; }
+    public ICollection<OrdemServicoInsumoResponseDTO>? Insumos { get; set; }
 }

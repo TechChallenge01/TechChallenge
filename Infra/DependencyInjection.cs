@@ -1,8 +1,8 @@
-﻿using Application.UnitOfWork;
+﻿using Application.EmailServices;
+using Application.UnitOfWork;
 using Domain.Aggregates.ClienteAggregates.Repositories;
 using Domain.Aggregates.EstoqueAggregates.Repositories;
 using Domain.Aggregates.OrdemServicoAggregates.Repositories;
-using Domain.Services;
 using Infra.Context;
 using Infra.Repositories;
 using Infra.Services;

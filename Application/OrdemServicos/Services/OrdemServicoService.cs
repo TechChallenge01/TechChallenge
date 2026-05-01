@@ -1,4 +1,5 @@
-﻿using Application.OrdemServicos.DTOs.Requests;
+﻿using Application.EmailServices;
+using Application.OrdemServicos.DTOs.Requests;
 using Application.OrdemServicos.DTOs.Responses;
 using Application.OrdemServicos.Presenters;
 using Application.UnitOfWork;
@@ -9,10 +10,10 @@ using Domain.Aggregates.EstoqueAggregates.Repositories;
 using Domain.Aggregates.OrdemServicoAggregates;
 using Domain.Aggregates.OrdemServicoAggregates.Repositories;
 using Domain.Entities.Repositories;
-using Domain.Services;
 using Domain.ValueObjects;
 using Shared.DTOs;
 using Shared.Result;
+using System.Collections;
 using System.Net;
 
 namespace Application.OrdemServicos.Services;
@@ -23,10 +24,11 @@ public class OrdemServicoService : IOrdemServicoService
     private readonly IClienteRepository _clienteRepository;
     private readonly IPecaRepository _pecaRepository;
     private readonly IServicoRepository _servicoRepository;
+    private readonly IInsumoRepository _insumoRepository;
     private readonly IEstoqueRepository _estoqueRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IEmailService _emailService;
-    public OrdemServicoService(IOrdemServicoRepository ordemServicoRepository, IClienteRepository clienteRepository, IPecaRepository pecaRepository, IServicoRepository servicoRepository, IEstoqueRepository estoqueRepository, IUnitOfWork unitOfWork, IEmailService emailService)
+    public OrdemServicoService(IOrdemServicoRepository ordemServicoRepository, IClienteRepository clienteRepository, IPecaRepository pecaRepository, IServicoRepository servicoRepository, IEstoqueRepository estoqueRepository, IUnitOfWork unitOfWork, IEmailService emailService, IInsumoRepository insumoRepository)
     {
         _ordemServicoRepository = ordemServicoRepository;
         _clienteRepository = clienteRepository;
@@ -35,6 +37,7 @@ public class OrdemServicoService : IOrdemServicoService
         _estoqueRepository = estoqueRepository;
         _unitOfWork = unitOfWork;
         _emailService = emailService;
+        _insumoRepository = insumoRepository;
     }
 
     public async Task<ICommandResult> Aprovar(Guid id, CancellationToken ct)
@@ -235,6 +238,28 @@ public class OrdemServicoService : IOrdemServicoService
                 entity.AlterarServico(ordemServicos);
             }
 
+            if (request.Insumos is not null && request.Insumos.Any())
+            {
+                var insumosAgrupados = request.Insumos
+                    .GroupBy(s => s.InsumoId)
+                    .Select(g => new { InsumoId = g.Key, QuantidadeTotal = g.Sum(x => x.Quantidade) })
+                    .ToList();
+
+                var idsInsumos = insumosAgrupados.Select(s => s.InsumoId).ToList();
+                var InsumosEntities = await _insumoRepository.GetByIds(idsInsumos, ct);
+
+                if (InsumosEntities.Count() != idsInsumos.Count)
+                    return new CommandResult<Guid> { StatusCode = HttpStatusCode.NotFound, Message = "Um ou mais Insumos não foram encontrados." };
+
+                var ordemInsumos = insumosAgrupados.Select(i =>
+                {
+                    var valorUnitario = InsumosEntities.First(e => e.Id == i.InsumoId).CustoUnitario;
+                    return new OrdemServicoInsumo(i.InsumoId, i.QuantidadeTotal, valorUnitario, Guid.Empty);
+                }).ToList();
+
+                entity.AlterarInsumo(ordemInsumos);
+            }
+
             var ordemServicoId = await _ordemServicoRepository.Create(entity, ct);
 
             return new CommandResult<Guid> { StatusCode = HttpStatusCode.Created, Message = "Ordem de serviço criada com sucesso.", Data = ordemServicoId };
@@ -312,15 +337,21 @@ public class OrdemServicoService : IOrdemServicoService
 
             var possuiServico = request.Servicos is not null && request.Servicos.Any();
             var possuiPeca = request.Pecas is not null && request.Pecas.Any();
+            var possuiInsumos = request.Insumos is not null && request.Insumos.Any();
 
-            if (!possuiServico && !possuiPeca)
-                return new CommandResult { StatusCode = HttpStatusCode.BadRequest, Message = "O diagnóstico deve conter ao menos um serviço ou uma peça."};
+            if (!possuiServico && !possuiPeca && !possuiInsumos)
+                return new CommandResult { StatusCode = HttpStatusCode.BadRequest, Message = "O diagnóstico deve conter ao menos um serviço, uma peça ou um insumo!"};
 
             var ordemPecas = new List<OrdemServicoPeca>();
             var estoques = new List<Estoque>();
 
+
             if (possuiPeca)
             {
+                estoques = (await _estoqueRepository.GetByPecaIds(ordemServico.Pecas.Select(x => x.PecaId).ToList(), ct)).ToList();
+
+                estoques.ForEach(x => x.LiberarReserva(ordemServico.Pecas.FirstOrDefault(y => y.PecaId == x.PecaId).Quantidade, Guid.Empty));
+
                 var pecasAgrupadas = request.Pecas
                     .GroupBy(p => p.PecaId)
                     .Select(g => new { PecaId = g.Key, QuantidadeTotal = g.Sum(x => x.Quantidade) })
@@ -363,11 +394,36 @@ public class OrdemServicoService : IOrdemServicoService
                 }).ToList();
             }
 
+            var ordemInsumos = new List<OrdemServicoInsumo>();
+
+            if (possuiInsumos)
+            {
+                var InsumosAgrupados = request.Insumos
+                    .GroupBy(s => s.InsumoId)
+                    .Select(g => new { InsumoId = g.Key, QuantidadeTotal = g.Sum(x => x.Quantidade) })
+                    .ToList();
+
+                var idsInsumos = InsumosAgrupados.Select(s => s.InsumoId).ToList();
+                var insumosEntities = await _insumoRepository.GetByIds(idsInsumos, ct);
+
+                if (insumosEntities.Count() != idsInsumos.Count)
+                    return new CommandResult<Guid> { StatusCode = HttpStatusCode.NotFound, Message = "Um ou mais insumos não foram encontrados." };
+
+                ordemInsumos = InsumosAgrupados.Select(i =>
+                {
+                    var valorUnitario = insumosEntities.First(e => e.Id == i.InsumoId).CustoUnitario;
+                    return new OrdemServicoInsumo(i.InsumoId, i.QuantidadeTotal, valorUnitario, Guid.Empty);
+                }).ToList();
+            }
+
             if (ordemServicos.Any())
                 ordemServico.AlterarServico(ordemServicos);
 
             if (ordemPecas.Any())
                 ordemServico.AlterarPeca(ordemPecas);
+
+            if(ordemInsumos.Any())
+                ordemServico.AlterarInsumo(ordemInsumos);
 
             ordemServico.RegistrarDiagnostico(request.Observacao ?? string.Empty);
 
