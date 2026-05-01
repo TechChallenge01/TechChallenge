@@ -78,4 +78,11 @@ public class OrdemServicoController : ControllerBase
         var response = await _ordemService.RealizarDiagnostico(id, request, ct);
         return response.ToResult();
     }
+
+    [HttpPost("{id}/RegistrarEntrega")]
+    public async Task<IActionResult> RegistrarEntrega([FromRoute] Guid id, CancellationToken ct)
+    {
+        var response = await _ordemService.RegistrarEntrega(id, ct);
+        return response.ToResult();
+    }
 }

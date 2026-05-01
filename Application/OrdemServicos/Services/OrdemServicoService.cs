@@ -509,4 +509,30 @@ public class OrdemServicoService : IOrdemServicoService
             Console.WriteLine($"Erro ao enviar email: {ex.Message}");
         }
     }
+
+    public async Task<ICommandResult> RegistrarEntrega(Guid id, CancellationToken ct)
+    {
+        try
+        {
+            var ordemServico = await _ordemServicoRepository.GetById(id, ct);
+
+            if (ordemServico is null)
+                return new CommandResult { StatusCode = HttpStatusCode.NotFound, Message = "Ordem de serviço não encontrada." };
+
+            ordemServico.RegistrarEntrega();
+            ordemServico.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
+
+            await _unitOfWork.SaveChangesAsync(ct);
+
+            return new CommandResult { StatusCode = HttpStatusCode.NoContent, Message = "Veículo entregue e OS encerrada com sucesso!" };
+        }
+        catch (ArgumentException ex)
+        {
+            return new CommandResult { StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
+        }
+        catch (Exception ex)
+        {
+            return new CommandResult { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
+        }
+    }
 }
