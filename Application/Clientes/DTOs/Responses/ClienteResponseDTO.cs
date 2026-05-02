@@ -6,8 +6,8 @@ namespace Application.Clientes.DTOs.Responses
     {
         public Guid Id { get; set; }
         public string Nome { get; set; }
-        public string? cpf { get; set; }
-        public string? cnpj { get; set; }
+        public string? Cpf { get; set; }
+        public string? Cnpj { get; set; }
         public ICollection<string> Emails { get; set; }
         public ICollection<TelefoneDTO> Telefones { get; set; }
         public ICollection<EnderecoDTO> Enderecos { get; set; }

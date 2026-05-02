@@ -4,6 +4,9 @@
     {
         public Cpf(string cpf)
         {
+            if(cpf is null)
+                throw new ArgumentException("Cpf não pode ser nullo");
+
             cpf = cpf.Replace(".", "").Replace("-", "").Replace("/", "");
             ValidarCpf(cpf);
 

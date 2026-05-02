@@ -5,12 +5,12 @@ using Domain.Enums;
 namespace Domain.Aggregates.EstoqueAggregates;
 public class Estoque : Base
 {
-    public Estoque(Guid? insumoId,Guid? pecaId, int quantidadeDisponivel, Guid UsuarioCriacaoId, DateTime dataCriacao) : base(UsuarioCriacaoId, dataCriacao, null, null)
+    public Estoque(Guid? insumoId, Guid? pecaId, int quantidadeDisponivel, Guid UsuarioCriacaoId, DateTime dataCriacao) : base(UsuarioCriacaoId, dataCriacao, null, null)
     {
-        if (InsumoId is null && pecaId is null)
+        if (insumoId is null && pecaId is null)
             throw new ArgumentException("É obrigatório o uso de uma peca ou um Insumo");
 
-        if (InsumoId is not null && pecaId is not null)
+        if (insumoId is not null && pecaId is not null)
             throw new ArgumentException("Não é permitido ter uma peca e um Insumo em um estoque!");
 
         if(pecaId is not null)
@@ -39,8 +39,8 @@ public class Estoque : Base
     public virtual Peca Peca { get; private set; }
     public virtual Insumo Insumo { get; private set; }
     public int QuantidadeTotal => QuantidadeDisponivel + QuantidadeReservada;
-    public string NomePeca => Peca.Nome;
-    public string NomeInsumo => Insumo.Nome;
+    public string NomePeca => Peca?.Nome;
+    public string NomeInsumo => Insumo?.Nome;
 
     private void ValidarPecaId(Guid pecaId)
     {

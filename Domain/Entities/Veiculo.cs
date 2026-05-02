@@ -8,6 +8,9 @@ namespace Domain.Entities
     {
         public Veiculo(string modelo, string marcaVeiculo, Guid clienteId, int ano, Placa placa, string cor, Guid idUsuarioCriacao) : base(idUsuarioCriacao, DateTime.UtcNow, null, null)
         {
+            if (placa is null)
+                throw new ArgumentException("a Placa não pode ser nulla");
+
             ValidaModelo(modelo);
             ValidaAno(ano);
             ValidaMarcaVeiculo(marcaVeiculo);
@@ -34,7 +37,7 @@ namespace Domain.Entities
         public string Placa { get; private set; }
         public string Cor { get; private set; }
         public virtual Cliente Cliente { get; private set; }
-        public string NomeCliente => Cliente.Nome;
+        public string NomeCliente => Cliente?.Nome;
 
         private void ValidaModelo(string modelo) 
         {

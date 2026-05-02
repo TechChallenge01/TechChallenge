@@ -35,5 +35,10 @@
             return System.Text.RegularExpressions.Regex
                 .IsMatch(placa, @"^[A-Z]{3}[0-9][A-Z][0-9]{2}$");
         }
+
+        public override string ToString()
+        {
+            return Valor.ToString();
+        }
     }
 }

@@ -11,8 +11,8 @@ namespace Application.Clientes.Presenters
             {
                 Id = cliente.Id,
                 Nome = cliente.Nome,
-                cpf = cliente.Cpf?.ToString(),
-                cnpj = cliente.Cnpj?.ToString(),
+                Cpf = cliente.Cpf?.ToString(),
+                Cnpj = cliente.Cnpj?.ToString(),
                 Emails = cliente.Emails != null ? cliente.Emails.Select(e => e.EnderecoEmail).ToList() : new List<string>(),
 
                 Telefones = cliente.Telefones != null ? cliente.Telefones.Select(t => new TelefoneDTO

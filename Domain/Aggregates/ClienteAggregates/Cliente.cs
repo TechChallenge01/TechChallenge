@@ -61,7 +61,7 @@ namespace Domain.Aggregates.ClienteAggregates
                 throw new ArgumentException("telefones não pode ser nulo!") ;
 
             Telefones = telefones
-                        .DistinctBy(t => new {t.DDD, t.Numero, t.DDI, t.Tipo})
+                        .DistinctBy(t => new {t.DDD, t.Numero, t.DDI})
                         .ToList();
         }
 
