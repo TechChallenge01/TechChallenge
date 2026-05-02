@@ -7,5 +7,6 @@
         public int QuantidadeReservada { get; set; }
         public int QuantidadeTotal { get; set; }
         public string NomePeca { get; set; }
+        public string NomeInsumo { get; set; }
     }
 }

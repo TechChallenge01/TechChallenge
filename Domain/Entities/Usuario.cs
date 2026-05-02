@@ -17,19 +17,16 @@ namespace Domain.Entities
             Nome = name;
             Email = email;
             SenhaHash = senha;
-            Perfil = perfil;
+            Perfil = perfil.ToString();
         }
 
-        public Usuario() 
-        {
-
-        }
+        public Usuario() { }
 
         public Guid Id { get; private set; }
         public string Nome { get; private set; }
         public string Email { get; private set; }
         public string SenhaHash { get; private set; }
-        public EPerfilUsuario Perfil { get; private set; }
+        public string Perfil { get; private set; }
         
 
         private void ValidarNome(string name)

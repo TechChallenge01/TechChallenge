@@ -1,19 +1,15 @@
 ﻿using Domain.BaseEntity;
-using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Domain.ValueObjects
 {
     public class OrdemServicoInsumo : Base
     {
-        public OrdemServicoInsumo(Guid servicoId, int quantidade, decimal custoUnitario, Guid IdUsuarioCriacao)
+        public OrdemServicoInsumo(Guid insumoId, int quantidade, decimal custoUnitario, Guid IdUsuarioCriacao)
         {
             ValidarQuantidade(quantidade);
             ValidarCustoUnitario(custoUnitario);
 
-            ServicoId = servicoId;
+            InsumoId = insumoId;
             Quantidade = quantidade;
             CustoUnitario = custoUnitario;
             IdUsuarioCriacao = IdUsuarioCriacao;
@@ -23,7 +19,7 @@ namespace Domain.ValueObjects
         protected OrdemServicoInsumo() { }
 
 
-        public Guid ServicoId { get; private set; }
+        public Guid InsumoId { get; private set; }
         public int Quantidade { get; private set; }
         public decimal CustoUnitario { get; private set; }
         public decimal ValorTotal => Quantidade * CustoUnitario;

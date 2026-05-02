@@ -13,7 +13,6 @@ using Domain.Entities.Repositories;
 using Domain.ValueObjects;
 using Shared.DTOs;
 using Shared.Result;
-using System.Collections;
 using System.Net;
 
 namespace Application.OrdemServicos.Services;
@@ -86,6 +85,21 @@ public class OrdemServicoService : IOrdemServicoService
                     if (estoque is not null)
                     {
                         estoque.LiberarReserva(peca.Quantidade, Guid.NewGuid());
+                    }
+                }
+            }
+
+            if(ordemServico.Insumos.Any())
+            {
+                var estoques = await _estoqueRepository.GetByInsumoIds(ordemServico.Insumos.Select(x => x.InsumoId).ToList(), ct);
+
+                foreach (var insumo in ordemServico.Insumos)
+                {
+                    var estoque = estoques.FirstOrDefault(e => e.PecaId == insumo.InsumoId);
+
+                    if (estoque is not null)
+                    {
+                        estoque.LiberarReserva(insumo.Quantidade, Guid.NewGuid());
                     }
                 }
             }
@@ -216,28 +230,6 @@ public class OrdemServicoService : IOrdemServicoService
                 }
             }
 
-            if (request.Servicos is not null && request.Servicos.Any())
-            {
-                var servicosAgrupados = request.Servicos
-                    .GroupBy(s => s.ServicoId)
-                    .Select(g => new { ServicoId = g.Key, QuantidadeTotal = g.Sum(x => x.Quantidade) })
-                    .ToList();
-
-                var idsServicos = servicosAgrupados.Select(s => s.ServicoId).ToList();
-                var servicosEntities = await _servicoRepository.GetByIds(idsServicos, ct);
-
-                if (servicosEntities.Count() != idsServicos.Count)
-                    return new CommandResult<Guid> { StatusCode = HttpStatusCode.NotFound, Message = "Um ou mais serviços não foram encontrados." };
-
-                var ordemServicos = servicosAgrupados.Select(s =>
-                {
-                    var valorUnitario = servicosEntities.First(e => e.Id == s.ServicoId).ValorUnitario;
-                    return new OrdemServicoServico(s.ServicoId, s.QuantidadeTotal, valorUnitario, Guid.Empty);
-                }).ToList();
-
-                entity.AlterarServico(ordemServicos);
-            }
-
             if (request.Insumos is not null && request.Insumos.Any())
             {
                 var insumosAgrupados = request.Insumos
@@ -258,6 +250,40 @@ public class OrdemServicoService : IOrdemServicoService
                 }).ToList();
 
                 entity.AlterarInsumo(ordemInsumos);
+
+                var estoques = await _estoqueRepository.GetByInsumoIds(idsInsumos, ct);
+
+                foreach (var insumo in ordemInsumos)
+                {
+                    var estoque = estoques.FirstOrDefault(e => e.InsumoId == insumo.InsumoId);
+
+                    if (estoque is not null)
+                    {
+                        estoque.ReservarEstoque(insumo.Quantidade, Guid.NewGuid());
+                    }
+                }
+            }
+
+            if (request.Servicos is not null && request.Servicos.Any())
+            {
+                var servicosAgrupados = request.Servicos
+                    .GroupBy(s => s.ServicoId)
+                    .Select(g => new { ServicoId = g.Key, QuantidadeTotal = g.Sum(x => x.Quantidade) })
+                    .ToList();
+
+                var idsServicos = servicosAgrupados.Select(s => s.ServicoId).ToList();
+                var servicosEntities = await _servicoRepository.GetByIds(idsServicos, ct);
+
+                if (servicosEntities.Count() != idsServicos.Count)
+                    return new CommandResult<Guid> { StatusCode = HttpStatusCode.NotFound, Message = "Um ou mais serviços não foram encontrados." };
+
+                var ordemServicos = servicosAgrupados.Select(s =>
+                {
+                    var valorUnitario = servicosEntities.First(e => e.Id == s.ServicoId).ValorUnitario;
+                    return new OrdemServicoServico(s.ServicoId, s.QuantidadeTotal, valorUnitario, Guid.Empty);
+                }).ToList();
+
+                entity.AlterarServico(ordemServicos);
             }
 
             var ordemServicoId = await _ordemServicoRepository.Create(entity, ct);
@@ -348,9 +374,9 @@ public class OrdemServicoService : IOrdemServicoService
 
             if (possuiPeca)
             {
-                estoques = (await _estoqueRepository.GetByPecaIds(ordemServico.Pecas.Select(x => x.PecaId).ToList(), ct)).ToList();
+                var estoquesReservados = (await _estoqueRepository.GetByPecaIds(ordemServico.Pecas.Select(x => x.PecaId).ToList(), ct)).ToList();
 
-                estoques.ForEach(x => x.LiberarReserva(ordemServico.Pecas.FirstOrDefault(y => y.PecaId == x.PecaId).Quantidade, Guid.Empty));
+                estoquesReservados.ForEach(x => x.LiberarReserva(ordemServico.Pecas.FirstOrDefault(y => y.PecaId == x.PecaId).Quantidade, Guid.Empty));
 
                 var pecasAgrupadas = request.Pecas
                     .GroupBy(p => p.PecaId)
@@ -363,12 +389,40 @@ public class OrdemServicoService : IOrdemServicoService
                 if (pecasEntities.Count() != idsPecas.Count)
                     return new CommandResult<Guid> { StatusCode = HttpStatusCode.NotFound, Message = "Uma ou mais peças não foram encontradas." };
 
-                estoques = (await _estoqueRepository.GetByPecaIds(idsPecas, ct)).ToList();
+                estoques.AddRange(await _estoqueRepository.GetByPecaIds(idsPecas, ct));
 
                 ordemPecas = pecasAgrupadas.Select(p =>
                 {
                     var valorUnitario = pecasEntities.First(e => e.Id == p.PecaId).ValorUnitario;
                     return new OrdemServicoPeca(p.PecaId, p.QuantidadeTotal, valorUnitario, Guid.Empty);
+                }).ToList();
+            }
+
+            var ordemInsumos = new List<OrdemServicoInsumo>();
+
+            if (possuiInsumos)
+            {
+                var estoquesReservados = (await _estoqueRepository.GetByInsumoIds(ordemServico.Insumos.Select(x => x.InsumoId).ToList(), ct)).ToList();
+
+                estoquesReservados.ForEach(x => x.LiberarReserva(ordemServico.Insumos.FirstOrDefault(y => y.InsumoId == x.InsumoId).Quantidade, Guid.Empty));
+
+                var InsumosAgrupados = request.Insumos
+                    .GroupBy(s => s.InsumoId)
+                    .Select(g => new { InsumoId = g.Key, QuantidadeTotal = g.Sum(x => x.Quantidade) })
+                    .ToList();
+
+                var idsInsumos = InsumosAgrupados.Select(s => s.InsumoId).ToList();
+                var insumosEntities = await _insumoRepository.GetByIds(idsInsumos, ct);
+
+                if (insumosEntities.Count() != idsInsumos.Count)
+                    return new CommandResult<Guid> { StatusCode = HttpStatusCode.NotFound, Message = "Um ou mais insumos não foram encontrados." };
+
+                estoques.AddRange(await _estoqueRepository.GetByInsumoIds(idsInsumos, ct));
+
+                ordemInsumos = InsumosAgrupados.Select(i =>
+                {
+                    var valorUnitario = insumosEntities.First(e => e.Id == i.InsumoId).CustoUnitario;
+                    return new OrdemServicoInsumo(i.InsumoId, i.QuantidadeTotal, valorUnitario, Guid.Empty);
                 }).ToList();
             }
 
@@ -391,28 +445,6 @@ public class OrdemServicoService : IOrdemServicoService
                 {
                     var valorUnitario = servicosEntities.First(e => e.Id == s.ServicoId).ValorUnitario;
                     return new OrdemServicoServico(s.ServicoId, s.QuantidadeTotal, valorUnitario, Guid.Empty);
-                }).ToList();
-            }
-
-            var ordemInsumos = new List<OrdemServicoInsumo>();
-
-            if (possuiInsumos)
-            {
-                var InsumosAgrupados = request.Insumos
-                    .GroupBy(s => s.InsumoId)
-                    .Select(g => new { InsumoId = g.Key, QuantidadeTotal = g.Sum(x => x.Quantidade) })
-                    .ToList();
-
-                var idsInsumos = InsumosAgrupados.Select(s => s.InsumoId).ToList();
-                var insumosEntities = await _insumoRepository.GetByIds(idsInsumos, ct);
-
-                if (insumosEntities.Count() != idsInsumos.Count)
-                    return new CommandResult<Guid> { StatusCode = HttpStatusCode.NotFound, Message = "Um ou mais insumos não foram encontrados." };
-
-                ordemInsumos = InsumosAgrupados.Select(i =>
-                {
-                    var valorUnitario = insumosEntities.First(e => e.Id == i.InsumoId).CustoUnitario;
-                    return new OrdemServicoInsumo(i.InsumoId, i.QuantidadeTotal, valorUnitario, Guid.Empty);
                 }).ToList();
             }
 

@@ -39,7 +39,7 @@ public static class OrdemServicoPresenterExtension
             }).ToList(),
             Insumos = ordemServico.Insumos != null ? null : ordemServico.Insumos.Select(i => new OrdemServicoInsumoResponseDTO
             {
-                InsumoId = i.ServicoId,
+                InsumoId = i.InsumoId,
                 CustoTotal = i.ValorTotal,
                 CustoUnitario = i.CustoUnitario,
                 DescricaoInsumo = i.DescricaoInsumo,

@@ -2,6 +2,7 @@
 using Application.Estoques.DTOs.Responses;
 using Application.Estoques.Presenters;
 using Application.UnitOfWork;
+using Domain.Aggregates.EstoqueAggregates;
 using Domain.Aggregates.EstoqueAggregates.Repositories;
 using Domain.Entities.Repositories;
 using Domain.Enums;
@@ -15,13 +16,15 @@ namespace Application.Estoques.Services
     {
         private readonly IEstoqueRepository _estoqueRepository;
         private readonly IPecaRepository _pecaRepository;
+        private readonly IInsumoRepository _insumoRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public EstoqueService(IEstoqueRepository estoqueRepository, IPecaRepository pecaRepository, IUnitOfWork unitOfWork)
+        public EstoqueService(IEstoqueRepository estoqueRepository, IPecaRepository pecaRepository, IUnitOfWork unitOfWork, IInsumoRepository insumoRepository)
         {
             _estoqueRepository = estoqueRepository;
             _pecaRepository = pecaRepository;
             _unitOfWork = unitOfWork;
+            _insumoRepository = insumoRepository;
         }
 
         public async Task<ICommandResult<PagedResultDTO<EstoqueResponseDTO>>> GetPaginated(int page, int pageSize, CancellationToken ct)
@@ -81,21 +84,46 @@ namespace Application.Estoques.Services
             try
             {
                 bool entrada = false;
-                var peca = await _pecaRepository.GetById(request.PecaId, ct);
+                bool isInsumo = false;
 
-                if(peca is null)
-                    return new CommandResult<Guid> { StatusCode = HttpStatusCode.NotFound,Message = "Peça não encontrada" };
+                if (request.InsumoId is null && request.PecaId is null)
+                    return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = "É obrigatório ter a PecaId ou o InsumoId preenchidos" };
+
+                if (request.InsumoId is not null && request.PecaId is not null)
+                    return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = "Apenas uma opção é para ser preenchida, ou PecaId ou InsumoId!" };
 
                 if (!Enum.TryParse<ETipoMovimentacao>(request.TipoMovimentacao, true, out var tipoMovimentacao))
                     return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = "Tipo de movimentação inválido!" };
 
-                var estoque = await _estoqueRepository.GetByPecaId(request.PecaId, ct);
+                if (request.InsumoId is not null)
+                    isInsumo = true;
+
+                Estoque estoque;
+
+                if (isInsumo)
+                {
+                    var insumo = await _insumoRepository.GetById((Guid)request.InsumoId, ct);
+
+                    if (insumo is null)
+                        return new CommandResult<Guid> { StatusCode = HttpStatusCode.NotFound, Message = "Insumo não encontrada" };
+
+                    estoque = await _estoqueRepository.GetByInsumoId((Guid)request.InsumoId, ct);
+                }
+                else
+                {
+                    var peca = await _pecaRepository.GetById((Guid)request.PecaId, ct);
+
+                    if (peca is null)
+                        return new CommandResult<Guid> { StatusCode = HttpStatusCode.NotFound, Message = "Peça não encontrada" };
+
+                    estoque = await _estoqueRepository.GetByPecaId((Guid)request.PecaId, ct);
+                }
 
                 if(tipoMovimentacao == ETipoMovimentacao.Entrada)
                     entrada = true;
 
                 if(estoque is null)
-                    return new CommandResult<Guid> { StatusCode = HttpStatusCode.NotFound, Message = "Estoque para a peça informada não encontrado!" };
+                    return new CommandResult<Guid> { StatusCode = HttpStatusCode.NotFound, Message = "Estoque para a peça ou insumo informado não encontrado!" };
 
 
                 if (entrada)

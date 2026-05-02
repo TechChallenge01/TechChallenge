@@ -145,7 +145,7 @@ public class OrdemServico : Base
 
         ValidarStatusParaEdicao();
 
-        Insumos = osInsumo.DistinctBy(oi => oi.ServicoId).ToList();
+        Insumos = osInsumo.DistinctBy(oi => oi.InsumoId).ToList();
 
         RecalcularValorTotal();
     }
