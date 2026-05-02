@@ -24,6 +24,16 @@ public class EstoqueRepository : IEstoqueRepository
         return await _appDbContext.Estoques.FirstOrDefaultAsync(e => e.Id == id, ct);
     }
 
+    public async Task<Estoque> GetByInsumoId(Guid Insumo, CancellationToken ct)
+    {
+        return await _appDbContext.Estoques.FirstOrDefaultAsync(x => x.InsumoId == Insumo, ct);
+    }
+
+    public async Task<ICollection<Estoque>> GetByInsumoIds(ICollection<Guid> Insumos, CancellationToken ct)
+    {
+        return await _appDbContext.Estoques.Where(e => Insumos.Contains((Guid)e.InsumoId)).ToListAsync(ct);
+    }
+
     public async Task<Estoque> GetByPecaId(Guid Peca, CancellationToken ct)
     {
         return await _appDbContext.Estoques.FirstOrDefaultAsync(e => e.PecaId == Peca, ct);
@@ -31,7 +41,7 @@ public class EstoqueRepository : IEstoqueRepository
 
     public async Task<ICollection<Estoque>> GetByPecaIds(ICollection<Guid> Pecas, CancellationToken ct)
     {
-        return await _appDbContext.Estoques.Where(e => Pecas.Contains(e.PecaId)).ToListAsync(ct);
+        return await _appDbContext.Estoques.Where(e => Pecas.Contains((Guid)e.PecaId)).ToListAsync(ct);
     }
 
     public async Task<(ICollection<Estoque> estoques, int total)> GetPaginated(int page, int pageSize, CancellationToken ct)

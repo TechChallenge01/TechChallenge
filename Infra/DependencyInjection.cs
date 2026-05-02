@@ -1,9 +1,11 @@
 ﻿using Application.EmailServices;
+using Application.PasswordsServices;
 using Application.UnitOfWork;
 using Domain.Aggregates.ClienteAggregates.Repositories;
 using Domain.Aggregates.EstoqueAggregates.Repositories;
 using Domain.Aggregates.OrdemServicoAggregates.Repositories;
 using Infra.Context;
+using Infra.PasswordServices;
 using Infra.Repositories;
 using Infra.Services;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +23,7 @@ namespace Infra
             services.AddScoped<IEstoqueRepository, EstoqueRepository>();
             services.AddScoped<IOrdemServicoRepository, OrdemServicoRepository>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IPasswordHasher, PasswordHasher>();
 
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), sqlOptions =>
             {
