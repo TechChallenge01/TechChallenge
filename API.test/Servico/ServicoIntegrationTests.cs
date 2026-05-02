@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿// API.test/Servicos/ServicoIntegrationTests.cs
+using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
 using Xunit;
@@ -20,92 +21,210 @@ public sealed class ServicoIntegrationTests : IClassFixture<IntegrationTestBase>
         _client = _fixture.Client;
     }
 
-    #region Consultas (GET)
+    private static ServicoRequestDTO RequestValido(string nome = "Alinhamento e Balanceamento")
+        => new()
+        {
+            Nome = nome,
+            Descricao = "Serviço completo de geometria veicular",
+            PrecoVenda = 180.00m   // ✅ use o nome real do campo no seu DTO
+        };
 
     [Fact]
-    public async Task GetPaginated_DeveRetornarOk_QuandoUsuarioEhMecanico()
+    public async Task GetPaginated_DeveRetornarOk_ParaMecanico()
     {
-        // Arrange
         _fixture.AutenticarClient(Guid.NewGuid(), "Mecanico Silva", "Mecanico");
 
-        // Act
         var response = await _client.GetAsync($"{BaseRoute}?page=1&pageSize=10");
 
-        // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task GetPaginated_DeveRetornarOk_ParaFuncionario()
+    {
+        _fixture.AutenticarClient(Guid.NewGuid(), "Atendente", "Funcionario");
+
+        var response = await _client.GetAsync($"{BaseRoute}?page=1&pageSize=10");
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task GetPaginated_DeveRetornarForbidden_ParaCliente()
+    {
+        _fixture.AutenticarClient(Guid.NewGuid(), "Carlos", "Cliente");
+
+        var response = await _client.GetAsync($"{BaseRoute}?page=1&pageSize=10");
+
+        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+    }
+
+    [Fact]
+    public async Task GetPaginated_DeveRetornarUnauthorized_SemToken()
+    {
+        _fixture.RemoverAutenticacao();
+
+        var response = await _client.GetAsync($"{BaseRoute}?page=1&pageSize=10");
+
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
 
     [Fact]
     public async Task GetById_DeveRetornarNotFound_QuandoServicoNaoExiste()
     {
-        // Arrange
         _fixture.AutenticarClient(Guid.NewGuid(), "Atendente", "Funcionario");
-        var idAleatorio = Guid.NewGuid();
 
-        // Act
-        var response = await _client.GetAsync($"{BaseRoute}/{idAleatorio}");
+        var response = await _client.GetAsync($"{BaseRoute}/{Guid.NewGuid()}");
 
-        // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
-    #endregion
-
-    #region Manutenção de Catálogo (POST, PUT, DELETE)
-
     [Fact]
-    public async Task Create_DeveRetornarOk_QuandoFuncionarioCriaServicoValido()
+    public async Task GetById_DeveRetornarOk_ParaMecanico()
     {
-        // Arrange
-        _fixture.AutenticarClient(Guid.NewGuid(), "Atendente", "Funcionario");
+        _fixture.AutenticarClient(Guid.NewGuid(), "Mecanico Silva", "Mecanico");
 
-        var request = new ServicoRequestDTO
-        {
-            Nome = "Alinhamento e Balanceamento",
-            Descricao = "Serviço completo de geometria veicular",
-            PrecoBase = 180.00m,
-            TempoEstimadoMinutos = 60
-        };
+        var response = await _client.GetAsync($"{BaseRoute}/{Guid.NewGuid()}");
 
-        // Act
-        var response = await _client.PostAsJsonAsync(BaseRoute, request);
-
-        // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.StatusCode.Should()
+            .Match(s => s == HttpStatusCode.OK || s == HttpStatusCode.NotFound);
     }
 
     [Fact]
-    public async Task Update_DeveRetornarOk_QuandoAdminAtualizaServico()
+    public async Task GetById_DeveRetornarForbidden_ParaCliente()
     {
-        // Arrange
+        _fixture.AutenticarClient(Guid.NewGuid(), "Carlos", "Cliente");
+
+        var response = await _client.GetAsync($"{BaseRoute}/{Guid.NewGuid()}");
+
+        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+    }
+
+    [Fact]
+    public async Task Create_DeveRetornarCreated_QuandoFuncionarioCriaServicoValido()
+    {
+        _fixture.AutenticarClient(Guid.NewGuid(), "Atendente", "Funcionario");
+
+        var response = await _client.PostAsJsonAsync(BaseRoute, RequestValido());
+
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
+    }
+
+    [Fact]
+    public async Task Create_DeveRetornarCreated_QuandoAdminCriaServico()
+    {
         _fixture.AutenticarClient(Guid.NewGuid(), "Admin", "Administrador");
-        var servicoId = Guid.NewGuid();
-        var request = new ServicoRequestDTO
-        {
-            Nome = "Revisão de Freios Alterada",
-            PrecoBase = 250.00m
-        };
 
-        // Act 
-        var response = await _client.PutAsJsonAsync($"{BaseRoute}/{servicoId}", request);
+        var response = await _client.PostAsJsonAsync(BaseRoute, RequestValido("Troca de Óleo"));
 
-        // Assert
-        response.StatusCode.Should().Match(s => s == HttpStatusCode.OK || s == HttpStatusCode.NotFound);
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
+    }
+
+    [Fact]
+    public async Task Create_DeveRetornarForbidden_QuandoMecanicoTentaCriar()
+    {
+        _fixture.AutenticarClient(Guid.NewGuid(), "Mecanico Silva", "Mecanico");
+
+        var response = await _client.PostAsJsonAsync(BaseRoute, RequestValido());
+
+        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+    }
+
+    [Fact]
+    public async Task Create_DeveRetornarForbidden_QuandoClienteTentaCriar()
+    {
+        _fixture.AutenticarClient(Guid.NewGuid(), "Carlos", "Cliente");
+
+        var response = await _client.PostAsJsonAsync(BaseRoute, RequestValido());
+
+        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+    }
+
+    [Fact]
+    public async Task Create_DeveRetornarUnauthorized_SemToken()
+    {
+        _fixture.RemoverAutenticacao();
+
+        var response = await _client.PostAsJsonAsync(BaseRoute, RequestValido());
+
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task Update_DeveRetornarOkOuNotFound_QuandoAdminAtualiza()
+    {
+        _fixture.AutenticarClient(Guid.NewGuid(), "Admin", "Administrador");
+
+        var response = await _client.PutAsJsonAsync(
+            $"{BaseRoute}/{Guid.NewGuid()}",
+            RequestValido("Revisão de Freios Alterada"));
+
+        response.StatusCode.Should()
+            .Match(s => s == HttpStatusCode.OK || s == HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task Update_DeveRetornarForbidden_QuandoMecanicoTentaAtualizar()
+    {
+        _fixture.AutenticarClient(Guid.NewGuid(), "Mecanico Silva", "Mecanico");
+
+        var response = await _client.PutAsJsonAsync(
+            $"{BaseRoute}/{Guid.NewGuid()}",
+            RequestValido());
+
+        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+    }
+
+    [Fact]
+    public async Task Update_DeveRetornarForbidden_QuandoClienteTentaAtualizar()
+    {
+        _fixture.AutenticarClient(Guid.NewGuid(), "Carlos", "Cliente");
+
+        var response = await _client.PutAsJsonAsync(
+            $"{BaseRoute}/{Guid.NewGuid()}",
+            RequestValido());
+
+        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
     }
 
     [Fact]
     public async Task Delete_DeveRetornarForbidden_QuandoMecanicoTentaExcluir()
     {
-        // Arrange
-        _fixture.AutenticarClient(Guid.NewGuid(), "Mecanico", "Mecanico");
-        var servicoId = Guid.NewGuid();
+        _fixture.AutenticarClient(Guid.NewGuid(), "Mecanico Silva", "Mecanico");
 
-        // Act
-        var response = await _client.DeleteAsync($"{BaseRoute}/{servicoId}");
+        var response = await _client.DeleteAsync($"{BaseRoute}/{Guid.NewGuid()}");
 
-        // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
     }
 
-    #endregion
+    [Fact]
+    public async Task Delete_DeveRetornarForbidden_QuandoFuncionarioTentaExcluir()
+    {
+        _fixture.AutenticarClient(Guid.NewGuid(), "Atendente", "Funcionario");
+
+        var response = await _client.DeleteAsync($"{BaseRoute}/{Guid.NewGuid()}");
+
+        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+    }
+
+    [Fact]
+    public async Task Delete_NaoDeveRetornarForbidden_QuandoAdminExclui()
+    {
+        _fixture.AutenticarClient(Guid.NewGuid(), "Admin", "Administrador");
+
+        var response = await _client.DeleteAsync($"{BaseRoute}/{Guid.NewGuid()}");
+
+        response.StatusCode.Should()
+            .Match(s => s == HttpStatusCode.OK || s == HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task Delete_DeveRetornarForbidden_QuandoClienteTentaExcluir()
+    {
+        _fixture.AutenticarClient(Guid.NewGuid(), "Carlos", "Cliente");
+
+        var response = await _client.DeleteAsync($"{BaseRoute}/{Guid.NewGuid()}");
+
+        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+    }
 }
