@@ -1,0 +1,83 @@
+version: '3.9'
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  sqlserver-data:
+
+services:
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: app-sqlserver
+    environment:
+      SA_PASSWORD: "Str0ng@Passw0rd!"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'Str0ng@Passw0rd!' -Q 'SELECT 1' || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+
+  api:
+    build:
+      context: ..                  # raiz do repositório (onde fica /src)
+      dockerfile: Docker/Dockerfile
+    container_name: app-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      Jwt__Key: "f3a7c9b8e1d2a3f4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8"
+      Jwt__Issuer: "TechChallenger"
+      Jwt__Audience: "TechChallenger"
+      ConnectionStrings__DefaultConnection: >
+        Server=sqlserver,1433;
+        Database=AppDb;
+        User Id=sa;
+        Password=Str0ng@Passw0rd!;
+        TrustServerCertificate=True;
+    ports:
+      - "8080:8080"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    networks:
+      - app-network
+    restart: on-failure
+
+  integration-tests:
+    build:
+      context: ..
+      dockerfile: Docker/Dockerfile.IntegrationTests
+    container_name: app-integration-tests
+    environment:
+      ASPNETCORE_ENVIRONMENT: IntegrationTests
+      ApiBaseUrl: http://api:8080
+      Jwt__Key: "f3a7c9b8e1d2a3f4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8"
+      Jwt__Issuer: "TechChallenger"
+      Jwt__Audience: "TechChallenger"
+      ConnectionStrings__DefaultConnection: >
+        Server=sqlserver,1433;
+        Database=AppDb_IntegrationTests;
+        User Id=sa;
+        Password=Str0ng@Passw0rd!;
+        TrustServerCertificate=True;
+    depends_on:
+      api:
+        condition: service_started
+      sqlserver:
+        condition: service_healthy
+    networks:
+      - app-network
+    restart: "no"
