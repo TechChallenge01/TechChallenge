@@ -12,6 +12,7 @@ namespace Infra.Context
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options){ }
 
+        public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<Telefone> Telefones { get; set; }
         public DbSet<Email> Emails { get; set; }

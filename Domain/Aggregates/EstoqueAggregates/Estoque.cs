@@ -5,13 +5,25 @@ using Domain.Enums;
 namespace Domain.Aggregates.EstoqueAggregates;
 public class Estoque : Base
 {
-    public Estoque(Guid pecaId, int quantidadeDisponivel, Guid UsuarioCriacaoId, DateTime dataCriacao) : base(UsuarioCriacaoId, dataCriacao, null, null)
+    public Estoque(Guid? insumoId, Guid? pecaId, int quantidadeDisponivel, Guid UsuarioCriacaoId, DateTime dataCriacao) : base(UsuarioCriacaoId, dataCriacao, null, null)
     {
-        ValidarPecaId(pecaId);
+        if (insumoId is null && pecaId is null)
+            throw new ArgumentException("É obrigatório o uso de uma peca ou um Insumo");
+
+        if (insumoId is not null && pecaId is not null)
+            throw new ArgumentException("Não é permitido ter uma peca e um Insumo em um estoque!");
+
+        if(pecaId is not null)
+            ValidarPecaId((Guid)pecaId);
+
+        if(Insumo is not null)
+            ValidarInsumoId((Guid)insumoId);
+
         ValidarQuantidadeDisponivel(quantidadeDisponivel);
 
         Id = Guid.NewGuid();
         PecaId = pecaId;
+        InsumoId = insumoId;
         QuantidadeDisponivel = quantidadeDisponivel;
         QuantidadeReservada = 0;
     }
@@ -19,18 +31,26 @@ public class Estoque : Base
     protected Estoque() { }
 
     public Guid Id { get; private set; }
-    public Guid PecaId { get; private set; }
+    public Guid? PecaId { get; private set; }
+    public Guid? InsumoId {  get; private set; }
     public int QuantidadeDisponivel { get; private set; }
     public int QuantidadeReservada { get; private set; }
     public ICollection<EstoqueHistorico> Historicos { get; private set; } = new List<EstoqueHistorico>();
     public virtual Peca Peca { get; private set; }
+    public virtual Insumo Insumo { get; private set; }
     public int QuantidadeTotal => QuantidadeDisponivel + QuantidadeReservada;
-    public string NomePeca => Peca.Nome;
+    public string NomePeca => Peca?.Nome;
+    public string NomeInsumo => Insumo?.Nome;
 
     private void ValidarPecaId(Guid pecaId)
     {
         if (pecaId == Guid.Empty)
             throw new ArgumentException("O ID da peça não pode ser vazio.");
+    }
+    private void ValidarInsumoId(Guid insumoId)
+    {
+        if (insumoId == Guid.Empty)
+            throw new ArgumentException("O ID do Insumo não pode ser vazio.");
     }
 
     private void ValidarQuantidadeDisponivel(int quantidadeDisponivel) 

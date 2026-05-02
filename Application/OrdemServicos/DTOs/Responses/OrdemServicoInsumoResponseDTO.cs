@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Application.OrdemServicos.DTOs.Responses
+﻿namespace Application.OrdemServicos.DTOs.Responses
 {
     public record OrdemServicoInsumoResponseDTO
     {

@@ -14,7 +14,7 @@
         if (string.IsNullOrWhiteSpace(numero)) throw new ArgumentException("Número é obrigatório.");
         if (string.IsNullOrWhiteSpace(cep)) throw new ArgumentException("CEP é obrigatório.");
         if (string.IsNullOrWhiteSpace(cidade)) throw new ArgumentException("Cidade é obrigatória.");
-        if (string.IsNullOrWhiteSpace(uf) || uf.Length != 2) throw new ArgumentException("UF inválida.");
+        if (string.IsNullOrWhiteSpace(uf) || uf.Trim().Length != 2) throw new ArgumentException("UF inválida.");
 
         Logradouro = logradouro.Trim();
         Numero = numero.Trim();

@@ -2,6 +2,8 @@
 using Application.Insumos.DTOs.Responses;
 using Application.Insumos.Presenters;
 using Application.UnitOfWork;
+using Domain.Aggregates.EstoqueAggregates;
+using Domain.Aggregates.EstoqueAggregates.Repositories;
 using Domain.Entities.Repositories;
 using Shared.DTOs;
 using Shared.Result;
@@ -12,12 +14,14 @@ namespace Application.Insumos.Services
     public class InsumoService : IInsumoService
     {
         private readonly IInsumoRepository _insumoRepository;
+        private readonly IEstoqueRepository _estoqueRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public InsumoService(IInsumoRepository repository, IUnitOfWork unitOfWork)
+        public InsumoService(IInsumoRepository repository, IUnitOfWork unitOfWork, IEstoqueRepository estoqueRepository)
         {
             _insumoRepository = repository;
             _unitOfWork = unitOfWork;
+            _estoqueRepository = estoqueRepository;
         }
 
         public async Task<ICommandResult<Guid>> Create(InsumoRequestDTO request, Guid idUsuario, CancellationToken cancellationToken)
@@ -27,6 +31,9 @@ namespace Application.Insumos.Services
                 var insumo = new Insumo(request.Nome, request.Descricao, request.CustoUnitario, idUsuario, DateTime.UtcNow);
 
                 await _insumoRepository.Create(insumo, cancellationToken);
+
+                var estoque = new Estoque(insumo.Id, null, 0, Guid.Empty, DateTime.UtcNow);
+                await _estoqueRepository.Create(estoque, cancellationToken);
 
                 return new CommandResult<Guid> { StatusCode = HttpStatusCode.Created, Message = "Insumo criado com sucesso!", Data = insumo.Id };
             }

@@ -57,8 +57,13 @@ namespace Application.Pecas.Services
         {
             try
             {
+<<<<<<< HEAD
                 var peca = new Peca(request.Nome, request.Descricao, request.MarcaPeca, request.PrecoVenda, idUsuario, DateTime.UtcNow);
                 var estoque = new Estoque(peca.Id, 0, idUsuario, DateTime.UtcNow);
+=======
+                var peca = new Peca(request.Nome, request.Descricao, request.MarcaPeca, request.PrecoVenda, Guid.Empty, DateTime.UtcNow);
+                var estoque = new Estoque(null, peca.Id, 0, Guid.Empty, DateTime.UtcNow);
+>>>>>>> 87031395c4d2393cb8f3fe7c2cdeffbe6d3dba83
 
                 await _pecaRepository.Add(peca, ct);
                 await _estoqueRepository.Create(estoque, ct);

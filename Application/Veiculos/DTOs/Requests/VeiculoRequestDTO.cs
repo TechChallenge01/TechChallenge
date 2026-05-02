@@ -5,16 +5,16 @@ namespace Application.Veiculos.DTOs.Requests
     public class VeiculoRequestDTO
     {
         [Required]
-        public string Modelo { get; private set; }
+        public string Modelo { get; set; }
         [Required]
-        public string MarcaVeiculo { get; private set; }
+        public string MarcaVeiculo { get; set; }
         [Required]
-        public Guid ClienteId { get; private set; }
+        public Guid ClienteId { get; set; }
         [Required]
-        public int Ano { get; private set; }
+        public int Ano { get; set; }
         [Required]
-        public string Placa { get; private set; }
+        public string Placa { get; set; }
         [Required]  
-        public string Cor { get; private set; }
+        public string Cor { get; set; }
     }
 }

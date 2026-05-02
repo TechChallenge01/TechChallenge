@@ -7,4 +7,8 @@
     <Project Path="Shared/Shared.csproj" Id="ee821b86-bac4-4f96-b611-ead881575cd1" />
   </Folder>
   <Folder Name="/tests/" />
+  <Folder Name="/tests/TestesUnitarios/">
+    <Project Path="Application.test/Application.test.csproj" />
+    <Project Path="Domain.test/Domain.test.csproj" Id="2630e6d8-8636-4d05-9ab2-89142714a169" />
+  </Folder>
 </Solution>
