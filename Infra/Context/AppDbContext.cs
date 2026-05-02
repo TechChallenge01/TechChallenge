@@ -26,7 +26,6 @@ namespace Infra.Context
         public DbSet<Estoque> Estoques { get; set; }
         public DbSet<EstoqueHistorico> EstoqueHistoricos { get; set; }
         public DbSet<Insumo> Insumos { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
