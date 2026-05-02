@@ -1,9 +1,8 @@
 ﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+
 namespace Infra.EntityTypeConfiguration;
 
-namespace Infra.EntityTypeConfiguration
-{
 public class UsuarioMap : IEntityTypeConfiguration<Usuario>
 {
     public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Usuario> builder)
@@ -29,11 +28,10 @@ public class UsuarioMap : IEntityTypeConfiguration<Usuario>
 
         builder.Property(u => u.Perfil)
             .IsRequired()
-            .HasConversion<string>() 
+            .HasConversion<string>()
             .HasMaxLength(20);
 
         builder.Property(u => u.Ativo)
             .HasDefaultValue(true);
     }
-}
 }
