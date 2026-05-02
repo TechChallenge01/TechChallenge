@@ -20,11 +20,11 @@ namespace Application.Insumos.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<ICommandResult<Guid>> Create(InsumoRequestDTO request, CancellationToken cancellationToken)
+        public async Task<ICommandResult<Guid>> Create(InsumoRequestDTO request, Guid idUsuario, CancellationToken cancellationToken)
         {
             try
             {
-                var insumo = new Insumo(request.Nome, request.Descricao, request.CustoUnitario, Guid.Empty, DateTime.UtcNow);
+                var insumo = new Insumo(request.Nome, request.Descricao, request.CustoUnitario, idUsuario, DateTime.UtcNow);
 
                 await _insumoRepository.Create(insumo, cancellationToken);
 
@@ -40,7 +40,7 @@ namespace Application.Insumos.Services
             }
         }
 
-        public async Task<ICommandResult> Delete(Guid id, CancellationToken cancellationToken)
+        public async Task<ICommandResult> Delete(Guid id, Guid idUsuario, CancellationToken cancellationToken)
         {
             try
             {
@@ -50,7 +50,7 @@ namespace Application.Insumos.Services
                     return new CommandResult { StatusCode = HttpStatusCode.NotFound, Message = "Insumo não encontrado!" };
 
                 insumo.Inativar();
-                insumo.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
+                insumo.RastrearAlteracao(idUsuario, DateTime.UtcNow);
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -118,7 +118,7 @@ namespace Application.Insumos.Services
             }
         }
 
-        public async Task<ICommandResult> Update(Guid id, InsumoRequestDTO request, CancellationToken cancellationToken)
+        public async Task<ICommandResult> Update(Guid id, Guid idUsuario, InsumoRequestDTO request, CancellationToken cancellationToken)
         {
             try
             {
@@ -131,7 +131,7 @@ namespace Application.Insumos.Services
                 insumo.AtualizarCusto(request.CustoUnitario);
                 insumo.AtualizarDescricao(request.Descricao);
 
-                insumo.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
+                insumo.RastrearAlteracao(idUsuario, DateTime.UtcNow);
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 

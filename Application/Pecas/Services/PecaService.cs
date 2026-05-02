@@ -53,12 +53,12 @@ namespace Application.Pecas.Services
             }
         }
 
-        public async Task<ICommandResult<Guid>> Create(PecaRequestDTO request, CancellationToken ct)
+        public async Task<ICommandResult<Guid>> Create(PecaRequestDTO request, Guid idUsuario, CancellationToken ct)
         {
             try
             {
-                var peca = new Peca(request.Nome, request.Descricao, request.MarcaPeca, request.PrecoVenda, Guid.Empty, DateTime.UtcNow);
-                var estoque = new Estoque(peca.Id, 0, Guid.Empty, DateTime.UtcNow);
+                var peca = new Peca(request.Nome, request.Descricao, request.MarcaPeca, request.PrecoVenda, idUsuario, DateTime.UtcNow);
+                var estoque = new Estoque(peca.Id, 0, idUsuario, DateTime.UtcNow);
 
                 await _pecaRepository.Add(peca, ct);
                 await _estoqueRepository.Create(estoque, ct);
@@ -75,7 +75,7 @@ namespace Application.Pecas.Services
             }
         }
 
-        public async Task<ICommandResult> Delete(Guid id, CancellationToken ct)
+        public async Task<ICommandResult> Delete(Guid id, Guid idUsuario, CancellationToken ct)
         {
             try
             {
@@ -85,7 +85,7 @@ namespace Application.Pecas.Services
                     return new CommandResult { StatusCode = HttpStatusCode.NotFound, Message = "Peça não encontrada." };
 
                 peca.Inativar();
-                peca.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
+                peca.RastrearAlteracao(idUsuario, DateTime.UtcNow);
 
                 await _unitOfWork.SaveChangesAsync(ct);
 
@@ -101,7 +101,7 @@ namespace Application.Pecas.Services
             }
         }
 
-        public async Task<ICommandResult> Update(Guid id, PecaRequestDTO request, CancellationToken ct)
+        public async Task<ICommandResult> Update(Guid id, Guid idUsuario, PecaRequestDTO request, CancellationToken ct)
         {
             try
             {
@@ -115,7 +115,7 @@ namespace Application.Pecas.Services
                 peca.AlterarPrecoVenda(request.PrecoVenda);
                 peca.AlterarMarcaPeca(request.MarcaPeca);
 
-                peca.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
+                peca.RastrearAlteracao(idUsuario, DateTime.UtcNow);
 
                 await _unitOfWork.SaveChangesAsync(ct);
 

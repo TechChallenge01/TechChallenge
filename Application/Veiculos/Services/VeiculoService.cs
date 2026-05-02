@@ -55,7 +55,7 @@ namespace Application.Veiculos.Services
             }
         }
 
-        public async Task<ICommandResult<Guid>> Create(VeiculoRequestDTO request, CancellationToken ct)
+        public async Task<ICommandResult<Guid>> Create(VeiculoRequestDTO request, Guid idUsuario, CancellationToken ct)
         {
             try
             {
@@ -64,7 +64,7 @@ namespace Application.Veiculos.Services
                 if(cliente is null)
                     return new CommandResult<Guid> { StatusCode = HttpStatusCode.NotFound, Message = "Cliente não encontrado." };
 
-                var entity = new Veiculo(request.Modelo, request.MarcaVeiculo, request.ClienteId, request.Ano, new Placa(request.Placa), request.Cor, Guid.Empty);
+                var entity = new Veiculo(request.Modelo, request.MarcaVeiculo, request.ClienteId, request.Ano, new Placa(request.Placa), request.Cor, idUsuario);
 
                 await _veiculoRepository.Add(entity, ct);
 
@@ -80,7 +80,7 @@ namespace Application.Veiculos.Services
             }
         }
 
-        public async Task<ICommandResult> Delete(Guid Id, CancellationToken ct)
+        public async Task<ICommandResult> Delete(Guid Id, Guid idUsuario, CancellationToken ct)
         {
             try
             {
@@ -91,7 +91,7 @@ namespace Application.Veiculos.Services
 
                 //Exclusão lógica
                 veiculo.Inativar();
-                veiculo.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
+                veiculo.RastrearAlteracao(idUsuario, DateTime.UtcNow);
 
                 await _veiculoRepository.Update(veiculo, ct);
 
@@ -108,7 +108,7 @@ namespace Application.Veiculos.Services
             }
         }
 
-        public async Task<ICommandResult> Update(Guid Id, VeiculoRequestDTO request, CancellationToken ct)
+        public async Task<ICommandResult> Update(Guid Id, Guid idUsuario, VeiculoRequestDTO request, CancellationToken ct)
         {
             try
             {
@@ -127,7 +127,7 @@ namespace Application.Veiculos.Services
                 veiculo.AlterarCor(request.Cor);
                 veiculo.AlterarCliente(request.ClienteId);
 
-                veiculo.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
+                veiculo.RastrearAlteracao(idUsuario, DateTime.UtcNow);
 
                 await _veiculoRepository.Update(veiculo, ct);
 

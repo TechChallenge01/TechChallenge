@@ -9,6 +9,6 @@ namespace Application.Estoques.Services
     {
         Task<ICommandResult<PagedResultDTO<EstoqueResponseDTO>>> GetPaginated(int page, int pageSize, CancellationToken ct);
         Task<ICommandResult<EstoqueResponseDTO>> GetById(Guid id, CancellationToken ct);
-        Task<ICommandResult<Guid>> Movimetar(EstoqueRequestDTO request, CancellationToken ct);
+        Task<ICommandResult<Guid>> Movimetar(EstoqueRequestDTO request,Guid idUsuario, CancellationToken ct);
     }
 }

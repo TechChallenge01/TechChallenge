@@ -76,7 +76,7 @@ namespace Application.Estoques.Services
             }
         }
 
-        public async Task<ICommandResult<Guid>> Movimetar(EstoqueRequestDTO request, CancellationToken ct)
+        public async Task<ICommandResult<Guid>> Movimetar(EstoqueRequestDTO request,Guid idUsuario, CancellationToken ct)
         {
             try
             {
@@ -104,7 +104,7 @@ namespace Application.Estoques.Services
                     estoque.RetirarEstoque(request.Quantidade, Guid.Empty);
 
 
-                estoque.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
+                estoque.RastrearAlteracao(idUsuario, DateTime.UtcNow);
 
                 await _unitOfWork.SaveChangesAsync(ct);
 

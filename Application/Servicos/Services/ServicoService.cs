@@ -19,11 +19,11 @@ public class ServicoService : IServicoService
         _servico = servico;
         _unitOfWork = unitOfWork;
     }
-    public async Task<ICommandResult<Guid>> Create(ServicoRequestDTO request, CancellationToken ct)
+    public async Task<ICommandResult<Guid>> Create(ServicoRequestDTO request, Guid idUsuario, CancellationToken ct)
     {
         try
         {
-            var entityServico = new Servico(request.Nome, request.Descricao, request.PrecoVenda, Guid.Empty, DateTime.Now);
+            var entityServico = new Servico(request.Nome, request.Descricao, request.PrecoVenda, idUsuario, DateTime.Now);
 
             await _servico.Create(entityServico, ct);
 
@@ -40,7 +40,7 @@ public class ServicoService : IServicoService
         }
     }
 
-    public async Task<ICommandResult> Delete(Guid Id, CancellationToken ct)
+    public async Task<ICommandResult> Delete(Guid Id, Guid idUsuario, CancellationToken ct)
     {
         var servico = await _servico.GetById(Id, ct);
 
@@ -48,12 +48,11 @@ public class ServicoService : IServicoService
             return new CommandResult<Guid> { StatusCode = HttpStatusCode.NotFound, Message = "Serviço não encontrado." };
 
         servico.Inativar();
-        servico.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
+        servico.RastrearAlteracao(idUsuario, DateTime.UtcNow);
 
         await _unitOfWork.SaveChangesAsync(ct);
 
         return new CommandResult<Guid> { StatusCode = HttpStatusCode.NoContent, Message = "Serviço deletado com sucesso." };
-
     }
 
     public async Task<ICommandResult<ServicoResponseDTO>> GetById(Guid Id, CancellationToken ct)
@@ -111,7 +110,7 @@ public class ServicoService : IServicoService
         }
     }
 
-    public async Task<ICommandResult> Update(Guid Id, ServicoRequestDTO request, CancellationToken ct)
+    public async Task<ICommandResult> Update(Guid Id, Guid idUsuario, ServicoRequestDTO request, CancellationToken ct)
     {
         try
         {
@@ -124,7 +123,7 @@ public class ServicoService : IServicoService
             servico.AlterarDescricao(request.Descricao);
             servico.AlterarPrecoVenda(request.PrecoVenda);
 
-            servico.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
+            servico.RastrearAlteracao(idUsuario, DateTime.UtcNow);
 
             await _unitOfWork.SaveChangesAsync(ct);
 

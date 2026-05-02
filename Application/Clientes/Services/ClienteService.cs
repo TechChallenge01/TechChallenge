@@ -54,7 +54,7 @@ namespace Application.Clientes.Services
             }
         }
 
-        public async Task<ICommandResult<Guid>> Create(ClienteRequestDTO request, CancellationToken ct)
+        public async Task<ICommandResult<Guid>> Create(ClienteRequestDTO request, Guid idUsuario, CancellationToken ct)
         {
             try
             {
@@ -73,9 +73,9 @@ namespace Application.Clientes.Services
                 }
 
                 if (isCpf)
-                    entity = new Cliente(request.Nome, new Cpf(request.Cpf), Guid.Empty);
+                    entity = new Cliente(request.Nome, new Cpf(request.Cpf), idUsuario);
                 else
-                    entity = new Cliente(request.Nome, new Cnpj(request.Cnpj), Guid.Empty);
+                    entity = new Cliente(request.Nome, new Cnpj(request.Cnpj), idUsuario);
 
                 var telefones = request.Telefones.Select(t => new Telefone(t.DDD, t.DDI, t.Numero, (ETipoTelefone)Enum.Parse(typeof(ETipoTelefone), t.Tipo))).ToList();
                 var enderecos = request.Enderecos.Select(e => new Endereco(e.Logradouro, e.Numero, e.Complemento, e.Bairro, e.Cidade, e.Uf, e.Cep)).ToList();
@@ -99,7 +99,7 @@ namespace Application.Clientes.Services
             }
         }
 
-        public async Task<ICommandResult> Delete(Guid id, CancellationToken ct)
+        public async Task<ICommandResult> Delete(Guid id, Guid idUsuario, CancellationToken ct)
         {
             try
             {
@@ -111,7 +111,7 @@ namespace Application.Clientes.Services
                 //exclusão lógica
                 cliente.Inativar();
 
-                cliente.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
+                cliente.RastrearAlteracao(idUsuario, DateTime.UtcNow);
 
                 await _unitOfWork.SaveChangesAsync(ct);
 
@@ -127,7 +127,7 @@ namespace Application.Clientes.Services
             }
         }
 
-        public async Task<ICommandResult> Update(Guid id, ClienteRequestDTO request, CancellationToken ct)
+        public async Task<ICommandResult> Update(Guid id, Guid idUsuario, ClienteRequestDTO request, CancellationToken ct)
         {
             try
             {
@@ -150,7 +150,7 @@ namespace Application.Clientes.Services
 
                 cliente.AlterarNome(request.Nome);
 
-                cliente.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
+                cliente.RastrearAlteracao(idUsuario, DateTime.UtcNow);
 
                 await _unitOfWork.SaveChangesAsync(ct);
 

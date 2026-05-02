@@ -40,7 +40,7 @@ public class OrdemServicoService : IOrdemServicoService
         _insumoRepository = insumoRepository;
     }
 
-    public async Task<ICommandResult> Aprovar(Guid id, CancellationToken ct)
+    public async Task<ICommandResult> Aprovar(Guid id, Guid idUsuario, CancellationToken ct)
     {
         try
         {
@@ -51,7 +51,7 @@ public class OrdemServicoService : IOrdemServicoService
 
             ordemServico.AprovarOrdemServico();
 
-            ordemServico.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
+            ordemServico.RastrearAlteracao(idUsuario, DateTime.UtcNow);
 
             await _unitOfWork.SaveChangesAsync(ct);
 
@@ -66,7 +66,7 @@ public class OrdemServicoService : IOrdemServicoService
             return new CommandResult { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
         }
     }
-    public async Task<ICommandResult> Cancelar(Guid id, CancellationToken ct)
+    public async Task<ICommandResult> Cancelar(Guid id, Guid idUsuario, CancellationToken ct)
     {
         try
         {
@@ -92,7 +92,7 @@ public class OrdemServicoService : IOrdemServicoService
 
             ordemServico.CancelarOrdemServico();
 
-            ordemServico.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
+            ordemServico.RastrearAlteracao(idUsuario, DateTime.UtcNow);
 
             await _unitOfWork.SaveChangesAsync(ct);
 
@@ -107,7 +107,7 @@ public class OrdemServicoService : IOrdemServicoService
             return new CommandResult { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
         }
     }
-    public async Task<ICommandResult> FinalizarServico(Guid id, FinalizarServicoDTO dto, CancellationToken ct)
+    public async Task<ICommandResult> FinalizarServico(Guid id, Guid idUsuario, FinalizarServicoDTO dto, CancellationToken ct)
     {
         try
         {
@@ -126,7 +126,7 @@ public class OrdemServicoService : IOrdemServicoService
             var tempos = await _ordemServicoRepository.GetByIdsSTimeSpanDataExecucao(dto.ServicosId, ct);
 
             var dataAlteracao = DateTime.UtcNow;
-            var usuarioAuditoria = Guid.Empty;
+            var usuarioAuditoria = idUsuario;
 
             foreach (var servico in servicosEntities)
             {
@@ -149,7 +149,7 @@ public class OrdemServicoService : IOrdemServicoService
             return new CommandResult<Guid> { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
         }
     }
-    public async Task<ICommandResult<Guid>> Create(OrdemServicoRequestDTO request, CancellationToken ct)
+    public async Task<ICommandResult<Guid>> Create(OrdemServicoRequestDTO request, Guid idUsuario, CancellationToken ct)
     {
         try
         {
@@ -180,7 +180,7 @@ public class OrdemServicoService : IOrdemServicoService
             if (!cliente.Veiculos.Any(v => v.Id == request.VeiculoId))
                 return new CommandResult<Guid> { StatusCode = HttpStatusCode.NotFound, Message = "Veículo não encontrado." };
 
-            var entity = new OrdemServico(cliente.Id, request.VeiculoId, Guid.Empty);
+            var entity = new OrdemServico(cliente.Id, request.VeiculoId, idUsuario);
 
             if (request.Pecas is not null && request.Pecas.Any())
             {
@@ -326,7 +326,7 @@ public class OrdemServicoService : IOrdemServicoService
             return new CommandResult<OrdemServicoResponseDTO> { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
         }
     }
-    public async Task<ICommandResult> RealizarDiagnostico(Guid id, DiagnosticoRequestDTO request, CancellationToken ct)
+    public async Task<ICommandResult> RealizarDiagnostico(Guid id, Guid idUsuario, DiagnosticoRequestDTO request, CancellationToken ct)
     {
         try
         {
@@ -433,7 +433,7 @@ public class OrdemServicoService : IOrdemServicoService
                 estoque.ReservarEstoque(peca.Quantidade, Guid.Empty);
             }
 
-            ordemServico.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
+            ordemServico.RastrearAlteracao(idUsuario, DateTime.UtcNow);
 
             await _unitOfWork.SaveChangesAsync(ct);
 
@@ -450,7 +450,7 @@ public class OrdemServicoService : IOrdemServicoService
             return new CommandResult { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
         }
     }
-    public async Task<ICommandResult> IniciarDiagnostico(Guid id, CancellationToken ct)
+    public async Task<ICommandResult> IniciarDiagnostico(Guid id, Guid idUsuario, CancellationToken ct)
     {
         try
         { 
@@ -460,7 +460,7 @@ public class OrdemServicoService : IOrdemServicoService
                 return new CommandResult { StatusCode = HttpStatusCode.NotFound, Message = "Ordem de serviço não encontrada." };
 
             ordemServico.IniciarDiagnostico();
-            ordemServico.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
+            ordemServico.RastrearAlteracao(idUsuario, DateTime.UtcNow);
 
             await _unitOfWork.SaveChangesAsync(ct);
 
@@ -510,7 +510,7 @@ public class OrdemServicoService : IOrdemServicoService
         }
     }
 
-    public async Task<ICommandResult> RegistrarEntrega(Guid id, CancellationToken ct)
+    public async Task<ICommandResult> RegistrarEntrega(Guid id, Guid idUsuario, CancellationToken ct)
     {
         try
         {
@@ -520,7 +520,7 @@ public class OrdemServicoService : IOrdemServicoService
                 return new CommandResult { StatusCode = HttpStatusCode.NotFound, Message = "Ordem de serviço não encontrada." };
 
             ordemServico.RegistrarEntrega();
-            ordemServico.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
+            ordemServico.RastrearAlteracao(idUsuario, DateTime.UtcNow);
 
             await _unitOfWork.SaveChangesAsync(ct);
 

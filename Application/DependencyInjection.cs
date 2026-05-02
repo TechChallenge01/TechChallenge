@@ -1,9 +1,11 @@
-﻿using Application.Clientes.Services;
+﻿using Application.Auth.Services;
+using Application.Clientes.Services;
 using Application.Estoques.Services;
 using Application.OrdemServicos.Services;
 using Application.Pecas.Services;
 using Application.Servicos.Services;
 using Application.Veiculos.Services;
+using Domain.Entities.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application
@@ -18,6 +20,7 @@ namespace Application
             services.AddScoped<IPecaService, PecaService>();
             services.AddScoped<IServicoService, ServicoService>();
             services.AddScoped<IEstoqueService, EstoqueService>();
+            services.AddScoped<IAuthService, AuthService>();
 
             return services;
         }
