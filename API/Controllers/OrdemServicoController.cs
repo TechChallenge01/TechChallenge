@@ -1,5 +1,7 @@
-﻿using Application.OrdemServicos.DTOs.Requests;
+﻿using API.Extensions;
+using Application.OrdemServicos.DTOs.Requests;
 using Application.OrdemServicos.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Result;
 
@@ -18,6 +20,7 @@ public class OrdemServicoController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "Admin,Funcionario,Mecanico")]
     public async Task<IActionResult> GetPaginated([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken ct = default) 
     {
         var response = await _ordemService.GetPaginated(page, pageSize, ct);
@@ -26,38 +29,51 @@ public class OrdemServicoController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin,Funcionario")]
     public async Task<IActionResult> Create([FromBody] OrdemServicoRequestDTO request, CancellationToken ct)
     {
-        var response = await _ordemService.Create(request, ct);
+        var idUsuario = User.ObterIdUsuario();
+
+        var response = await _ordemService.Create(request, idUsuario, ct);
 
         return response.ToResult();
     }
 
     [HttpPost("{id}/Cancelar")]
+    [Authorize(Roles = "Admin,Funcionario")]
     public async Task<IActionResult> Cancelar([FromRoute] Guid id, CancellationToken ct)
     {
-        var response = await _ordemService.Cancelar(id, ct);
+        var idUsuario = User.ObterIdUsuario();
+
+        var response = await _ordemService.Cancelar(id, idUsuario, ct);
 
         return response.ToResult();
     }
 
     [HttpPost("{id}/Aprovar")]
+    [Authorize(Roles = "Admin,Funcionario,Cliente")]
     public async Task<IActionResult> Aprovar([FromRoute] Guid id, CancellationToken ct)
     {
-        var response = await _ordemService.Aprovar(id, ct);
+        var idUsuario = User.ObterIdUsuario();
+
+        var response = await _ordemService.Aprovar(id, idUsuario, ct);
 
         return response.ToResult();
     }
 
     [HttpPost("{id}/FinalizarServico")]
+    [Authorize(Roles = "Admin,Mecanico")]
     public async Task<IActionResult> FinalizarServico([FromRoute] Guid id, [FromBody] FinalizarServicoDTO dto, CancellationToken ct)
     {
-        var response = await _ordemService.FinalizarServico(id, dto, ct);
+        var idUsuario = User.ObterIdUsuario();
+
+        var response = await _ordemService.FinalizarServico(id, idUsuario, dto, ct);
 
         return response.ToResult();
     }
 
     [HttpGet("{id}")]
+    [Authorize(Roles = "Admin,Funcionario,Mecanico,Cliente")]
     public async Task<IActionResult> GetById([FromRoute] Guid id, CancellationToken ct)
     {
         var response = await _ordemService.GetById(id, ct);
@@ -66,23 +82,32 @@ public class OrdemServicoController : ControllerBase
     }
 
     [HttpPost("{id}/IniciarDiagnostico")]
+    [Authorize(Roles = "Admin,Mecanico")]
     public async Task<IActionResult> IniciarDiagnostico([FromRoute] Guid id, CancellationToken ct)
     {
-        var response = await _ordemService.IniciarDiagnostico(id, ct);
+        var idUsuario = User.ObterIdUsuario();
+
+        var response = await _ordemService.IniciarDiagnostico(id, idUsuario, ct);
 
         return response.ToResult();
     }
     [HttpPost("{id}/RealizarDiagnostico")]
+    [Authorize(Roles = "Admin,Mecanico")]
     public async Task<IActionResult> RealizarDiagnostico([FromRoute] Guid id, [FromBody] DiagnosticoRequestDTO request, CancellationToken ct)
     {
-        var response = await _ordemService.RealizarDiagnostico(id, request, ct);
+        var idUsuario = User.ObterIdUsuario();
+
+        var response = await _ordemService.RealizarDiagnostico(id, idUsuario, request, ct);
         return response.ToResult();
     }
 
     [HttpPost("{id}/RegistrarEntrega")]
+    [Authorize(Roles = "Admin,Funcionario")]
     public async Task<IActionResult> RegistrarEntrega([FromRoute] Guid id, CancellationToken ct)
     {
-        var response = await _ordemService.RegistrarEntrega(id, ct);
+        var idUsuario = User.ObterIdUsuario();
+
+        var response = await _ordemService.RegistrarEntrega(id, idUsuario, ct);
         return response.ToResult();
     }
 }

@@ -25,6 +25,7 @@ namespace Infra.Context
         public DbSet<Estoque> Estoques { get; set; }
         public DbSet<EstoqueHistorico> EstoqueHistoricos { get; set; }
         public DbSet<Insumo> Insumos { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
