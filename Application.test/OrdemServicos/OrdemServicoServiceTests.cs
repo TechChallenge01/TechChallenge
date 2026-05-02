@@ -68,7 +68,7 @@ public class OrdemServicoServiceTests
             .Returns(Task.CompletedTask);
 
         // Act
-        var result = await _ordemServicoService.Aprovar(ordemServicoId, CancellationToken.None);
+        var result = await _ordemServicoService.Aprovar(ordemServicoId, Guid.NewGuid(), CancellationToken.None);
 
         // Assert
         Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
@@ -85,7 +85,7 @@ public class OrdemServicoServiceTests
             .ReturnsAsync((OrdemServico)null);
 
         // Act
-        var result = await _ordemServicoService.Aprovar(ordemServicoId, CancellationToken.None);
+        var result = await _ordemServicoService.Aprovar(ordemServicoId, Guid.NewGuid(), CancellationToken.None);
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
@@ -116,7 +116,7 @@ public class OrdemServicoServiceTests
             .Returns(Task.CompletedTask);
 
         // Act
-        var result = await _ordemServicoService.Cancelar(ordemServicoId, CancellationToken.None);
+        var result = await _ordemServicoService.Cancelar(ordemServicoId, Guid.NewGuid(), CancellationToken.None);
 
         // Assert
         Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
@@ -132,7 +132,7 @@ public class OrdemServicoServiceTests
             .ReturnsAsync((OrdemServico)null);
 
         // Act
-        var result = await _ordemServicoService.Cancelar(ordemServicoId, CancellationToken.None);
+        var result = await _ordemServicoService.Cancelar(ordemServicoId, Guid.NewGuid(), CancellationToken.None);
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
@@ -155,7 +155,7 @@ public class OrdemServicoServiceTests
             .Returns(Task.CompletedTask);
 
         // Act
-        var result = await _ordemServicoService.IniciarDiagnostico(ordemServicoId, CancellationToken.None);
+        var result = await _ordemServicoService.IniciarDiagnostico(ordemServicoId, Guid.NewGuid(), CancellationToken.None);
 
         // Assert
         Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
@@ -171,7 +171,7 @@ public class OrdemServicoServiceTests
             .ReturnsAsync((OrdemServico)null);
 
         // Act
-        var result = await _ordemServicoService.IniciarDiagnostico(ordemServicoId, CancellationToken.None);
+        var result = await _ordemServicoService.IniciarDiagnostico(ordemServicoId, Guid.NewGuid(), CancellationToken.None);
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);

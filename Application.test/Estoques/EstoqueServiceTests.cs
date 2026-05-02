@@ -99,7 +99,7 @@ public class EstoqueServiceTests
         };
 
         // Act
-        var result = await _estoqueService.Movimetar(request, CancellationToken.None);
+        var result = await _estoqueService.Movimetar(request, Guid.NewGuid(), CancellationToken.None);
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
@@ -121,7 +121,7 @@ public class EstoqueServiceTests
         };
 
         // Act
-        var result = await _estoqueService.Movimetar(request, CancellationToken.None);
+        var result = await _estoqueService.Movimetar(request, Guid.NewGuid(), CancellationToken.None);
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
@@ -142,7 +142,7 @@ public class EstoqueServiceTests
         };
 
         // Act
-        var result = await _estoqueService.Movimetar(request, CancellationToken.None);
+        var result = await _estoqueService.Movimetar(request, Guid.NewGuid(), CancellationToken.None);
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);

@@ -18,7 +18,7 @@ public class ServicoController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize(Roles = "Admin,Funcionario,Mecanico")]
+    [Authorize(Roles = "Administrador,Funcionario,Mecanico")]
     public async Task<IActionResult> GetPaginated([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken ct = default)
     {
         var response = await _servicoService.GetPaginated(page, pageSize, ct);
@@ -27,7 +27,7 @@ public class ServicoController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin,Funcionario")]
+    [Authorize(Roles = "Administrador,Funcionario")]
     public async Task<IActionResult> Create([FromBody] ServicoRequestDTO request, CancellationToken ct) 
     {
         var idUsuario = User.ObterIdUsuario();
@@ -38,7 +38,7 @@ public class ServicoController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Admin,Funcionario")]
+    [Authorize(Roles = "Administrador,Funcionario")]
     public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken ct)
     {
         var idUsuario = User.ObterIdUsuario();
@@ -49,7 +49,7 @@ public class ServicoController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = "Admin,Funcionario")]
+    [Authorize(Roles = "Administrador,Funcionario")]
     public async Task<IActionResult> Update([FromQuery] Guid id, [FromBody] ServicoRequestDTO request, CancellationToken ct) 
     {
         var idUsuario = User.ObterIdUsuario();
@@ -60,7 +60,7 @@ public class ServicoController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    [Authorize(Roles = "Admin,Funcionario,Mecanico")]
+    [Authorize(Roles = "Administrador,Funcionario,Mecanico")]
     public async Task<IActionResult> GetById([FromRoute] Guid id, CancellationToken ct)
     {
         var response = await _servicoService.GetById(id, ct);

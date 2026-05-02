@@ -54,7 +54,7 @@ public class ClienteServiceTests
             .Returns(Task.CompletedTask);
 
         // Act
-        var result = await _clienteService.Create(request, CancellationToken.None);
+        var result = await _clienteService.Create(request,Guid.NewGuid(), CancellationToken.None);
 
         // Assert
         Assert.NotNull(result);
@@ -95,7 +95,7 @@ public class ClienteServiceTests
             .Returns(Task.CompletedTask);
 
         // Act
-        var result = await _clienteService.Create(request, CancellationToken.None);
+        var result = await _clienteService.Create(request, Guid.NewGuid(), CancellationToken.None);
 
         // Assert
         Assert.NotNull(result);
@@ -118,7 +118,7 @@ public class ClienteServiceTests
         };
 
         // Act
-        var result = await _clienteService.Create(request, CancellationToken.None);
+        var result = await _clienteService.Create(request, Guid.NewGuid(), CancellationToken.None);
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
@@ -140,7 +140,7 @@ public class ClienteServiceTests
         };
 
         // Act
-        var result = await _clienteService.Create(request, CancellationToken.None);
+        var result = await _clienteService.Create(request, Guid.NewGuid(), CancellationToken.None);
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
@@ -164,7 +164,7 @@ public class ClienteServiceTests
         };
 
         // Act
-        var result = await _clienteService.Create(request, CancellationToken.None);
+        var result = await _clienteService.Create(request, Guid.NewGuid(), CancellationToken.None);
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
@@ -191,7 +191,7 @@ public class ClienteServiceTests
             .ThrowsAsync(new Exception("Database error"));
 
         // Act
-        var result = await _clienteService.Create(request, CancellationToken.None);
+        var result = await _clienteService.Create(request, Guid.NewGuid(), CancellationToken.None);
 
         // Assert
         Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);

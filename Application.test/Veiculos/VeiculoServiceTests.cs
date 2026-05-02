@@ -47,7 +47,7 @@ public class VeiculoServiceTests
             .Returns(Task.CompletedTask);
 
         // Act
-        var result = await _veiculoService.Create(request, CancellationToken.None);
+        var result = await _veiculoService.Create(request, Guid.NewGuid(), CancellationToken.None);
 
         // Assert
         Assert.NotNull(result);
@@ -76,7 +76,7 @@ public class VeiculoServiceTests
             .ReturnsAsync((Cliente)null);
 
         // Act
-        var result = await _veiculoService.Create(request, CancellationToken.None);
+        var result = await _veiculoService.Create(request, Guid.NewGuid(), CancellationToken.None);
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
@@ -104,7 +104,7 @@ public class VeiculoServiceTests
             .ReturnsAsync(cliente);
 
         // Act
-        var result = await _veiculoService.Create(request, CancellationToken.None);
+        var result = await _veiculoService.Create(request, Guid.NewGuid(), CancellationToken.None);
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
@@ -126,7 +126,7 @@ public class VeiculoServiceTests
             .Returns(Task.CompletedTask);
 
         // Act
-        var result = await _veiculoService.Delete(veiculoId, CancellationToken.None);
+        var result = await _veiculoService.Delete(veiculoId, Guid.NewGuid(), CancellationToken.None);
 
         // Assert
         Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
@@ -143,7 +143,7 @@ public class VeiculoServiceTests
             .ReturnsAsync((Veiculo)null);
 
         // Act
-        var result = await _veiculoService.Delete(veiculoId, CancellationToken.None);
+        var result = await _veiculoService.Delete(veiculoId, Guid.NewGuid(), CancellationToken.None);
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);

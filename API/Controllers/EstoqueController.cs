@@ -18,7 +18,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin,Funcionario,Mecanico,Almoxarifado")]
+        [Authorize(Roles = "Administrador,Funcionario,Mecanico,Almoxarifado")]
         public async Task<IActionResult> GetPaginated([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken ct= default)
         {
             var result = await _estoqueService.GetPaginated(page, pageSize, ct); 
@@ -27,7 +27,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin,Funcionario,Mecanico,Almoxarifado")]
+        [Authorize(Roles = "Administrador,Funcionario,Mecanico,Almoxarifado")]
         public async Task<IActionResult> GetById([FromRoute] Guid Id, CancellationToken ct= default)
         {
             var result = await _estoqueService.GetById(Id, ct); 
@@ -36,7 +36,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Funcionario,Almoxarifado")]
+        [Authorize(Roles = "Administrador,Funcionario,Almoxarifado")]
         public async Task<IActionResult> Movimentar([FromBody] EstoqueRequestDTO request, CancellationToken ct = default)
         {
             var idUsuario = User.ObterIdUsuario();

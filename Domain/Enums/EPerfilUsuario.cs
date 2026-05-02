@@ -2,7 +2,7 @@
 {
     public enum EPerfilUsuario
     {
-        Admin = 1,
+        Administrador = 1,
         Funcionario = 2,
         Mecanico = 3,
         Cliente = 4,

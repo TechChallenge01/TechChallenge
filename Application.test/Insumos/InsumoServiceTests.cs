@@ -44,7 +44,7 @@ public class InsumoServiceTests
             .Returns(Task.CompletedTask);
 
         // Act
-        var result = await _insumoService.Create(request, CancellationToken.None);
+        var result = await _insumoService.Create(request, Guid.NewGuid(), CancellationToken.None);
 
         // Assert
         Assert.NotNull(result);
@@ -66,7 +66,7 @@ public class InsumoServiceTests
         };
 
         // Act
-        var result = await _insumoService.Create(request, CancellationToken.None);
+        var result = await _insumoService.Create(request, Guid.NewGuid(), CancellationToken.None);
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
@@ -84,7 +84,7 @@ public class InsumoServiceTests
         };
 
         // Act
-        var result = await _insumoService.Create(request, CancellationToken.None);
+        var result = await _insumoService.Create(request, Guid.NewGuid(), CancellationToken.None);
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
@@ -105,7 +105,7 @@ public class InsumoServiceTests
             .ThrowsAsync(new Exception("Database error"));
 
         // Act
-        var result = await _insumoService.Create(request, CancellationToken.None);
+        var result = await _insumoService.Create(request, Guid.NewGuid(), CancellationToken.None);
 
         // Assert
         Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
@@ -125,7 +125,7 @@ public class InsumoServiceTests
             .Returns(Task.CompletedTask);
 
         // Act
-        var result = await _insumoService.Delete(insumoId, CancellationToken.None);
+        var result = await _insumoService.Delete(insumoId, Guid.NewGuid(), CancellationToken.None);
 
         // Assert
         Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
@@ -142,7 +142,7 @@ public class InsumoServiceTests
             .ReturnsAsync((Insumo)null);
 
         // Act
-        var result = await _insumoService.Delete(insumoId, CancellationToken.None);
+        var result = await _insumoService.Delete(insumoId, Guid.NewGuid(), CancellationToken.None);
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);

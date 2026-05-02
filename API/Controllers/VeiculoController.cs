@@ -19,7 +19,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin,Funcionario")]
+        [Authorize(Roles = "Administrador,Funcionario")]
         public async Task<IActionResult> GetPaginated([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken ct = default)
         {
             var result = await _veiculoService.GetPaginated(page, pageSize, ct);
@@ -28,7 +28,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Funcionario")]
+        [Authorize(Roles = "Administrador,Funcionario")]
         public async Task<IActionResult> Create([FromBody] VeiculoRequestDTO request, CancellationToken ct = default)
         {
             var idUsuario = User.ObterIdUsuario();
@@ -39,7 +39,7 @@ namespace API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin,Funcionario")]
+        [Authorize(Roles = "Administrador,Funcionario")]
         public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken ct = default)
         {
             var idUsuario = User.ObterIdUsuario();
@@ -50,7 +50,7 @@ namespace API.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin,Funcionario")]
+        [Authorize(Roles = "Administrador,Funcionario")]
         public async Task<IActionResult> Update([FromRoute] Guid Id,[FromBody] VeiculoRequestDTO request, CancellationToken ct = default)
         {
             var idUsuario = User.ObterIdUsuario();
@@ -61,7 +61,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin,Funcionario")]
+        [Authorize(Roles = "Administrador,Funcionario")]
         public async Task<IActionResult> GetById([FromRoute] Guid id, CancellationToken ct = default)
         {
             var result = await _veiculoService.GetById(id, ct);
