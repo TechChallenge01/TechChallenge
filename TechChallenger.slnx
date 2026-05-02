@@ -11,4 +11,5 @@
     <Project Path="Application.test/Application.test.csproj" />
     <Project Path="Domain.test/Domain.test.csproj" Id="2630e6d8-8636-4d05-9ab2-89142714a169" />
   </Folder>
+  <Project Path="API.test/API.test.csproj" />
 </Solution>
