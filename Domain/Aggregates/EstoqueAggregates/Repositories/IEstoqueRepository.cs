@@ -9,6 +9,5 @@
         Task<ICollection<Estoque>> GetByInsumoIds(ICollection<Guid> Insumos, CancellationToken ct);
         Task<Estoque> GetById(Guid id, CancellationToken ct);
         Task Create(Estoque estoque, CancellationToken ct);
-        Task<Estoque> GetByInsumoId(Guid Insumo, CancellationToken ct);
     }
 }
