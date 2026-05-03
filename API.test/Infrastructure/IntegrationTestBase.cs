@@ -5,6 +5,10 @@ using Testcontainers.MsSql;
 using Microsoft.Extensions.Configuration;
 using Infra.Context;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Integration.test.Infrastructure;
 

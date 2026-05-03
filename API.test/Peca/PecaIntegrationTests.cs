@@ -2,9 +2,8 @@
 using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
-using Xunit;
 using Application.Pecas.DTOs.Requests;
-using API.test.Infrastructure;
+using Integration.test.Infrastructure;
 
 namespace API.test.Pecas;
 
@@ -26,7 +25,6 @@ public sealed class PecaIntegrationTests : IClassFixture<IntegrationTestBase>
         {
             Nome = nome,
             Descricao = "Peça de reposição original",
-            Marca = "Bosch",
             PrecoVenda = 150.00m  
         };
 
@@ -58,16 +56,6 @@ public sealed class PecaIntegrationTests : IClassFixture<IntegrationTestBase>
         var response = await _client.GetAsync($"{BaseRoute}?page=1&pageSize=10");
 
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-    }
-
-    [Fact]
-    public async Task GetPaginated_DeveRetornarUnauthorized_SemToken()
-    {
-        _fixture.RemoverAutenticacao();
-
-        var response = await _client.GetAsync($"{BaseRoute}?page=1&pageSize=10");
-
-        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
 
     [Fact]

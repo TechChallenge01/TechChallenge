@@ -1,10 +1,8 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
-using Xunit;
 using Application.Estoques.DTOs.Requests;
-using Application.Estoques.DTOs.Responses;
-using API.test.Infrastructure;
+using Integration.test.Infrastructure;
 
 namespace API.test.Estoques;
 
@@ -41,8 +39,7 @@ public sealed class EstoqueIntegrationTests : IClassFixture<IntegrationTestBase>
         {
             PecaId = Guid.NewGuid(), 
             Quantidade = 10,
-            TipoMovimentacao = 1, 
-            Observacao = "Entrada de teste via integração"
+            TipoMovimentacao = "1" 
         };
 
         // Act

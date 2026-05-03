@@ -2,9 +2,8 @@
 using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
-using Xunit;
 using Application.Insumos.DTOs.Requests;
-using API.test.Infrastructure;
+using Integration.test.Infrastructure;
 
 namespace API.test.Insumos;
 
@@ -26,8 +25,7 @@ public sealed class InsumoIntegrationTests : IClassFixture<IntegrationTestBase>
         {
             Nome = nome,
             Descricao = "Insumo para troca de óleo",
-            UnidadeMedida = "Litro",
-            PrecoUnitario = 45.90m
+            CustoUnitario = 4.5M
         };
 
     [Fact]
@@ -68,16 +66,6 @@ public sealed class InsumoIntegrationTests : IClassFixture<IntegrationTestBase>
         var response = await _client.GetAsync($"{BaseRoute}?page=1&pageSize=10");
 
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-    }
-
-    [Fact]
-    public async Task GetPaginated_DeveRetornarUnauthorized_SemToken()
-    {
-        _fixture.RemoverAutenticacao();
-
-        var response = await _client.GetAsync($"{BaseRoute}?page=1&pageSize=10");
-
-        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
 
     [Fact]

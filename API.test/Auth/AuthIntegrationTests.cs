@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Infra.Context;
 using Domain.Entities;
 using Xunit;
+using Domain.Enums;
 
 namespace Integration.test.Auth;
 
@@ -57,7 +58,7 @@ public sealed class AuthIntegrationTests
     [Fact]
     public async Task Post_CriarUsuarioComAdminLogado_RetornaCreated()
     {
-        // Arrange - Precisa de token de Admin para acessar este endpoint
+        // Arrange
         _fixture.AutenticarClient(Guid.NewGuid(), "Admin Global", "Admin");
 
         var request = new CriarUsuarioRequestDTO
@@ -65,7 +66,7 @@ public sealed class AuthIntegrationTests
             Nome = "Novo Tecnico",
             Email = "tecnico@oficina.com",
             Senha = "Senha@123",
-            Perfil = "Funcionario"
+            Perfil = EPerfilUsuario.Funcionario 
         };
 
         // Act
@@ -78,7 +79,7 @@ public sealed class AuthIntegrationTests
     [Fact]
     public async Task Post_CriarUsuarioSemToken_RetornaUnauthorized()
     {
-        // Arrange - Garante que o client está sem cabeçalhos de autorização
+        // Arrange 
         _client.DefaultRequestHeaders.Authorization = null;
 
         var request = new CriarUsuarioRequestDTO { /* dados */ };
@@ -93,7 +94,7 @@ public sealed class AuthIntegrationTests
     [Fact]
     public async Task Post_CriarUsuarioComPerfilMecanico_RetornaForbidden()
     {
-        // Arrange - Mecânico não pode criar outros usuários (apenas Admin)
+        // Arrange 
         _fixture.AutenticarClient(Guid.NewGuid(), "Mecanico Silva", "Funcionario");
 
         var request = new CriarUsuarioRequestDTO { /* dados */ };
@@ -101,27 +102,20 @@ public sealed class AuthIntegrationTests
         // Act
         var response = await _client.PostAsJsonAsync($"{BaseRoute}/usuarios", request);
 
-        // Assert - O ASP.NET retorna 403 quando o perfil não bate com o Role exigido
+        // Assert 
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
     }
 
-    // Helper para inserir usuário diretamente no banco via DbContext
     private async Task CriarUsuarioNoBancoAsync(string email, string senha)
     {
-        // Nota: se o seu sistema usa BCrypt ou Identity, você deve salvar a senha hasheada aqui
-        using var scope = _fixture.GetScope(); // Crie um método GetScope na sua Base se necessário
+        using var scope = _fixture.GetScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        // Verifique se o usuário já existe para não quebrar a constraint de Unique
         if (context.Usuarios.Any(u => u.Email == email)) return;
 
-        context.Usuarios.Add(new Usuario
+        context.Usuarios.Add(new Usuario("Usuário Teste", email, senha, EPerfilUsuario.Administrador, Guid.NewGuid())
         {
-            Id = Guid.NewGuid(),
-            Nome = "Usuário Teste",
-            Email = email,
-            SenhaHash = senha, // Idealmente use seu hasher aqui
-            Perfil = "Administrador"
+            
         });
 
         await context.SaveChangesAsync();

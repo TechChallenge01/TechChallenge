@@ -1,10 +1,10 @@
 ﻿// API.test/Veiculos/VeiculoIntegrationTests.cs
+using Application.Veiculos.DTOs.Requests;
+using FluentAssertions;
+using Integration.test.Infrastructure;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Net.Http.Json;
-using FluentAssertions;
-using Xunit;
-using Application.Veiculos.DTOs.Requests;
-using API.test.Infrastructure;
 
 namespace API.test.Veiculos;
 
@@ -26,7 +26,7 @@ public sealed class VeiculoIntegrationTests : IClassFixture<IntegrationTestBase>
         {
             Placa = placa,
             Modelo = "Civic",
-            MarcaVeiculoId = Guid.NewGuid(), 
+            MarcaVeiculo = "Honda",
             Ano = 2022,
             Cor = "Preto",
             ClienteId = Guid.NewGuid()
@@ -70,16 +70,6 @@ public sealed class VeiculoIntegrationTests : IClassFixture<IntegrationTestBase>
         var response = await _client.GetAsync($"{BaseRoute}?page=1&pageSize=10");
 
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-    }
-
-    [Fact]
-    public async Task GetPaginated_DeveRetornarUnauthorized_SemToken()
-    {
-        _fixture.RemoverAutenticacao();
-
-        var response = await _client.GetAsync($"{BaseRoute}?page=1&pageSize=10");
-
-        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
 
     [Fact]

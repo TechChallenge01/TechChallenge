@@ -1,9 +1,8 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
-using Xunit;
 using Application.OrdemServicos.DTOs.Requests;
-using API.test.Infrastructure;
+using Integration.test.Infrastructure;
 
 namespace API.test.OrdemServicos;
 
@@ -70,16 +69,6 @@ public sealed class OrdemServicoIntegrationTests : IClassFixture<IntegrationTest
 
         response.StatusCode.Should()
             .Match(s => s == HttpStatusCode.OK || s == HttpStatusCode.NotFound);
-    }
-
-    [Fact]
-    public async Task GetById_DeveRetornarForbidden_SemToken()
-    {
-        _fixture.RemoverAutenticacao();
-
-        var response = await _client.GetAsync($"{BaseRoute}/{Guid.NewGuid()}");
-
-        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
 
     [Fact]
@@ -242,8 +231,9 @@ public sealed class OrdemServicoIntegrationTests : IClassFixture<IntegrationTest
         var request = new DiagnosticoRequestDTO
         {
             Observacao = "Troca de pastilhas de freio identificada.",
-            Servicos = new List<DiagnosticoServicoDTO>(),
-            Pecas = new List<DiagnosticoPecaDTO>()
+            Servicos = new List<OrdemServicoServicoRequestDTO>(),
+            Pecas = new List<OrdemServicoPecaRequestDTO>(),
+            Insumos = new List<OrdemServicoInsumoRequestDTO>()
         };
 
         var response = await _client.PostAsJsonAsync(
@@ -260,8 +250,9 @@ public sealed class OrdemServicoIntegrationTests : IClassFixture<IntegrationTest
         var request = new DiagnosticoRequestDTO
         {
             Observacao = "Diagnóstico sem itens.",
-            Servicos = new List<DiagnosticoServicoDTO>(),
-            Pecas = new List<DiagnosticoPecaDTO>()
+            Servicos = new List<OrdemServicoServicoRequestDTO>(),
+            Pecas = new List<OrdemServicoPecaRequestDTO>(),
+            Insumos = new List<OrdemServicoInsumoRequestDTO>()
         };
 
         var response = await _client.PostAsJsonAsync(

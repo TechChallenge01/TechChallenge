@@ -5,9 +5,9 @@ namespace Application.Servicos.DTOs.Requests;
 public class ServicoRequestDTO
 {
     [Required]
-    public string Nome { get; private set; }
+    public string Nome { get; init; }
     [Required]
-    public string Descricao { get; private set; }
+    public string Descricao { get; init; }
     [Required]
-    public decimal PrecoVenda { get; private set; }
+    public decimal PrecoVenda { get; init; }
 }

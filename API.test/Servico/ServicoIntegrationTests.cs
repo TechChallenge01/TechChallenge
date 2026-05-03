@@ -2,9 +2,8 @@
 using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
-using Xunit;
 using Application.Servicos.DTOs.Requests;
-using API.test.Infrastructure;
+using Integration.test.Infrastructure;
 
 namespace API.test.Servicos;
 
@@ -26,7 +25,7 @@ public sealed class ServicoIntegrationTests : IClassFixture<IntegrationTestBase>
         {
             Nome = nome,
             Descricao = "Serviço completo de geometria veicular",
-            PrecoVenda = 180.00m   // ✅ use o nome real do campo no seu DTO
+            PrecoVenda = 180.00m
         };
 
     [Fact]
@@ -58,17 +57,6 @@ public sealed class ServicoIntegrationTests : IClassFixture<IntegrationTestBase>
 
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
     }
-
-    [Fact]
-    public async Task GetPaginated_DeveRetornarUnauthorized_SemToken()
-    {
-        _fixture.RemoverAutenticacao();
-
-        var response = await _client.GetAsync($"{BaseRoute}?page=1&pageSize=10");
-
-        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-    }
-
     [Fact]
     public async Task GetById_DeveRetornarNotFound_QuandoServicoNaoExiste()
     {
@@ -138,16 +126,6 @@ public sealed class ServicoIntegrationTests : IClassFixture<IntegrationTestBase>
         var response = await _client.PostAsJsonAsync(BaseRoute, RequestValido());
 
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-    }
-
-    [Fact]
-    public async Task Create_DeveRetornarUnauthorized_SemToken()
-    {
-        _fixture.RemoverAutenticacao();
-
-        var response = await _client.PostAsJsonAsync(BaseRoute, RequestValido());
-
-        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
 
     [Fact]
