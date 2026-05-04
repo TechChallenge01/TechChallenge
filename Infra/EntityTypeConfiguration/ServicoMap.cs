@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Infra.BaseMap;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -24,6 +25,8 @@ namespace Infra.EntityTypeConfiguration
                 .IsRequired();
 
             builder.Property(x => x.TempoMedioExecucao);
+
+            builder.ConfigurarAuditoria();
         }
     }
 }

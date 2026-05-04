@@ -1,10 +1,10 @@
-﻿using Domain.BaseEntity;
+﻿using Domain.Aggregates.OrdemServicoAggregates;
 
 namespace Domain.ValueObjects
 {
-    public class OrdemServicoInsumo : Base
+    public class OrdemServicoInsumo
     {
-        public OrdemServicoInsumo(Guid insumoId, int quantidade, decimal custoUnitario, Guid IdUsuarioCriacao)
+        public OrdemServicoInsumo(Guid ordemServicoId, Guid insumoId, int quantidade, decimal custoUnitario)
         {
             ValidarQuantidade(quantidade);
             ValidarCustoUnitario(custoUnitario);
@@ -12,21 +12,19 @@ namespace Domain.ValueObjects
             InsumoId = insumoId;
             Quantidade = quantidade;
             CustoUnitario = custoUnitario;
-            IdUsuarioCriacao = IdUsuarioCriacao;
-            DataCriacao = DateTime.UtcNow;
+            OrdemServicoId = ordemServicoId;
         }
 
         protected OrdemServicoInsumo() { }
 
 
         public Guid InsumoId { get; private set; }
+        public Guid OrdemServicoId { get; private set; }
         public int Quantidade { get; private set; }
         public decimal CustoUnitario { get; private set; }
         public decimal ValorTotal => Quantidade * CustoUnitario;
         public virtual Insumo insumo { get; private set; }
-        public string NomeInsumo => insumo?.Nome;
-        public string DescricaoInsumo => insumo?.Descricao;
-
+        public virtual OrdemServico OrdemServico { get; private set; }
         private void ValidarQuantidade(int quantidade)
         {
             if (quantidade <= 0)

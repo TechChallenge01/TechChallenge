@@ -1,11 +1,11 @@
 ﻿using Application.Auth.Services;
 using Application.Clientes.Services;
 using Application.Estoques.Services;
+using Application.Insumos.Services;
 using Application.OrdemServicos.Services;
 using Application.Pecas.Services;
 using Application.Servicos.Services;
 using Application.Veiculos.Services;
-using Domain.Entities.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application
@@ -16,6 +16,7 @@ namespace Application
         {
             services.AddScoped<IClienteService, ClienteService>();
             services.AddScoped<IVeiculoService, VeiculoService>();
+            services.AddScoped<IInsumoService, InsumoService>();
             services.AddScoped<IOrdemServicoService, OrdemServicoService>();
             services.AddScoped<IPecaService, PecaService>();
             services.AddScoped<IServicoService, ServicoService>();

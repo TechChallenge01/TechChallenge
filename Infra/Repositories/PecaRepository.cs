@@ -14,7 +14,7 @@ namespace Infra.Repositories
             _appDbContext = appDbContext;
         }
 
-        public async Task Add(Peca peca, CancellationToken ct)
+        public async Task Create(Peca peca, CancellationToken ct)
         {
             await _appDbContext.Pecas.AddAsync(peca, ct);
             await _appDbContext.SaveChangesAsync(ct);
@@ -26,28 +26,29 @@ namespace Infra.Repositories
             await _appDbContext.SaveChangesAsync(ct);
         }
 
-        public async Task<Peca> GetById(Guid id, CancellationToken ct)
+        public async Task<Peca?> GetById(Guid id, CancellationToken ct)
         {
             return await _appDbContext.Pecas
-                        .FirstOrDefaultAsync(p => p.Id == id, ct);
+                        .FirstOrDefaultAsync(p => p.Id == id && p.Ativo, ct);
         }
 
         public async Task<List<Peca>> GetByIds(List<Guid> idsPecas, CancellationToken ct)
         {
             return await _appDbContext.Pecas
-                        .Where(p => idsPecas.Contains(p.Id))
+                        .Where(p => idsPecas.Contains(p.Id) && p.Ativo)
                         .ToListAsync(ct);
         }
 
         public async Task<(ICollection<Peca> pecas, int total)> GetPaginated(int page, int pageSize, CancellationToken ct)
         {
-            var pecas = await _appDbContext.Pecas
-                        .Skip((page - 1) * pageSize)
-                        .Take(pageSize)
-                        .AsNoTracking()
-                        .ToListAsync(ct);
+            IQueryable<Peca> query = _appDbContext.Pecas.Where(p => p.Ativo);
 
-            var total = await _appDbContext.Pecas.CountAsync(ct);
+            var pecas = await query.Skip((page - 1) * pageSize)
+                                   .Take(pageSize)
+                                   .AsNoTracking()
+                                   .ToListAsync(ct);
+
+            var total = await query.CountAsync(ct);
 
             return (pecas, total);
         }

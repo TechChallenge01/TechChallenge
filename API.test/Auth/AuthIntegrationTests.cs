@@ -16,7 +16,7 @@ public sealed class AuthIntegrationTests
 {
     private readonly HttpClient _client;
     private readonly IntegrationTestBase _fixture;
-    private const string BaseRoute = "/api/auth";
+    private const string BaseRoute = "/api/Auth";
 
     public AuthIntegrationTests(IntegrationTestBase fixture)
     {

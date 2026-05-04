@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Infra.BaseMap;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infra.EntityTypeConfiguration;
@@ -33,5 +34,7 @@ public class UsuarioMap : IEntityTypeConfiguration<Usuario>
 
         builder.Property(u => u.Ativo)
             .HasDefaultValue(true);
+
+        builder.ConfigurarAuditoria();
     }
 }

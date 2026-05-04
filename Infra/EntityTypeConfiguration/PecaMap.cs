@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Infra.BaseMap;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -26,6 +27,8 @@ namespace Infra.EntityTypeConfiguration
 
             builder.Property(p => p.ValorUnitario)
                 .IsRequired();
+
+            builder.ConfigurarAuditoria();
         }
     }
 }

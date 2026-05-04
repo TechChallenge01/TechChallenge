@@ -3,10 +3,10 @@
     public record EstoqueResponseDTO
     {
         public Guid Id { get; set; }
-        public int QuantidadeDisponivel { get; set; }
-        public int QuantidadeReservada { get; set; }
-        public int QuantidadeTotal { get; set; }
-        public string NomePeca { get; set; }
-        public string NomeInsumo { get; set; }
+        public int QuantidadeDisponivel { get; init; }
+        public int QuantidadeReservada { get; init; }
+        public int QuantidadeTotal { get; init; }
+        public Guid? PecaId { get; init;  }
+        public Guid? InsumoId { get; init;  }
     }
 }

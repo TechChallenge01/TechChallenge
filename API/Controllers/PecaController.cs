@@ -49,7 +49,7 @@ namespace API.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin,Almoxarifado")]
+        [Authorize(Roles = "Administrador,Almoxarifado")]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] PecaRequestDTO request, CancellationToken ct = default)
         {
             var idUsuario = User.ObterIdUsuario();

@@ -2,6 +2,7 @@
 {
     public class Email
     {
+        protected Email() { }
         public Email(string email)
         {
             if (string.IsNullOrEmpty(email))
@@ -12,6 +13,7 @@
 
             EnderecoEmail = email.ToLower().Trim(); ;
         }
+
         public string EnderecoEmail { get; private set; }
 
         private bool ValidaEmail(string email)

@@ -122,7 +122,7 @@ public class InsumoServiceTests
             .ReturnsAsync(insumo);
 
         _unitOfWorkMock.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
-            .Returns(Task.CompletedTask);
+            .Returns(Task.FromResult(1));
 
         // Act
         var result = await _insumoService.Delete(insumoId, Guid.NewGuid(), CancellationToken.None);

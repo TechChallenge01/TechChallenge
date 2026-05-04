@@ -1,11 +1,9 @@
-﻿using Domain.Enums;
-
-namespace Domain.ValueObjects
+﻿namespace Domain.ValueObjects
 {
     public class Telefone
     {
 
-        public Telefone(string ddd, string ddi, string numero, ETipoTelefone tipo)
+        public Telefone(string ddd, string ddi, string numero)
         {
             if (string.IsNullOrWhiteSpace(ddd))
                 throw new ArgumentException("O DDD não pode ser nulo ou vazio.");
@@ -17,7 +15,6 @@ namespace Domain.ValueObjects
             DDD = ddd.Trim();
             DDI = ddi.Trim();
             Numero = numero.Trim();
-            Tipo = tipo.ToString();
         }
 
         protected Telefone() { }
@@ -25,7 +22,6 @@ namespace Domain.ValueObjects
         public string DDD { get; private set; }
         public string DDI { get; private set; }
         public string Numero { get; private set; }
-        public string Tipo { get; private set; }
 
         public override bool Equals(object obj)
         {

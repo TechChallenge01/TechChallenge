@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Domain.Entities.Repositories;
+﻿namespace Domain.Entities.Repositories;
 
 public interface IUsuarioRepository
 {
@@ -10,5 +6,4 @@ public interface IUsuarioRepository
     Task Create(Usuario usuario, CancellationToken ct = default);
     Task<Usuario?> GetByEmail(string email, CancellationToken ct = default);
     Task<bool> ExisteEmail(string email, CancellationToken ct = default);
-    Task Update(Usuario usuario, CancellationToken ct = default);
 }

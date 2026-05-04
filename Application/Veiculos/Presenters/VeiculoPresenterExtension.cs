@@ -14,8 +14,7 @@ namespace Application.Veiculos.Presenters
                 Modelo = veiculos.Modelo,
                 Ano = veiculos.Ano,
                 Placa = veiculos.Placa,
-                Cor = veiculos.Cor,
-                NomeCliente = veiculos.NomeCliente
+                Cor = veiculos.Cor
             };
         }
 

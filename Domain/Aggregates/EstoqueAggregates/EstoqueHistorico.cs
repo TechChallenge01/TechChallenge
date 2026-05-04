@@ -5,7 +5,7 @@ namespace Domain.Aggregates.EstoqueAggregates;
 
 public class EstoqueHistorico : Base
 {
-    public EstoqueHistorico( int quantidade, string observacao, ETipoMovimentacao tipoMovimentacao, Guid UsuarioCriacaoId, DateTime dataCriacao) : base(UsuarioCriacaoId, dataCriacao, null, null)
+    public EstoqueHistorico( int quantidade, string observacao, ETipoMovimentacao tipoMovimentacao, Guid UsuarioCriacaoId, DateTime dataCriacao, Guid estoqueId) : base(UsuarioCriacaoId, dataCriacao, null, null)
     {
         ValidarQuantidade(quantidade);
 
@@ -13,6 +13,7 @@ public class EstoqueHistorico : Base
         Quantidade = quantidade;
         Observacao = observacao;
         TipoMovimentacao = tipoMovimentacao.ToString();
+        EstoqueId = estoqueId;
     }
 
     protected EstoqueHistorico() { }
@@ -21,6 +22,8 @@ public class EstoqueHistorico : Base
     public int Quantidade { get; private set; } 
     public string Observacao { get; private set; } = string.Empty;
     public string TipoMovimentacao { get; private set; }
+    public Guid EstoqueId { get; private set; }
+    public virtual Estoque Estoque {  get; private set; }
 
     private void ValidarQuantidade(int quantidade)
     {

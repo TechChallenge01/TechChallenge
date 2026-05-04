@@ -1,4 +1,5 @@
 ﻿using Domain.Aggregates.ClienteAggregates;
+using Infra.BaseMap;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -25,9 +26,66 @@ namespace Infra.EntityTypeConfiguration
                 cnpj.Property(c => c.Valor).HasColumnName("Cnpj").HasMaxLength(14);
             });
 
-            builder.ConfigurarEmails();
-            builder.ConfigurarTelefones();
-            builder.ConfigurarEnderecos();
+            builder.OwnsOne(c => c.Endereco, end =>
+            {
+                end.Property(e => e.Bairro)
+                   .HasColumnName("Bairro")
+                   .IsRequired()
+                   .HasMaxLength(100);
+
+                end.Property(e => e.Logradouro)
+                   .HasColumnName("Logradouro")
+                   .IsRequired()
+                   .HasMaxLength(200);
+
+                end.Property(e => e.Numero)
+                    .HasColumnName("Numero")
+                    .IsRequired()
+                    .HasMaxLength(20);
+
+                end.Property(e => e.Complemento)
+                   .HasColumnName("Complemento")
+                   .HasMaxLength(200);
+
+                end.Property(e => e.Cep)
+                   .HasColumnName("Cep")
+                   .IsRequired()
+                   .HasMaxLength(8);
+
+                end.Property(e => e.Cidade)
+                   .HasColumnName("Cidade")
+                   .IsRequired()
+                   .HasMaxLength(100);
+
+                end.Property(e => e.Uf)
+                   .HasColumnName("Uf")
+                   .IsRequired()
+                   .HasMaxLength(2);
+            });
+
+            builder.OwnsOne(c => c.Telefone, tel =>
+            {
+                tel.Property(t => t.DDD)
+                   .HasColumnName("DDD")
+                   .HasMaxLength(3);
+
+                tel.Property(t => t.DDI)
+                   .HasColumnName("DDI")
+                   .HasMaxLength(3);
+
+                tel.Property(t => t.Numero)
+                   .HasMaxLength(9);
+
+            });
+
+            builder.OwnsOne(c => c.Email, em =>
+            {
+                em.Property(e => e.EnderecoEmail)
+                   .HasColumnName("Email")
+                   .HasMaxLength(200);
+            });
+
+            builder.ConfigurarAuditoria();
 
             builder.HasMany(c => c.Veiculos)
                 .WithOne()

@@ -1,4 +1,5 @@
 ﻿using Domain.Aggregates.EstoqueAggregates;
+using Infra.BaseMap;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,6 +13,8 @@ public class EstoqueHistoricoMap : IEntityTypeConfiguration<EstoqueHistorico>
 
         builder.HasKey(e => e.Id);
 
+        builder.Property(e => e.Id).ValueGeneratedNever();
+
         builder.Property(e => e.Quantidade)
                         .IsRequired();
 
@@ -21,5 +24,12 @@ public class EstoqueHistoricoMap : IEntityTypeConfiguration<EstoqueHistorico>
 
         builder.Property(e => e.Observacao)
                         .HasMaxLength(500);
+
+        builder.HasOne(x => x.Estoque)
+               .WithMany(e => e.Historicos)
+               .HasForeignKey(x => x.EstoqueId)
+               .OnDelete(DeleteBehavior.Cascade);
+
+        builder.ConfigurarAuditoria();
     }
 }

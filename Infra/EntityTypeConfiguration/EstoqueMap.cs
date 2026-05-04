@@ -1,4 +1,5 @@
 ﻿using Domain.Aggregates.EstoqueAggregates;
+using Infra.BaseMap;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,8 +13,14 @@ public class EstoqueMap : IEntityTypeConfiguration<Estoque>
 
         builder.HasKey(e => e.Id);
 
-        builder.Property(e => e.PecaId)
-                        .IsRequired();
+        builder.Property(e => e.PecaId);
+
+        builder.Property(e => e.InsumoId);
+
+        builder.HasMany(e => e.Historicos)
+               .WithOne(e => e.Estoque)
+               .HasForeignKey(e => e.EstoqueId)
+               .OnDelete(DeleteBehavior.Cascade);
 
         builder.Property(e => e.QuantidadeDisponivel)
                         .IsRequired()
@@ -23,17 +30,8 @@ public class EstoqueMap : IEntityTypeConfiguration<Estoque>
                         .IsRequired()
                         .HasDefaultValue(0);
 
-        builder.HasOne(e => e.Peca)
-                        .WithOne()
-                        .HasForeignKey<Estoque>(e => e.PecaId)
-                        .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasMany(e => e.Historicos)
-                       .WithOne()
-                       .HasForeignKey("EstoqueId")
-                       .OnDelete(DeleteBehavior.Cascade);
+        builder.ConfigurarAuditoria();
 
         builder.Ignore(e => e.QuantidadeTotal);
-        builder.Ignore(e => e.NomePeca);
     }
 }

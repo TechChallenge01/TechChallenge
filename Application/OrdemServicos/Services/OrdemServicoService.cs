@@ -194,7 +194,7 @@ public class OrdemServicoService : IOrdemServicoService
             if (!cliente.Veiculos.Any(v => v.Id == request.VeiculoId))
                 return new CommandResult<Guid> { StatusCode = HttpStatusCode.NotFound, Message = "Veículo não encontrado." };
 
-            var entity = new OrdemServico(cliente.Id, request.VeiculoId, idUsuario);
+            var ordemServico = new OrdemServico(cliente.Id, request.VeiculoId, idUsuario);
 
             if (request.Pecas is not null && request.Pecas.Any())
             {
@@ -212,10 +212,10 @@ public class OrdemServicoService : IOrdemServicoService
                 var ordemPecas = pecasAgrupadas.Select(p =>
                 {
                     var valorUnitario = pecasEntities.First(e => e.Id == p.PecaId).ValorUnitario;
-                    return new OrdemServicoPeca(p.PecaId, p.QuantidadeTotal, valorUnitario, Guid.Empty);
+                    return new OrdemServicoPeca(ordemServico.Id, p.PecaId, p.QuantidadeTotal, valorUnitario);
                 }).ToList();
 
-                entity.AlterarPeca(ordemPecas);
+                ordemServico.AlterarPeca(ordemPecas);
 
                 var estoques = await _estoqueRepository.GetByPecaIds(idsPecas, ct);
 
@@ -246,10 +246,10 @@ public class OrdemServicoService : IOrdemServicoService
                 var ordemInsumos = insumosAgrupados.Select(i =>
                 {
                     var valorUnitario = InsumosEntities.First(e => e.Id == i.InsumoId).CustoUnitario;
-                    return new OrdemServicoInsumo(i.InsumoId, i.QuantidadeTotal, valorUnitario, Guid.Empty);
+                    return new OrdemServicoInsumo(ordemServico.Id, i.InsumoId, i.QuantidadeTotal, valorUnitario);
                 }).ToList();
 
-                entity.AlterarInsumo(ordemInsumos);
+                ordemServico.AlterarInsumo(ordemInsumos);
 
                 var estoques = await _estoqueRepository.GetByInsumoIds(idsInsumos, ct);
 
@@ -280,13 +280,13 @@ public class OrdemServicoService : IOrdemServicoService
                 var ordemServicos = servicosAgrupados.Select(s =>
                 {
                     var valorUnitario = servicosEntities.First(e => e.Id == s.ServicoId).ValorUnitario;
-                    return new OrdemServicoServico(s.ServicoId, s.QuantidadeTotal, valorUnitario, Guid.Empty);
+                    return new OrdemServicoServico(ordemServico.Id, s.ServicoId, s.QuantidadeTotal, valorUnitario);
                 }).ToList();
 
-                entity.AlterarServico(ordemServicos);
+                ordemServico.AlterarServico(ordemServicos);
             }
 
-            var ordemServicoId = await _ordemServicoRepository.Create(entity, ct);
+            var ordemServicoId = await _ordemServicoRepository.Create(ordemServico, ct);
 
             return new CommandResult<Guid> { StatusCode = HttpStatusCode.Created, Message = "Ordem de serviço criada com sucesso.", Data = ordemServicoId };
         }
@@ -394,7 +394,7 @@ public class OrdemServicoService : IOrdemServicoService
                 ordemPecas = pecasAgrupadas.Select(p =>
                 {
                     var valorUnitario = pecasEntities.First(e => e.Id == p.PecaId).ValorUnitario;
-                    return new OrdemServicoPeca(p.PecaId, p.QuantidadeTotal, valorUnitario, Guid.Empty);
+                    return new OrdemServicoPeca(ordemServico.Id, p.PecaId, p.QuantidadeTotal, valorUnitario);
                 }).ToList();
             }
 
@@ -422,7 +422,7 @@ public class OrdemServicoService : IOrdemServicoService
                 ordemInsumos = InsumosAgrupados.Select(i =>
                 {
                     var valorUnitario = insumosEntities.First(e => e.Id == i.InsumoId).CustoUnitario;
-                    return new OrdemServicoInsumo(i.InsumoId, i.QuantidadeTotal, valorUnitario, Guid.Empty);
+                    return new OrdemServicoInsumo(ordemServico.Id, i.InsumoId, i.QuantidadeTotal, valorUnitario);
                 }).ToList();
             }
 
@@ -444,7 +444,7 @@ public class OrdemServicoService : IOrdemServicoService
                 ordemServicos = servicosAgrupados.Select(s =>
                 {
                     var valorUnitario = servicosEntities.First(e => e.Id == s.ServicoId).ValorUnitario;
-                    return new OrdemServicoServico(s.ServicoId, s.QuantidadeTotal, valorUnitario, Guid.Empty);
+                    return new OrdemServicoServico(ordemServico.Id, s.ServicoId, s.QuantidadeTotal, valorUnitario);
                 }).ToList();
             }
 
@@ -511,16 +511,18 @@ public class OrdemServicoService : IOrdemServicoService
     {
         try
         {
+            Cliente cliente = await _clienteRepository.GetById(ordemServico.ClienteId, ct);
+
             var orcamento = $"""
                             ORÇAMENTO
 
                             PEÇAS:
                             {string.Join("\n", ordemServico.Pecas.Select(p =>
-                                    $"  {p.Quantidade}x {p.NomePeca} | Unit: {p.ValorUnitario:C} | Total: {p.ValorTotal:C}"))}
+                                    $"  {p.Quantidade}x {p.Peca.Nome} | Unit: {p.ValorUnitario:C} | Total: {p.ValorTotal:C}"))}
 
                             SERVIÇOS:
                             {string.Join("\n", ordemServico.Servicos.Select(s =>
-                                    $"  {s.Quantidade}x {s.NomeServico} | Unit: {s.ValorUnitario:C} | Total: {s.ValorTotal:C}"))}
+                                    $"  {s.Quantidade}x {s.Servico.Nome} | Unit: {s.ValorUnitario:C} | Total: {s.ValorTotal:C}"))}
 
                             Desconto:    {ordemServico.ValorDesconto:C}
                             Valor Total: {ordemServico.ValorTotal:C}
@@ -528,8 +530,8 @@ public class OrdemServicoService : IOrdemServicoService
 
             var payloadEmail = new EmailPayloadDTO
             {
-                To = ordemServico.Cliente.Emails.Select(e => e.ToString()).ToList(),
-                Body = $"Olá {ordemServico.Cliente.Nome}, o diagnóstico da sua ordem de serviço (ID: {ordemServico.Id}) foi realizado. segue o orçamento:\n{orcamento}",
+                To = cliente.Email.EnderecoEmail,
+                Body = $"Olá {cliente.Nome}, o diagnóstico da sua ordem de serviço (ID: {ordemServico.Id}) foi realizado. segue o orçamento:\n{orcamento}",
                 Subject = "Orçamento da Ordem de Serviço"
             };
 

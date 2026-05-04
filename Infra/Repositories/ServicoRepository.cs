@@ -26,28 +26,29 @@ namespace Infra.Repositories
             await _appDbContext.SaveChangesAsync(ct);
         }
 
-        public async Task<Servico> GetById(Guid id, CancellationToken ct)
+        public async Task<Servico?> GetById(Guid id, CancellationToken ct)
         {
             return await _appDbContext.Servicos
-                                      .FirstOrDefaultAsync(x => x.Id == id, ct);
+                                      .FirstOrDefaultAsync(s => s.Id == id && s.Ativo, ct);
         }
 
         public async Task<ICollection<Servico>> GetByIds(ICollection<Guid> idsServicos, CancellationToken ct)
         {
             return await _appDbContext.Servicos
-                                      .Where(x => idsServicos.Contains(x.Id))
+                                      .Where(s => idsServicos.Contains(s.Id) && s.Ativo)
                                       .ToListAsync(ct);
         }
 
         public async Task<(List<Servico> servicos, int total)> GetPaginatedList(int page, int pageSize, CancellationToken ct)
         {
-            var servicos = await _appDbContext.Servicos
-                                              .Skip(page)
-                                              .Take(pageSize)
-                                              .AsNoTracking()
-                                              .ToListAsync(ct);
+            IQueryable<Servico> query = _appDbContext.Servicos.Where(s => s.Ativo);
 
-            var total = await _appDbContext.Servicos.CountAsync(ct);
+            var servicos = await query.Skip((page - 1) * pageSize)
+                                      .Take(pageSize)
+                                      .AsNoTracking()
+                                      .ToListAsync(ct);
+
+            var total = await query.CountAsync(ct);
 
             return (servicos, total);
         }

@@ -1,9 +1,7 @@
 using API.Extensions;
 using Application;
 using Infra;
-using Infra.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -55,5 +53,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapGet("/", () => Results.Ok("TechChallenge API - Running"));
 
 app.Run();

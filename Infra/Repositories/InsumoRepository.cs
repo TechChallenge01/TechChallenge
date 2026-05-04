@@ -25,26 +25,27 @@ namespace Infra.Repositories
             await _appDbContext.SaveChangesAsync(ct);
         }
 
-        public async Task<Insumo> GetById(Guid id, CancellationToken cancellationToken)
+        public async Task<Insumo?> GetById(Guid id, CancellationToken cancellationToken)
         {
             return await _appDbContext.Insumos
-                        .FirstOrDefaultAsync(i => i.Id == id, cancellationToken);
+                        .FirstOrDefaultAsync(i => i.Id == id && i.Ativo, cancellationToken);
         }
 
         public async Task<ICollection<Insumo>> GetByIds(ICollection<Guid> ids, CancellationToken cancellationToken)
         {
-            return _appDbContext.Insumos.Where(x => ids.Contains(x.Id)).ToList();
+            return _appDbContext.Insumos.Where(i => ids.Contains(i.Id) && i.Ativo).ToList();
         }
 
         public async Task<(ICollection<Insumo> insumos, int total)> GetPaginatedAsync(int page, int pageSize, CancellationToken ct)
         {
-            var insumos = await _appDbContext.Insumos
-                                .Skip((page - 1) * pageSize)
-                                .Take(pageSize)
-                                .AsNoTracking()
-                                .ToListAsync(ct);
+            IQueryable<Insumo> query = _appDbContext.Insumos.Where(i => i.Ativo);
 
-            var total = await _appDbContext.Insumos.CountAsync(ct);
+            var insumos = await query.Skip((page - 1) * pageSize)
+                                     .Take(pageSize)
+                                     .AsNoTracking()
+                                     .ToListAsync(ct);
+
+            var total = await query.CountAsync(ct);
 
             return (insumos, total);
         }

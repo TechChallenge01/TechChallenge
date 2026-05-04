@@ -1,12 +1,8 @@
 ﻿using Application.Auth.DTOs.Requests;
 using Application.Auth.DTOs.Responses;
-using Application.Clientes.DTOs.Responses;
 using Domain.Entities.Repositories;
-using Org.BouncyCastle.Crypto.Generators;
-using Shared.DTOs;
 using Shared.Result;
 using System.Net;
-using BCrypt.Net;
 using Domain.Entities;
 
 namespace Application.Auth.Services

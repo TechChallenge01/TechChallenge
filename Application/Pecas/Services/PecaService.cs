@@ -58,9 +58,9 @@ namespace Application.Pecas.Services
             try
             {
                 var peca = new Peca(request.Nome, request.Descricao, request.MarcaPeca, request.PrecoVenda, idUsuario, DateTime.UtcNow);
-                var estoque = new Estoque(peca.Id,null, 0, idUsuario, DateTime.UtcNow);
+                var estoque = new Estoque(null, peca.Id, 0, idUsuario, DateTime.UtcNow);
 
-                await _pecaRepository.Add(peca, ct);
+                await _pecaRepository.Create(peca, ct);
                 await _estoqueRepository.Create(estoque, ct);
 
                 return new CommandResult<Guid> { StatusCode = HttpStatusCode.Created, Data = peca.Id, Message = "Peça criada com sucesso!" };
@@ -84,7 +84,13 @@ namespace Application.Pecas.Services
                 if(peca is null)
                     return new CommandResult { StatusCode = HttpStatusCode.NotFound, Message = "Peça não encontrada." };
 
+                var estoque = await _estoqueRepository.GetByPecaId(id, ct);
+
+                if (estoque.QuantidadeTotal > 0)
+                    return new CommandResult { StatusCode = HttpStatusCode.BadRequest, Message = "Peça não pode ser excluida, pois contém quantidade em estoque!" };
+
                 peca.Inativar();
+                estoque.Inativar();
                 peca.RastrearAlteracao(idUsuario, DateTime.UtcNow);
 
                 await _unitOfWork.SaveChangesAsync(ct);

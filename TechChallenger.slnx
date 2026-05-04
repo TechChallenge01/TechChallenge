@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Itens de Solução/">
+    <File Path="docker-compose.yml" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="API/API.csproj" />
     <Project Path="Application/Application.csproj" Id="d3e044ea-9a0d-4bf9-9304-a1157904cb5c" />
@@ -7,9 +10,6 @@
     <Project Path="Shared/Shared.csproj" Id="ee821b86-bac4-4f96-b611-ead881575cd1" />
   </Folder>
   <Folder Name="/tests/" />
-  <Folder Name="/tests/TestesUnitarios/">
-    <Project Path="Application.test/Application.test.csproj" />
-    <Project Path="Domain.test/Domain.test.csproj" Id="2630e6d8-8636-4d05-9ab2-89142714a169" />
-  </Folder>
-  <Project Path="API.test/API.test.csproj" />
+  <Folder Name="/tests/TestesIntegracao/" />
+  <Folder Name="/tests/TestesUnitarios/" />
 </Solution>

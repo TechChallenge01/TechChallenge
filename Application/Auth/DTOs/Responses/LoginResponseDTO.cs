@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Application.Auth.DTOs.Responses;
+﻿namespace Application.Auth.DTOs.Responses;
 
 public record LoginResponseDTO
 {

@@ -13,9 +13,12 @@ namespace API.Extensions
 
             app.MapScalarApiReference(options =>
             {
-                options.Title = "Mecanica API";
-                options.Theme = ScalarTheme.DeepSpace;
-                options.DefaultHttpClient = new(ScalarTarget.CSharp, ScalarClient.HttpClient);
+                options.WithTitle("Tech Challenge")
+                .AddPreferredSecuritySchemes("Bearer")
+                .AddHttpAuthentication("Bearer", options =>
+                {
+                    options.Token = "teste";
+                });
             });
 
             return app;

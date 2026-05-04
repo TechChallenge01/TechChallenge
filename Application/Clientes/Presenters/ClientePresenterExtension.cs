@@ -1,38 +1,42 @@
 ﻿using Application.Clientes.DTOs.Responses;
 using Application.Clientes.DTOs.Shared;
+using Domain.Aggregates.ClienteAggregates;
 
 namespace Application.Clientes.Presenters
 {
     public static class ClientePresenterExtension
     {
-        public static ClienteResponseDTO ToDto(this Domain.Aggregates.ClienteAggregates.Cliente cliente)
+        public static ClienteResponseDTO ToDto(this Cliente cliente)
         {
             return new ClienteResponseDTO
             {
                 Id = cliente.Id,
                 Nome = cliente.Nome,
-                Cpf = cliente.Cpf?.ToString(),
-                Cnpj = cliente.Cnpj?.ToString(),
-                Emails = cliente.Emails != null ? cliente.Emails.Select(e => e.EnderecoEmail).ToList() : new List<string>(),
+                Cpf = cliente.Cpf?.Valor.ToString(),
+                Cnpj = cliente.Cnpj?.Valor.ToString(),
+                Email = cliente.Email.EnderecoEmail,
 
-                Telefones = cliente.Telefones != null ? cliente.Telefones.Select(t => new TelefoneDTO
+                Telefone = new TelefoneDTO
                 {
-                    DDD = t.DDD,
-                    DDI = t.DDI,
-                    Numero = t.Numero,
-                    Tipo = t.Tipo
-                }).ToList() : new List<TelefoneDTO>(),
+                    DDD = cliente.Telefone.DDD,
+                    DDI = cliente.Telefone.DDI,
+                    Numero = cliente.Telefone.Numero
+                },
 
-                Enderecos = cliente.Enderecos != null ? cliente.Enderecos.Select(e => new EnderecoDTO
+                Endereco = new EnderecoDTO
                 {
-                    Logradouro = e.Logradouro,
-                    Numero = e.Numero,
-                    Cep = e.Cep
-                }).ToList() : new List<EnderecoDTO>()
+                    Bairro = cliente.Endereco.Bairro,
+                    Cep = cliente.Endereco.Cep,
+                    Cidade = cliente.Endereco.Cidade,
+                    Complemento = cliente.Endereco.Complemento,
+                    Logradouro = cliente.Endereco.Logradouro,
+                    Numero = cliente.Endereco.Numero,
+                    Uf = cliente.Endereco.Uf
+                }
             };
         }
 
-        public static List<ClienteResponseDTO> ToListDTO(this IEnumerable<Domain.Aggregates.ClienteAggregates.Cliente> clientes)
+        public static List<ClienteResponseDTO> ToListDTO(this ICollection<Cliente> clientes)
         {
             return clientes.Select(c => c.ToDto()).ToList();
         }

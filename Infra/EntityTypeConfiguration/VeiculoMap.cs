@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Infra.BaseMap;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -30,6 +31,8 @@ namespace Infra.EntityTypeConfiguration
             builder.Property(x => x.Cor)
                 .IsRequired()
                 .HasMaxLength(100);
+
+            builder.ConfigurarAuditoria();
 
             builder.HasOne(x => x.Cliente)
                 .WithMany()

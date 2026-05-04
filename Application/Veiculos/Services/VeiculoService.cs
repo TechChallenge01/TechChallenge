@@ -1,4 +1,5 @@
-﻿using Application.Veiculos.DTOs.Requests;
+﻿using Application.UnitOfWork;
+using Application.Veiculos.DTOs.Requests;
 using Application.Veiculos.DTOs.Response;
 using Application.Veiculos.Presenters;
 using Domain.Aggregates.ClienteAggregates.Repositories;
@@ -15,11 +16,13 @@ namespace Application.Veiculos.Services
     {
         private readonly IVeiculoRepository _veiculoRepository;
         private readonly IClienteRepository _clienteRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public VeiculoService(IVeiculoRepository veiculoRepository, IClienteRepository clienteRepository)
+        public VeiculoService(IVeiculoRepository veiculoRepository, IClienteRepository clienteRepository, IUnitOfWork unitOfWork)
         {
             _veiculoRepository = veiculoRepository;
             _clienteRepository = clienteRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<ICommandResult<PagedResultDTO<VeiculoResponseDTO>>> GetPaginated(int page, int pageSize, CancellationToken ct)
@@ -93,7 +96,7 @@ namespace Application.Veiculos.Services
                 veiculo.Inativar();
                 veiculo.RastrearAlteracao(idUsuario, DateTime.UtcNow);
 
-                await _veiculoRepository.Update(veiculo, ct);
+                await _unitOfWork.SaveChangesAsync(ct);
 
                 return new CommandResult { StatusCode = HttpStatusCode.NoContent, Message = "Veículo deletado com sucesso." };
 
@@ -129,7 +132,7 @@ namespace Application.Veiculos.Services
 
                 veiculo.RastrearAlteracao(idUsuario, DateTime.UtcNow);
 
-                await _veiculoRepository.Update(veiculo, ct);
+                await _unitOfWork.SaveChangesAsync(ct);
 
                 return new CommandResult { StatusCode = HttpStatusCode.OK, Message = "Veículo atualizado com sucesso." };
             }

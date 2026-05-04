@@ -1,48 +1,46 @@
-﻿using Domain.Aggregates.OrdemServicoAggregates;
+﻿using Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 
 namespace Infra.EntityTypeConfiguration;
 
-public static class OrdemServicoServicoMap
+public class OrdemServicoServicoMap : IEntityTypeConfiguration<OrdemServicoServico>
 {
-    public static void ConfigureOrdemServicoServicos(this EntityTypeBuilder<OrdemServico> builder)
+    public void Configure(EntityTypeBuilder<OrdemServicoServico> builder)
     {
-        builder.OwnsMany(os => os.Servicos, oss =>
-        {
-            oss.ToTable("OrdemServicoServicos");
+        builder.ToTable("OrdemServicoServicos");
 
-            oss.Property<Guid>("Id")
-                .ValueGeneratedOnAdd();
+        builder.HasKey(oss => new { oss.OrdemServicoId, oss.ServicoId });
 
-            oss.HasKey("Id");
+        builder.Property(oss => oss.OrdemServicoId)
+                        .IsRequired();
 
-            oss.Property(oss => oss.ServicoId)
-               .IsRequired();
+        builder.Property(oss => oss.ServicoId)
+                        .IsRequired();
 
-            oss.Property(oss => oss.Quantidade)
-               .IsRequired();
+        builder.Property(oss => oss.Quantidade)
+                        .IsRequired();
 
-            oss.Property(oss => oss.ValorUnitario)
-               .HasColumnType("decimal(10,2)")
-               .IsRequired();
+        builder.Property(oss => oss.ValorUnitario)
+                        .HasColumnType("decimal(10,2)")
+                        .IsRequired();
 
-            oss.Property(oss => oss.DataInicioExecucao);
+        builder.Property(oss => oss.DataInicioExecucao)
+                        .IsRequired(false);
 
-            oss.Property(oss => oss.DataTerminoExecucao);
+        builder.Property(oss => oss.DataTerminoExecucao)
+                        .IsRequired(false);
 
-            oss.Property(oss => oss.Status)
-               .HasMaxLength(30);
+        builder.Property(oss => oss.Status)
+                        .HasConversion<string>()
+                        .HasMaxLength(30);
 
-            oss.HasOne(oss => oss.Servico)
-               .WithMany()
+        builder.HasOne(oss => oss.OrdemServico)
+               .WithMany(os => os.Servicos)
                .HasForeignKey(oss => oss.ServicoId)
-               .OnDelete(DeleteBehavior.Restrict);
+               .OnDelete(DeleteBehavior.Cascade);
 
-            oss.Ignore(oss => oss.ValorTotal)
-               .Ignore(oss => oss.NomeServico)
-               .Ignore(oss => oss.DescricaoServico);
-        });
+        builder.Ignore(oss => oss.ValorTotal);
     }
 }

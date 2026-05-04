@@ -1,24 +1,23 @@
 ﻿using Domain.Aggregates.OrdemServicoAggregates;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infra.EntityTypeConfiguration;
 
-public class OrdemServicoMap : IEntityTypeConfiguration<OrdemServico>  
+public class OrdemServicoMap : IEntityTypeConfiguration<OrdemServico>
 {
-    public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<OrdemServico> builder)
+    public void Configure(EntityTypeBuilder<OrdemServico> builder)
     {
         builder.ToTable("OrdemServico");
-        
+
         builder.HasKey(os => os.Id);
-       
-        builder.Property(os => os.ClienteId)
-                        .IsRequired();
 
         builder.Property(os => os.VeiculoId)
                         .IsRequired();
 
         builder.Property(os => os.StatusOS)
                         .IsRequired()
+                        .HasConversion<string>()
                         .HasMaxLength(30);
 
         builder.Property(os => os.Observacao)
@@ -33,27 +32,36 @@ public class OrdemServicoMap : IEntityTypeConfiguration<OrdemServico>
                         .HasDefaultValue(0);
 
         builder.Property(os => os.InicioExecucao)
+                        .HasColumnType("datetime")
                         .IsRequired();
 
-        builder.Property(os => os.TerminoExecucao);
-
-        builder.Ignore(os => os.NomeCliente)
-               .Ignore(os => os.ModeloVeiculo)
-               .Ignore(os => os.PlacaVeiculo)
-               .Ignore(os => os.MarcaVeiculo)
-               .Ignore(os => os.TempoExecucao);
-
-        builder.HasOne(os => os.Cliente)
-                        .WithMany()
-                        .HasForeignKey(os => os.ClienteId)
-                        .OnDelete(DeleteBehavior.Restrict);
+        builder.Property(os => os.TerminoExecucao)
+                        .HasColumnType("datetime");
 
         builder.HasOne(os => os.Veiculo)
-                        .WithMany()
-                        .HasForeignKey(os => os.VeiculoId)
-                        .OnDelete(DeleteBehavior.Restrict);
+               .WithMany(s => s.OrdemServicos)
+               .HasForeignKey(s => s.VeiculoId)
+               .OnDelete(DeleteBehavior.Restrict);
 
-        builder.ConfigurarOrdemServicoPecas();
-        builder.ConfigureOrdemServicoServicos();
+        builder.HasOne(os => os.Cliente)
+               .WithMany(c => c.OrdemServicos)
+               .HasForeignKey(os => os.ClienteId)
+               .OnDelete(DeleteBehavior.Restrict);
+
+
+        builder.HasMany(os => os.Servicos)
+               .WithOne(oss => oss.OrdemServico)
+               .HasForeignKey(oss => oss.OrdemServicoId)
+               .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(os => os.Pecas)
+               .WithOne(osp => osp.OrdemServico)
+               .HasForeignKey(osp => osp.OrdemServicoId)
+               .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(os => os.Insumos)
+               .WithOne(osi => osi.OrdemServico)
+               .HasForeignKey(osi => osi.OrdemServicoId)
+               .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -40,13 +40,8 @@ namespace Infra.Services
                     From = new MailAddress(_fromAddress),
                     Subject = payload.Subject,
                     Body = payload.Body,
-                    IsBodyHtml = payload.IsHtml,
+                    IsBodyHtml = payload.IsHtml
                 };
-
-                foreach (var email in payload.To)
-                {
-                    message.To.Add(email);
-                }
 
                 await _client.SendMailAsync(message, cancellationToken);
             }

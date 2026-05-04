@@ -9,10 +9,6 @@ public static class OrdemServicoPresenterExtension
     {
         return new OrdemServicoResponseDTO
         {
-            NomeCliente = ordemServico.NomeCliente,
-            ModeloVeiculo = ordemServico.ModeloVeiculo,
-            PlacaVeiculo = ordemServico.PlacaVeiculo,
-            MarcaVeiculo = ordemServico.MarcaVeiculo,
             StatusOS = ordemServico.StatusOS.ToString(),
             Observacao = ordemServico.Observacao,
             ValorTotal = ordemServico.ValorTotal,
@@ -21,8 +17,6 @@ public static class OrdemServicoPresenterExtension
             Pecas = ordemServico.Pecas != null ? null : ordemServico.Pecas.Select(p => new OrdemServicoPecaResponseDTO
             {
                 PecaId = p.PecaId,
-                NomePeca = p.NomePeca,
-                DescricaoPeca = p.DescricaoPeca,
                 Quantidade = p.Quantidade,
                 ValorUnitario = p.ValorUnitario,
                 ValorTotal = p.ValorTotal
@@ -31,8 +25,6 @@ public static class OrdemServicoPresenterExtension
             Servicos = ordemServico.Servicos != null ? null : ordemServico.Servicos.Select(s => new OrdemServicoServicoResponseDTO
             {
                 ServicoId = s.ServicoId,
-                NomeServico = s.NomeServico,
-                DescricaoServico = s.DescricaoServico,
                 Quantidade = s.Quantidade,
                 ValorUnitario = s.ValorUnitario,
                 ValorTotal = s.ValorTotal
@@ -42,8 +34,6 @@ public static class OrdemServicoPresenterExtension
                 InsumoId = i.InsumoId,
                 CustoTotal = i.ValorTotal,
                 CustoUnitario = i.CustoUnitario,
-                DescricaoInsumo = i.DescricaoInsumo,
-                NomeInsumo = i.NomeInsumo,
                 Quantidade = i.Quantidade
             }).ToList()
         };

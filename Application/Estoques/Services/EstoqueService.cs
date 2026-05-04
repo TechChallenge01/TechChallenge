@@ -127,10 +127,9 @@ namespace Application.Estoques.Services
 
 
                 if (entrada)
-                    estoque.AdicionarEstoque(request.Quantidade, Guid.Empty);
+                    estoque.AdicionarEstoque(request.Quantidade, idUsuario);
                 else
-                    estoque.RetirarEstoque(request.Quantidade, Guid.Empty);
-
+                    estoque.RetirarEstoque(request.Quantidade, idUsuario);
 
                 estoque.RastrearAlteracao(idUsuario, DateTime.UtcNow);
 

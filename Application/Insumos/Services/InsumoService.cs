@@ -1,4 +1,5 @@
-﻿using Application.Insumos.DTOs.Requests;
+﻿using Application.Estoques.Presenters;
+using Application.Insumos.DTOs.Requests;
 using Application.Insumos.DTOs.Responses;
 using Application.Insumos.Presenters;
 using Application.UnitOfWork;
@@ -56,7 +57,14 @@ namespace Application.Insumos.Services
                 if (insumo is null)
                     return new CommandResult { StatusCode = HttpStatusCode.NotFound, Message = "Insumo não encontrado!" };
 
+                var estoque = await _estoqueRepository.GetByInsumoId(id, cancellationToken);
+
+                if(estoque.QuantidadeTotal > 0)
+                    return new CommandResult { StatusCode = HttpStatusCode.BadRequest, Message = "Insumo não pode ser excluido, pois contém quantidade em estoque!" };
+
                 insumo.Inativar();
+                estoque.Inativar();
+
                 insumo.RastrearAlteracao(idUsuario, DateTime.UtcNow);
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);

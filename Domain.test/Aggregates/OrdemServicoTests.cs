@@ -159,7 +159,7 @@ public class OrdemServicoTests
         };
         var ordemServicoServico = new List<OrdemServicoServico>
         {
-            new OrdemServicoServico(servico[0].Id, 1, servico[0].ValorUnitario, Guid.Empty),
+            new OrdemServicoServico(servico[0].Id, 1, servico[0].ValorUnitario),
             new OrdemServicoServico(servico[1].Id, 4, servico[1].ValorUnitario, Guid.Empty),
         };
         

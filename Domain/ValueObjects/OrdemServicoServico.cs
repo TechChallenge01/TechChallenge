@@ -1,34 +1,31 @@
-﻿using Domain.BaseEntity;
+﻿using Domain.Aggregates.OrdemServicoAggregates;
 using Domain.Entities;
 using Domain.Enums;
 
 namespace Domain.ValueObjects;
 
-public class OrdemServicoServico : Base
+public class OrdemServicoServico
 {
+    public Guid OrdemServicoId { get; private set; }
     public Guid ServicoId { get; private set; }
     public decimal ValorUnitario { get; private set; }
     public string Status { get; private set; }
     public DateTime? DataInicioExecucao { get; private set; }
     public DateTime? DataTerminoExecucao { get; private set; }
-
     public int Quantidade { get; private set; }
     public decimal ValorTotal => ValorUnitario * Quantidade;
-
     public virtual Servico Servico { get; private set; }
-    public string NomeServico => Servico?.Nome;
-    public string DescricaoServico => Servico?.Descricao;
+    public virtual OrdemServico OrdemServico { get; private set; }
 
-    public OrdemServicoServico(Guid servicoId, int quantidade, decimal valorUnitario, Guid idUsuarioCriacao)
+    public OrdemServicoServico(Guid osId, Guid servicoId, int quantidade, decimal valorUnitario)
     {
         if (valorUnitario <= 0) throw new ArgumentException("Valor do serviço deve ser positivo.");
         if (quantidade <= 0) throw new ArgumentException("Quantidade do serviço deve ser positiva.");
 
+        OrdemServicoId = osId;
         ServicoId = servicoId;
         ValorUnitario = valorUnitario;
         Quantidade = quantidade;
-        IdUsuarioCriacao = idUsuarioCriacao;
-        DataCriacao = DateTime.UtcNow;
         Status = EStatusOS.AguardandoAprovacao.ToString();
     }
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Infra.BaseMap;
 
 namespace Infra.EntityTypeConfiguration
 {
@@ -21,6 +22,8 @@ namespace Infra.EntityTypeConfiguration
             builder.Property(x => x.CustoUnitario)
                 .IsRequired()
                 .HasPrecision(10, 2);
+
+            builder.ConfigurarAuditoria();
         }
     }
 }

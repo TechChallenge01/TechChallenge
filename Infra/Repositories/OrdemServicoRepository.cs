@@ -19,7 +19,7 @@ public class OrdemServicoRepository : IOrdemServicoRepository
         return ordemServico.Id;
     }
 
-    public async Task<OrdemServico> GetById(Guid id, CancellationToken ct)
+    public async Task<OrdemServico?> GetById(Guid id, CancellationToken ct)
     {
         return await _appDbContext.OrdensServico
                     .Include(os => os.Servicos)
@@ -34,13 +34,14 @@ public class OrdemServicoRepository : IOrdemServicoRepository
 
     public async Task<(ICollection<OrdemServico> OrdemServicos, int Total)> GetPaginated(int page, int pageSize, CancellationToken ct)
     {
-       var ordemServicos = _appDbContext.OrdensServico
-                            .Where(os => os.Ativo)
-                            .Skip((page - 1) * pageSize)
-                            .Take(pageSize)
-                            .ToList();
+        IQueryable<OrdemServico> query = _appDbContext.OrdensServico.Where(os => os.Ativo);
 
-        var total = await _appDbContext.OrdensServico.CountAsync(os => os.Ativo, ct);
+        var ordemServicos = await query.Skip((page - 1) * pageSize)
+                                       .Take(pageSize)
+                                       .AsNoTracking()
+                                       .ToListAsync(ct);
+
+        var total = await query.CountAsync(ct);
 
         return (ordemServicos, total);
     }

@@ -8,8 +8,8 @@ namespace Application.Clientes.DTOs.Responses
         public string Nome { get; set; }
         public string? Cpf { get; set; }
         public string? Cnpj { get; set; }
-        public ICollection<string> Emails { get; set; }
-        public ICollection<TelefoneDTO> Telefones { get; set; }
-        public ICollection<EnderecoDTO> Enderecos { get; set; }
+        public string Email { get; set; }
+        public TelefoneDTO Telefone { get; set; }
+        public EnderecoDTO Endereco { get; set; }
     }
 }

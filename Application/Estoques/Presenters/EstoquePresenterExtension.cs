@@ -13,8 +13,8 @@ namespace Application.Estoques.Presenters
                 QuantidadeDisponivel = estoque.QuantidadeDisponivel,
                 QuantidadeReservada = estoque.QuantidadeReservada,
                 QuantidadeTotal = estoque.QuantidadeTotal,
-                NomePeca = estoque.NomePeca,
-                NomeInsumo = estoque.NomeInsumo
+                PecaId = estoque.PecaId,
+                InsumoId = estoque.InsumoId,
             };
         }
 

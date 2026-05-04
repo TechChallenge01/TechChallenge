@@ -39,8 +39,6 @@ public class Estoque : Base
     public virtual Peca Peca { get; private set; }
     public virtual Insumo Insumo { get; private set; }
     public int QuantidadeTotal => QuantidadeDisponivel + QuantidadeReservada;
-    public string NomePeca => Peca?.Nome;
-    public string NomeInsumo => Insumo?.Nome;
 
     private void ValidarPecaId(Guid pecaId)
     {
@@ -77,10 +75,10 @@ public class Estoque : Base
     {
         ValidarQuantidadeDisponivel(quantidade);
 
-        if (quantidade > QuantidadeReservada)
+        if (quantidade > QuantidadeDisponivel)
             throw new InvalidOperationException("Não há estoque suficiente para retirar a quantidade solicitada.");
 
-        LiberarReserva(quantidade, usuarioCriacaoId);
+        QuantidadeDisponivel -= quantidade;
         AdicionarMovimentacao(quantidade, "Retirada de estoque", ETipoMovimentacao.Saida, usuarioCriacaoId, DateTime.UtcNow);
     }
 
@@ -110,7 +108,7 @@ public class Estoque : Base
 
     private void AdicionarMovimentacao(int quantidade, string observacao, ETipoMovimentacao tipoMovimentacao, Guid UsuarioCriacaoId, DateTime dataCriacao)
     {
-        var historico = new EstoqueHistorico(quantidade, observacao, tipoMovimentacao, UsuarioCriacaoId, dataCriacao);
+        var historico = new EstoqueHistorico(quantidade, observacao, tipoMovimentacao, UsuarioCriacaoId, dataCriacao, Id);
         Historicos.Add(historico);
     }
 }

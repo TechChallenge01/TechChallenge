@@ -65,7 +65,7 @@ public class OrdemServicoServiceTests
             .ReturnsAsync(ordemServico);
 
         _unitOfWorkMock.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
-            .Returns(Task.CompletedTask);
+            .Returns(Task.FromResult(1));
 
         // Act
         var result = await _ordemServicoService.Aprovar(ordemServicoId, Guid.NewGuid(), CancellationToken.None);
@@ -113,7 +113,7 @@ public class OrdemServicoServiceTests
             .ReturnsAsync(new List<Estoque>());
 
         _unitOfWorkMock.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
-            .Returns(Task.CompletedTask);
+            .Returns(Task.FromResult(1));
 
         // Act
         var result = await _ordemServicoService.Cancelar(ordemServicoId, Guid.NewGuid(), CancellationToken.None);
@@ -152,7 +152,7 @@ public class OrdemServicoServiceTests
             .ReturnsAsync(ordemServico);
 
         _unitOfWorkMock.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
-            .Returns(Task.CompletedTask);
+            .Returns(Task.FromResult(1));
 
         // Act
         var result = await _ordemServicoService.IniciarDiagnostico(ordemServicoId, Guid.NewGuid(), CancellationToken.None);

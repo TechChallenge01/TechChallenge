@@ -4,7 +4,6 @@ using Application.Clientes.Presenters;
 using Application.UnitOfWork;
 using Domain.Aggregates.ClienteAggregates;
 using Domain.Aggregates.ClienteAggregates.Repositories;
-using Domain.Enums;
 using Domain.ValueObjects;
 using Shared.DTOs;
 using Shared.Result;
@@ -28,9 +27,6 @@ namespace Application.Clientes.Services
             {
                 var clientes = await _clienteRepository.GetPaginated(page, pageSize, ct);
 
-                if (clientes.Clientes.Count == 0)
-                    return new CommandResult<PagedResultDTO<ClienteResponseDTO>> { StatusCode = HttpStatusCode.NotFound, Message = "Nenhum cliente encontrado." };
-
                 var response = clientes.Clientes.ToListDTO();
 
                 var pagedResult = new PagedResultDTO<ClienteResponseDTO>
@@ -42,7 +38,7 @@ namespace Application.Clientes.Services
                     TotalPages = (int)Math.Ceiling(clientes.Total / (double)pageSize)
                 };
 
-                return new CommandResult<PagedResultDTO<ClienteResponseDTO>> { StatusCode = HttpStatusCode.OK, Message = "Pesquisa de clientes retornada com sucesso!", Data = pagedResult };
+                return new CommandResult<PagedResultDTO<ClienteResponseDTO>> { StatusCode = HttpStatusCode.PartialContent, Message = "Pesquisa de clientes retornada com sucesso!", Data = pagedResult };
             }
             catch (ArgumentException ex)
             {
@@ -58,32 +54,35 @@ namespace Application.Clientes.Services
         {
             try
             {
-                if (request.Cpf is null && request.Cnpj is null)
+                if (string.IsNullOrEmpty(request.Cpf) && string.IsNullOrEmpty(request.Cnpj))
                     return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = "É necessário informar ou o CPF ou o CNPJ do cliente!" };
-                else if (request.Cpf is not null && request.Cnpj is not null)
+                else if (!string.IsNullOrEmpty(request.Cpf) && !String.IsNullOrEmpty(request.Cnpj))
                     return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = "Não é possível informar ambos CPF e CNPJ do cliente!" };
 
-                Cliente entity;
-                var isCpf = request.Cpf is not null;
-
-
-                if (request.Telefones.Any(t => !Enum.TryParse<ETipoTelefone>(t.Tipo, true, out _)))
-                {
-                    return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = "Tipo de telefone inválido!" };
-                }
+                var isCpf = !string.IsNullOrEmpty(request.Cpf);
 
                 if (isCpf)
-                    entity = new Cliente(request.Nome, new Cpf(request.Cpf), idUsuario);
+                {
+                    var cliente = await _clienteRepository.GetByCpf(new Cpf(request.Cpf), ct);
+                    if (cliente is not null)
+                        return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = "CPF já cadastrado em outro cliente" };
+                }
                 else
-                    entity = new Cliente(request.Nome, new Cnpj(request.Cnpj), idUsuario);
+                {
+                    var cliente = await _clienteRepository.GetByCnpj(new Cnpj(request.Cnpj), ct);
+                    if (cliente is not null)
+                        return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = "Cnpj já cadastrado em outro cliente" };
+                }
 
-                var telefones = request.Telefones.Select(t => new Telefone(t.DDD, t.DDI, t.Numero, (ETipoTelefone)Enum.Parse(typeof(ETipoTelefone), t.Tipo))).ToList();
-                var enderecos = request.Enderecos.Select(e => new Endereco(e.Logradouro, e.Numero, e.Complemento, e.Bairro, e.Cidade, e.Uf, e.Cep)).ToList();
-                var emails = request.Emails.Select(e => new Email(e)).ToList();
+                var Endereco = new Endereco(request.Enderecos.Logradouro, request.Enderecos.Numero, request.Enderecos.Complemento, request.Enderecos.Bairro, request.Enderecos.Cidade, request.Enderecos.Uf, request.Enderecos.Cep);
+                var Telefone = new Telefone(request.Telefone.DDD, request.Telefone.DDI, request.Telefone.Numero);
 
-                entity.AlterarTelefones(telefones);
-                entity.AlterarEnderecos(enderecos);
-                entity.AlterarEmails(emails);
+                Cliente entity;
+
+                if (isCpf)
+                    entity = new Cliente(request.Nome, new Cpf(request.Cpf), idUsuario, Endereco, Telefone, new Email(request.Email));
+                else
+                    entity = new Cliente(request.Nome, new Cnpj(request.Cnpj), idUsuario, Endereco, Telefone, new Email(request.Email));
 
                 await _clienteRepository.Create(entity, ct);
 
@@ -136,17 +135,14 @@ namespace Application.Clientes.Services
                 if (cliente is null)
                     return new CommandResult { StatusCode = HttpStatusCode.NotFound, Message = "Cliente não encontrado!" };
 
-                cliente.AlterarEmails(request.Emails.Select(e => new Email(e)).ToList());
+                var Endereco = new Endereco(request.Enderecos.Logradouro, request.Enderecos.Numero, request.Enderecos.Complemento, request.Enderecos.Bairro, request.Enderecos.Cidade, request.Enderecos.Uf, request.Enderecos.Cep);
+                var Telefone = new Telefone(request.Telefone.DDD, request.Telefone.DDI, request.Telefone.Numero);
 
-                if (request.Telefones.Any(t => !Enum.TryParse<ETipoTelefone>(t.Tipo, true, out _)))
-                {
-                    return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = "Tipo de telefone inválido!" };
-                }
+                cliente.AlterarEmail(new Email(request.Email));
 
-                cliente.AlterarTelefones(request.Telefones.Select(t => new Telefone(t.DDD, t.DDI, t.Numero, (ETipoTelefone)Enum.Parse(typeof(ETipoTelefone), t.Tipo))).ToList());
+                cliente.AlterarEndereco(Endereco);
 
-                if (request.Enderecos.Count > 0)
-                    cliente.AlterarEnderecos(request.Enderecos.Select(e => new Endereco(e.Logradouro, e.Numero, e.Complemento, e.Bairro, e.Cidade, e.Uf, e.Cep)).ToList());
+                cliente.AlterarTelefone(Telefone);
 
                 cliente.AlterarNome(request.Nome);
 

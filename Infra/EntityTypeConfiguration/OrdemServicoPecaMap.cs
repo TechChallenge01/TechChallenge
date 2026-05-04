@@ -1,35 +1,36 @@
-﻿using Domain.Aggregates.OrdemServicoAggregates;
+﻿using Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infra.EntityTypeConfiguration
 {
-    public static class OrdemServicoPecaMap
+    public class OrdemServicoPecaMap : IEntityTypeConfiguration<OrdemServicoPeca>
     {
-        public static void ConfigurarOrdemServicoPecas(this EntityTypeBuilder<OrdemServico> builder)
+        public void Configure(EntityTypeBuilder<OrdemServicoPeca> builder)
         {
-            builder.OwnsMany(os => os.Pecas, osp =>
-            {
-                osp.ToTable("OrdemServicoPecas");
+            builder.ToTable("OrdemServicoPecas");
 
-                osp.WithOwner().HasForeignKey("OrdemServicoId");
+            builder.HasKey(osp => new { osp.OrdemServicoId, osp.PecaId });
 
-                osp.Property<Guid>("Id").ValueGeneratedOnAdd();
-                osp.HasKey("Id");
+            builder.Property(osp => osp.OrdemServicoId)
+                            .IsRequired();
 
-                osp.Property(p => p.PecaId).IsRequired();
+            builder.Property(osp => osp.PecaId)
+                            .IsRequired();
 
-                osp.Property(p => p.Quantidade).IsRequired();
+            builder.Property(osp => osp.Quantidade)
+                        .IsRequired();
 
-                osp.Property(p => p.ValorUnitario)
-                   .HasColumnType("decimal(10,2)")
-                   .IsRequired();
+            builder.Property(osp => osp.ValorUnitario)
+                            .HasColumnType("decimal(10,2)")
+                            .IsRequired();
 
-                osp.Ignore(p => p.ValorTotal);
-                osp.Ignore(p => p.NomePeca);
-                osp.Ignore(p => p.DescricaoPeca);
-                osp.Ignore(p => p.ValorUnitarioPeca);
-            });
+            builder.HasOne(osp => osp.OrdemServico)
+                   .WithMany(os => os.Pecas)
+                   .HasForeignKey(osp => osp.PecaId)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Ignore(osp => osp.ValorTotal);
         }
     }
 }

@@ -30,41 +30,34 @@ namespace Infra.Repositories
         public async Task<Cliente?> GetByCnpj(Cnpj cnpj, CancellationToken ct = default)
         {
             return await _appDbContext.Clientes
-                                        .Include(c => c.Emails)
-                                        .Include(c => c.Enderecos)
-                                        .Include(c => c.Telefones)
-                                        .FirstOrDefaultAsync(c => c.Cnpj != null && c.Cnpj.Valor == cnpj.Valor, ct);
+                                        .Include(c => c.Veiculos)
+                                        .FirstOrDefaultAsync(c => c.Cnpj != null && c.Cnpj.Valor == cnpj.Valor && c.Ativo, ct);
         }
 
         public async Task<Cliente?> GetByCpf(Cpf cpf, CancellationToken ct = default)
         {
             return await _appDbContext.Clientes
-                                        .Include(c => c.Emails)
-                                        .Include(c => c.Enderecos)
-                                        .Include(c => c.Telefones)
                                         .Include(c => c.Veiculos)
-                                        .FirstOrDefaultAsync(c => c.Cpf != null && c.Cpf.Valor == cpf.Valor, ct);
+                                        .FirstOrDefaultAsync(c => c.Cpf != null && c.Cpf.Valor == cpf.Valor && c.Ativo, ct);
         }
 
-        public async Task<Cliente> GetById(Guid Id, CancellationToken ct)
+        public async Task<Cliente?> GetById(Guid Id, CancellationToken ct)
         {
             return await _appDbContext.Clientes
-                                      .Include(c => c.Emails)
-                                      .Include(c => c.Enderecos)
-                                      .Include(c => c.Telefones)
                                       .Include(c => c.Veiculos)
-                                      .FirstOrDefaultAsync(c => c.Id == Id, ct);
+                                      .FirstOrDefaultAsync(c => c.Id == Id && c.Ativo, ct);
         }
 
         public async Task<(ICollection<Cliente> Clientes, int Total)> GetPaginated(int page, int pageSize, CancellationToken ct)
         {
-            var clientes = await _appDbContext.Clientes
-                                               .Skip((page - 1) * pageSize)
-                                               .Take(pageSize)
-                                               .AsNoTracking()
-                                               .ToListAsync(ct);
+            IQueryable<Cliente> query = _appDbContext.Clientes.Where(c => c.Ativo);
 
-            var total = await _appDbContext.Clientes.CountAsync(ct);
+            var clientes = await query.Skip((page - 1) * pageSize)
+                                      .Take(pageSize)
+                                      .AsNoTracking()
+                                      .ToListAsync(ct);
+
+            var total = await query.CountAsync(ct);
 
             return (clientes, total);
         }
