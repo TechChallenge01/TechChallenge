@@ -11,6 +11,7 @@ using Domain.Aggregates.OrdemServicoAggregates;
 using Domain.Aggregates.OrdemServicoAggregates.Repositories;
 using Domain.Entities.Repositories;
 using Domain.ValueObjects;
+using Org.BouncyCastle.Asn1.Cms;
 using Shared.DTOs;
 using Shared.Result;
 using System.Net;
@@ -47,6 +48,28 @@ public class OrdemServicoService : IOrdemServicoService
 
             if (ordemServico is null)
                 return new CommandResult { StatusCode = HttpStatusCode.NotFound, Message = "Ordem de serviço não encontrada." };
+
+            if (ordemServico.Pecas.Any())
+            {
+                var estoques = await _estoqueRepository.GetByPecaIds(ordemServico.Pecas.Select(p => p.PecaId).ToList(), ct);
+
+                foreach (var estoque in estoques)
+                {
+                    estoque.LiberarReserva(ordemServico.Pecas.FirstOrDefault(p => p.PecaId == estoque.PecaId).Quantidade, idUsuario);
+                    estoque.RetirarEstoque(ordemServico.Pecas.FirstOrDefault(p => p.PecaId == estoque.PecaId).Quantidade, idUsuario);
+                }
+            }
+
+            if (ordemServico.Insumos.Any())
+            {
+                var estoques = await _estoqueRepository.GetByInsumoIds(ordemServico.Insumos.Select(p => p.InsumoId).ToList(), ct);
+
+                foreach (var estoque in estoques)
+                {
+                    estoque.LiberarReserva(ordemServico.Insumos.FirstOrDefault(p => p.InsumoId == estoque.InsumoId).Quantidade, idUsuario);
+                    estoque.RetirarEstoque(ordemServico.Insumos.FirstOrDefault(p => p.InsumoId == estoque.InsumoId).Quantidade, idUsuario);
+                }
+            }
 
             ordemServico.AprovarOrdemServico();
 
@@ -137,7 +160,18 @@ public class OrdemServicoService : IOrdemServicoService
 
             ordemServico.FinalizarOrdemServico(dto.ServicosId);
 
-            var tempos = await _ordemServicoRepository.GetByIdsSTimeSpanDataExecucao(dto.ServicosId, ct);
+            var temposBanco = await _ordemServicoRepository.GetByIdsSTimeSpanDataExecucao(dto.ServicosId, ct);
+
+            var temposNovos = ordemServico.Servicos
+                                          .Where(s => dto.ServicosId.Contains(s.ServicoId))
+                                          .Select(s => s.DataTerminoExecucao - s.DataInicioExecucao);
+
+            var tempos = temposBanco.Where(t => t.HasValue)
+                                    .Select(t => t.Value)
+                                    .Concat(
+                                        temposNovos
+                                            .Where(t => t.HasValue)
+                                            .Select(t => t.Value)).ToList();
 
             var dataAlteracao = DateTime.UtcNow;
             var usuarioAuditoria = idUsuario;
@@ -145,7 +179,6 @@ public class OrdemServicoService : IOrdemServicoService
             foreach (var servico in servicosEntities)
             {
                 servico.AtualizarTempoMedio(tempos);
-                servico.RastrearAlteracao(usuarioAuditoria, dataAlteracao);
             }
 
             ordemServico.RastrearAlteracao(usuarioAuditoria, dataAlteracao);
@@ -167,13 +200,13 @@ public class OrdemServicoService : IOrdemServicoService
     {
         try
         {
-            if (request.Cpf is null && request.Cnpj is null)
+            if (string.IsNullOrEmpty(request.Cpf) && string.IsNullOrEmpty(request.Cnpj))
                 return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = "CPF ou CNPJ deve ser informado." };
 
-            if (request.Cpf is not null && request.Cnpj is not null)
+            if (!string.IsNullOrEmpty(request.Cpf) && !string.IsNullOrEmpty(request.Cnpj))
                 return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = "Não é possível informar ambos CPF e CNPJ do cliente!" };
 
-            var isCpf = request.Cpf is not null;
+            var isCpf = !string.IsNullOrEmpty(request.Cpf);
 
             Cliente? cliente;
 
@@ -305,9 +338,6 @@ public class OrdemServicoService : IOrdemServicoService
         {
             var ordemServico = await _ordemServicoRepository.GetPaginated(page, pageSize, ct);
 
-            if (ordemServico.OrdemServicos is null || ordemServico.OrdemServicos.Count == 0)
-                return new CommandResult<PagedResultDTO<OrdemServicoResponseDTO>> { StatusCode = HttpStatusCode.NotFound, Message = "Nenhuma ordem de serviço encontrada." };
-
             var response = ordemServico.OrdemServicos.ToListDTO();
 
             var pagedResult = new PagedResultDTO<OrdemServicoResponseDTO>
@@ -319,7 +349,7 @@ public class OrdemServicoService : IOrdemServicoService
                 TotalPages = (int)Math.Ceiling((double)ordemServico.Total / pageSize)
             };
 
-            return new CommandResult<PagedResultDTO<OrdemServicoResponseDTO>> { StatusCode = HttpStatusCode.OK, Message = "Pesquisa de Ordens de Serviços retornada com sucesso.", Data = pagedResult };
+            return new CommandResult<PagedResultDTO<OrdemServicoResponseDTO>> { StatusCode = HttpStatusCode.PartialContent, Message = "Pesquisa de Ordens de Serviços retornada com sucesso.", Data = pagedResult };
         }
         catch (ArgumentException ex)
         {
@@ -376,7 +406,7 @@ public class OrdemServicoService : IOrdemServicoService
             {
                 var estoquesReservados = (await _estoqueRepository.GetByPecaIds(ordemServico.Pecas.Select(x => x.PecaId).ToList(), ct)).ToList();
 
-                estoquesReservados.ForEach(x => x.LiberarReserva(ordemServico.Pecas.FirstOrDefault(y => y.PecaId == x.PecaId).Quantidade, Guid.Empty));
+                estoquesReservados.ForEach(x => x.LiberarReserva(ordemServico.Pecas.FirstOrDefault(y => y.PecaId == x.PecaId).Quantidade, idUsuario));
 
                 var pecasAgrupadas = request.Pecas
                     .GroupBy(p => p.PecaId)
@@ -404,7 +434,7 @@ public class OrdemServicoService : IOrdemServicoService
             {
                 var estoquesReservados = (await _estoqueRepository.GetByInsumoIds(ordemServico.Insumos.Select(x => x.InsumoId).ToList(), ct)).ToList();
 
-                estoquesReservados.ForEach(x => x.LiberarReserva(ordemServico.Insumos.FirstOrDefault(y => y.InsumoId == x.InsumoId).Quantidade, Guid.Empty));
+                estoquesReservados.ForEach(x => x.LiberarReserva(ordemServico.Insumos.FirstOrDefault(y => y.InsumoId == x.InsumoId).Quantidade, idUsuario));
 
                 var InsumosAgrupados = request.Insumos
                     .GroupBy(s => s.InsumoId)
@@ -462,7 +492,13 @@ public class OrdemServicoService : IOrdemServicoService
             foreach (var peca in ordemPecas)
             {
                 var estoque = estoques.First(e => e.PecaId == peca.PecaId);
-                estoque.ReservarEstoque(peca.Quantidade, Guid.Empty);
+                estoque.ReservarEstoque(peca.Quantidade, idUsuario);
+            }
+
+            foreach (var insumo in ordemInsumos)
+            {
+                var estoque = estoques.First(e => e.InsumoId == insumo.InsumoId);
+                estoque.ReservarEstoque(insumo.Quantidade, idUsuario);
             }
 
             ordemServico.RastrearAlteracao(idUsuario, DateTime.UtcNow);
@@ -507,6 +543,31 @@ public class OrdemServicoService : IOrdemServicoService
             return new CommandResult { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
         }
     }
+    public async Task<ICommandResult> RegistrarEntrega(Guid id, Guid idUsuario, CancellationToken ct)
+    {
+        try
+        {
+            var ordemServico = await _ordemServicoRepository.GetById(id, ct);
+
+            if (ordemServico is null)
+                return new CommandResult { StatusCode = HttpStatusCode.NotFound, Message = "Ordem de serviço não encontrada." };
+
+            ordemServico.RegistrarEntrega();
+            ordemServico.RastrearAlteracao(idUsuario, DateTime.UtcNow);
+
+            await _unitOfWork.SaveChangesAsync(ct);
+
+            return new CommandResult { StatusCode = HttpStatusCode.NoContent, Message = "Veículo entregue e OS encerrada com sucesso!" };
+        }
+        catch (ArgumentException ex)
+        {
+            return new CommandResult { StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
+        }
+        catch (Exception ex)
+        {
+            return new CommandResult { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
+        }
+    }
     private async Task EnviarEmail(OrdemServico ordemServico, CancellationToken ct)
     {
         try
@@ -541,32 +602,6 @@ public class OrdemServicoService : IOrdemServicoService
         {
             // Log do erro de envio de email, mas não interrompe o fluxo principal
             Console.WriteLine($"Erro ao enviar email: {ex.Message}");
-        }
-    }
-
-    public async Task<ICommandResult> RegistrarEntrega(Guid id, Guid idUsuario, CancellationToken ct)
-    {
-        try
-        {
-            var ordemServico = await _ordemServicoRepository.GetById(id, ct);
-
-            if (ordemServico is null)
-                return new CommandResult { StatusCode = HttpStatusCode.NotFound, Message = "Ordem de serviço não encontrada." };
-
-            ordemServico.RegistrarEntrega();
-            ordemServico.RastrearAlteracao(idUsuario, DateTime.UtcNow);
-
-            await _unitOfWork.SaveChangesAsync(ct);
-
-            return new CommandResult { StatusCode = HttpStatusCode.NoContent, Message = "Veículo entregue e OS encerrada com sucesso!" };
-        }
-        catch (ArgumentException ex)
-        {
-            return new CommandResult { StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
-        }
-        catch (Exception ex)
-        {
-            return new CommandResult { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
         }
     }
 }

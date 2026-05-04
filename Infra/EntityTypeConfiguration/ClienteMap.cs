@@ -88,8 +88,8 @@ namespace Infra.EntityTypeConfiguration
             builder.ConfigurarAuditoria();
 
             builder.HasMany(c => c.Veiculos)
-                .WithOne()
-                .HasForeignKey("ClienteId")
+                .WithOne(v => v.Cliente)
+                .HasForeignKey(v => v.ClienteId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

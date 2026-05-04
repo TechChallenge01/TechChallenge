@@ -5,12 +5,12 @@ namespace Application.Pecas.DTOs.Requests
     public record PecaRequestDTO
     {
         [Required]
-        public string Nome { get; set; }
+        public string Nome { get; init; }
         [Required]
-        public string Descricao { get; set; }
+        public string Descricao { get; init; }
         [Required]
-        public string MarcaPeca { get; set; }
+        public string MarcaPeca { get; init; }
         [Required]
-        public decimal PrecoVenda { get; set; }
+        public decimal PrecoVenda { get; init; }
     }
 }

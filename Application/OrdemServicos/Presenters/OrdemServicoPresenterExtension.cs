@@ -9,12 +9,13 @@ public static class OrdemServicoPresenterExtension
     {
         return new OrdemServicoResponseDTO
         {
+            Id = ordemServico.Id,
             StatusOS = ordemServico.StatusOS.ToString(),
             Observacao = ordemServico.Observacao,
             ValorTotal = ordemServico.ValorTotal,
             ValorDesconto = ordemServico.ValorDesconto,
             TempoExecucao = ordemServico.TempoExecucao,
-            Pecas = ordemServico.Pecas != null ? null : ordemServico.Pecas.Select(p => new OrdemServicoPecaResponseDTO
+            Pecas = ordemServico.Pecas == null ? null : ordemServico.Pecas.Select(p => new OrdemServicoPecaResponseDTO
             {
                 PecaId = p.PecaId,
                 Quantidade = p.Quantidade,
@@ -22,14 +23,15 @@ public static class OrdemServicoPresenterExtension
                 ValorTotal = p.ValorTotal
             }).ToList(),
 
-            Servicos = ordemServico.Servicos != null ? null : ordemServico.Servicos.Select(s => new OrdemServicoServicoResponseDTO
+            Servicos = ordemServico.Servicos == null ? null : ordemServico.Servicos.Select(s => new OrdemServicoServicoResponseDTO
             {
                 ServicoId = s.ServicoId,
                 Quantidade = s.Quantidade,
                 ValorUnitario = s.ValorUnitario,
-                ValorTotal = s.ValorTotal
+                ValorTotal = s.ValorTotal,
+                StatusOS = s.Status
             }).ToList(),
-            Insumos = ordemServico.Insumos != null ? null : ordemServico.Insumos.Select(i => new OrdemServicoInsumoResponseDTO
+            Insumos = ordemServico.Insumos == null ? null : ordemServico.Insumos.Select(i => new OrdemServicoInsumoResponseDTO
             {
                 InsumoId = i.InsumoId,
                 CustoTotal = i.ValorTotal,

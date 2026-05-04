@@ -35,8 +35,8 @@ namespace Infra.EntityTypeConfiguration
             builder.ConfigurarAuditoria();
 
             builder.HasOne(x => x.Cliente)
-                .WithMany()
-                .HasForeignKey(x => x.ClienteId);
+                   .WithMany(c => c.Veiculos)
+                   .HasForeignKey(x => x.ClienteId);
         }
     }
 }

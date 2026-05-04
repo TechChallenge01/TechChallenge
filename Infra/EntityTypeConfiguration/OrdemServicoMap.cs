@@ -32,11 +32,10 @@ public class OrdemServicoMap : IEntityTypeConfiguration<OrdemServico>
                         .HasDefaultValue(0);
 
         builder.Property(os => os.InicioExecucao)
-                        .HasColumnType("datetime")
-                        .IsRequired();
+                .IsRequired(false);
 
         builder.Property(os => os.TerminoExecucao)
-                        .HasColumnType("datetime");
+                .IsRequired(false);
 
         builder.HasOne(os => os.Veiculo)
                .WithMany(s => s.OrdemServicos)

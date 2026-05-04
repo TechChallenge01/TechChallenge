@@ -24,15 +24,11 @@ namespace Application.Veiculos.Services
             _clienteRepository = clienteRepository;
             _unitOfWork = unitOfWork;
         }
-
         public async Task<ICommandResult<PagedResultDTO<VeiculoResponseDTO>>> GetPaginated(int page, int pageSize, CancellationToken ct)
         {
             try
             {
                 var veiculos = await _veiculoRepository.GetPaginated(page, pageSize, ct);
-
-                if(veiculos.veiculos.Count == 0)
-                    return new CommandResult<PagedResultDTO<VeiculoResponseDTO>> { StatusCode = HttpStatusCode.NotFound, Message = "Nenhum veículo encontrado." };
 
                 var response = veiculos.veiculos.ToDtoList();
 
@@ -45,7 +41,7 @@ namespace Application.Veiculos.Services
                     TotalPages = (int)Math.Ceiling((double)veiculos.total / pageSize)
                 };
 
-                return new CommandResult<PagedResultDTO<VeiculoResponseDTO>> { StatusCode = HttpStatusCode.OK, Message = "Pesquisa de veiculos retornada com sucesso! ", Data = pagedResult };
+                return new CommandResult<PagedResultDTO<VeiculoResponseDTO>> { StatusCode = HttpStatusCode.PartialContent, Message = "Pesquisa de veiculos retornada com sucesso! ", Data = pagedResult };
 
             }
             catch (ArgumentException ex)
@@ -57,7 +53,6 @@ namespace Application.Veiculos.Services
                 return new CommandResult<PagedResultDTO<VeiculoResponseDTO>> { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
             }
         }
-
         public async Task<ICommandResult<Guid>> Create(VeiculoRequestDTO request, Guid idUsuario, CancellationToken ct)
         {
             try
@@ -69,7 +64,7 @@ namespace Application.Veiculos.Services
 
                 var entity = new Veiculo(request.Modelo, request.MarcaVeiculo, request.ClienteId, request.Ano, new Placa(request.Placa), request.Cor, idUsuario);
 
-                await _veiculoRepository.Add(entity, ct);
+                await _veiculoRepository.Create(entity, ct);
 
                 return new CommandResult<Guid> { StatusCode = HttpStatusCode.Created, Message = "Veículo criado com sucesso.", Data = entity.Id };
             }
@@ -82,7 +77,6 @@ namespace Application.Veiculos.Services
                 return new CommandResult<Guid> { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
             }
         }
-
         public async Task<ICommandResult> Delete(Guid Id, Guid idUsuario, CancellationToken ct)
         {
             try
@@ -110,7 +104,6 @@ namespace Application.Veiculos.Services
                 return new CommandResult { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
             }
         }
-
         public async Task<ICommandResult> Update(Guid Id, Guid idUsuario, VeiculoRequestDTO request, CancellationToken ct)
         {
             try
@@ -134,7 +127,7 @@ namespace Application.Veiculos.Services
 
                 await _unitOfWork.SaveChangesAsync(ct);
 
-                return new CommandResult { StatusCode = HttpStatusCode.OK, Message = "Veículo atualizado com sucesso." };
+                return new CommandResult { StatusCode = HttpStatusCode.NoContent, Message = "Veículo atualizado com sucesso." };
             }
             catch (ArgumentException ex)
             {
@@ -145,7 +138,6 @@ namespace Application.Veiculos.Services
                 return new CommandResult { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
             }
         }
-
         public async Task<ICommandResult<VeiculoResponseDTO>> GetById(Guid Id, CancellationToken ct)
         {
             try

@@ -50,7 +50,7 @@ public class ServicoController : ControllerBase
 
     [HttpPut("{id}")]
     [Authorize(Roles = "Administrador,Funcionario")]
-    public async Task<IActionResult> Update([FromQuery] Guid id, [FromBody] ServicoRequestDTO request, CancellationToken ct) 
+    public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] ServicoRequestDTO request, CancellationToken ct) 
     {
         var idUsuario = User.ObterIdUsuario();
 

@@ -2,11 +2,11 @@
 {
     public record OrdemServicoInsumoResponseDTO
     {
-        public Guid InsumoId { get; set; }
-        public string NomeInsumo { get; set; }
-        public string DescricaoInsumo { get; set; }
-        public int Quantidade { get; set; }
-        public decimal CustoUnitario { get; set; }
-        public decimal CustoTotal { get; set; }
+        public Guid InsumoId { get; init; }
+        public string NomeInsumo { get; init; }
+        public string DescricaoInsumo { get; init; }
+        public int Quantidade { get; init; }
+        public decimal CustoUnitario { get; init; }
+        public decimal CustoTotal { get; init; }
     }
 }

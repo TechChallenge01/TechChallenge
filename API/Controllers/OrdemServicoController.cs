@@ -39,7 +39,7 @@ public class OrdemServicoController : ControllerBase
         return response.ToResult();
     }
 
-    [HttpPost("{id}/Cancelar")]
+    [HttpPut("{id}/Cancelar")]
     [Authorize(Roles = "Administrador,Funcionario")]
     public async Task<IActionResult> Cancelar([FromRoute] Guid id, CancellationToken ct)
     {
@@ -50,7 +50,7 @@ public class OrdemServicoController : ControllerBase
         return response.ToResult();
     }
 
-    [HttpPost("{id}/Aprovar")]
+    [HttpPut("{id}/Aprovar")]
     [Authorize(Roles = "Administrador,Funcionario,Cliente")]
     public async Task<IActionResult> Aprovar([FromRoute] Guid id, CancellationToken ct)
     {
@@ -61,7 +61,7 @@ public class OrdemServicoController : ControllerBase
         return response.ToResult();
     }
 
-    [HttpPost("{id}/FinalizarServico")]
+    [HttpPut("{id}/FinalizarServico")]
     [Authorize(Roles = "Administrador,Mecanico")]
     public async Task<IActionResult> FinalizarServico([FromRoute] Guid id, [FromBody] FinalizarServicoDTO dto, CancellationToken ct)
     {
@@ -81,7 +81,7 @@ public class OrdemServicoController : ControllerBase
         return response.ToResult();
     }
 
-    [HttpPost("{id}/IniciarDiagnostico")]
+    [HttpPut("{id}/IniciarDiagnostico")]
     [Authorize(Roles = "Administrador,Mecanico")]
     public async Task<IActionResult> IniciarDiagnostico([FromRoute] Guid id, CancellationToken ct)
     {
@@ -91,7 +91,7 @@ public class OrdemServicoController : ControllerBase
 
         return response.ToResult();
     }
-    [HttpPost("{id}/RealizarDiagnostico")]
+    [HttpPut("{id}/RealizarDiagnostico")]
     [Authorize(Roles = "Administrador,Mecanico")]
     public async Task<IActionResult> RealizarDiagnostico([FromRoute] Guid id, [FromBody] DiagnosticoRequestDTO request, CancellationToken ct)
     {
@@ -101,7 +101,7 @@ public class OrdemServicoController : ControllerBase
         return response.ToResult();
     }
 
-    [HttpPost("{id}/RegistrarEntrega")]
+    [HttpPut("{id}/RegistrarEntrega")]
     [Authorize(Roles = "Administrador,Funcionario")]
     public async Task<IActionResult> RegistrarEntrega([FromRoute] Guid id, CancellationToken ct)
     {

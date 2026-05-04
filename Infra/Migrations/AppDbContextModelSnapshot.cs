@@ -166,8 +166,8 @@ namespace Infra.Migrations
                     b.Property<Guid>("IdUsuarioCriacao")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("InicioExecucao")
-                        .HasColumnType("datetime");
+                    b.Property<DateTime?>("InicioExecucao")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Observacao")
                         .HasMaxLength(500)
@@ -179,7 +179,7 @@ namespace Infra.Migrations
                         .HasColumnType("nvarchar(30)");
 
                     b.Property<DateTime?>("TerminoExecucao")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime2");
 
                     b.Property<decimal>("ValorDesconto")
                         .ValueGeneratedOnAdd()
@@ -355,9 +355,6 @@ namespace Infra.Migrations
                     b.Property<Guid>("ClienteId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("ClienteId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Cor")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -394,8 +391,6 @@ namespace Infra.Migrations
 
                     b.HasIndex("ClienteId");
 
-                    b.HasIndex("ClienteId1");
-
                     b.ToTable("Veiculos", (string)null);
                 });
 
@@ -428,9 +423,6 @@ namespace Infra.Migrations
                     b.Property<Guid>("PecaId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("PecaId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("Quantidade")
                         .HasColumnType("int");
 
@@ -440,8 +432,6 @@ namespace Infra.Migrations
                     b.HasKey("OrdemServicoId", "PecaId");
 
                     b.HasIndex("PecaId");
-
-                    b.HasIndex("PecaId1");
 
                     b.ToTable("OrdemServicoPecas", (string)null);
                 });
@@ -463,9 +453,6 @@ namespace Infra.Migrations
                     b.Property<int>("Quantidade")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("ServicoId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(30)
@@ -477,8 +464,6 @@ namespace Infra.Migrations
                     b.HasKey("OrdemServicoId", "ServicoId");
 
                     b.HasIndex("ServicoId");
-
-                    b.HasIndex("ServicoId1");
 
                     b.ToTable("OrdemServicoServicos", (string)null);
                 });
@@ -728,24 +713,20 @@ namespace Infra.Migrations
             modelBuilder.Entity("Domain.Entities.Veiculo", b =>
                 {
                     b.HasOne("Domain.Aggregates.ClienteAggregates.Cliente", "Cliente")
-                        .WithMany()
+                        .WithMany("Veiculos")
                         .HasForeignKey("ClienteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Domain.Aggregates.ClienteAggregates.Cliente", null)
-                        .WithMany("Veiculos")
-                        .HasForeignKey("ClienteId1");
 
                     b.Navigation("Cliente");
                 });
 
             modelBuilder.Entity("Domain.ValueObjects.OrdemServicoInsumo", b =>
                 {
-                    b.HasOne("Insumo", "insumo")
-                        .WithMany()
+                    b.HasOne("Insumo", "Insumo")
+                        .WithMany("OrdemServicoInsumos")
                         .HasForeignKey("InsumoId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Domain.Aggregates.OrdemServicoAggregates.OrdemServico", "OrdemServico")
@@ -754,23 +735,23 @@ namespace Infra.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("OrdemServico");
+                    b.Navigation("Insumo");
 
-                    b.Navigation("insumo");
+                    b.Navigation("OrdemServico");
                 });
 
             modelBuilder.Entity("Domain.ValueObjects.OrdemServicoPeca", b =>
                 {
                     b.HasOne("Domain.Aggregates.OrdemServicoAggregates.OrdemServico", "OrdemServico")
                         .WithMany("Pecas")
-                        .HasForeignKey("PecaId")
+                        .HasForeignKey("OrdemServicoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.Peca", "Peca")
-                        .WithMany()
-                        .HasForeignKey("PecaId1")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithMany("OrdemServicoPecas")
+                        .HasForeignKey("PecaId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("OrdemServico");
@@ -782,14 +763,14 @@ namespace Infra.Migrations
                 {
                     b.HasOne("Domain.Aggregates.OrdemServicoAggregates.OrdemServico", "OrdemServico")
                         .WithMany("Servicos")
-                        .HasForeignKey("ServicoId")
+                        .HasForeignKey("OrdemServicoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.Servico", "Servico")
-                        .WithMany()
-                        .HasForeignKey("ServicoId1")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithMany("OrdemServicoServicos")
+                        .HasForeignKey("ServicoId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("OrdemServico");
@@ -818,9 +799,24 @@ namespace Infra.Migrations
                     b.Navigation("Servicos");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Peca", b =>
+                {
+                    b.Navigation("OrdemServicoPecas");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Servico", b =>
+                {
+                    b.Navigation("OrdemServicoServicos");
+                });
+
             modelBuilder.Entity("Domain.Entities.Veiculo", b =>
                 {
                     b.Navigation("OrdemServicos");
+                });
+
+            modelBuilder.Entity("Insumo", b =>
+                {
+                    b.Navigation("OrdemServicoInsumos");
                 });
 #pragma warning restore 612, 618
         }

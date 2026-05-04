@@ -1,4 +1,5 @@
 ﻿using Domain.BaseEntity;
+using Domain.ValueObjects;
 
 namespace Domain.Entities
 {
@@ -26,7 +27,8 @@ namespace Domain.Entities
         public string Descricao { get; private set; }
         public string MarcaPeca { get; private set; }
         public decimal ValorUnitario { get; private set; }
-        
+        public ICollection<OrdemServicoPeca> OrdemServicoPecas { get; private set; } = new List<OrdemServicoPeca>();
+
         private void ValidarNome(string name)
         {
             if (string.IsNullOrWhiteSpace(name))

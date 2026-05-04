@@ -2,16 +2,17 @@
 
 public record OrdemServicoResponseDTO
 {
-    public string NomeCliente { get;  set; }
-    public string ModeloVeiculo { get;  set; }
-    public string PlacaVeiculo { get;  set; }
-    public string MarcaVeiculo { get;  set; }   
-    public string StatusOS { get;  set; }
-    public string? Observacao { get;  set; }
-    public decimal ValorTotal { get;  set; }
-    public decimal ValorDesconto { get;  set; } = 0;
-    public TimeSpan TempoExecucao { get; set; }
-    public ICollection<OrdemServicoPecaResponseDTO>? Pecas { get; set; }
-    public ICollection<OrdemServicoServicoResponseDTO>? Servicos { get; set; }
-    public ICollection<OrdemServicoInsumoResponseDTO>? Insumos { get; set; }
+    public Guid Id { get; init; }
+    public string NomeCliente { get;  init; }
+    public string ModeloVeiculo { get;  init; }
+    public string PlacaVeiculo { get;  init; }
+    public string MarcaVeiculo { get;  init; }   
+    public string StatusOS { get;  init; }
+    public string? Observacao { get;  init; }
+    public decimal ValorTotal { get;  init; }
+    public decimal ValorDesconto { get;  init; } = 0;
+    public TimeSpan TempoExecucao { get; init; }
+    public ICollection<OrdemServicoPecaResponseDTO>? Pecas { get; init; }
+    public ICollection<OrdemServicoServicoResponseDTO>? Servicos { get; init; }
+    public ICollection<OrdemServicoInsumoResponseDTO>? Insumos { get; init; }
 }

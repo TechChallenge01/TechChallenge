@@ -2,13 +2,13 @@
 {
     public class PagedResultDTO<T>
     {
-        public IEnumerable<T> Items { get; set; } = new List<T>();
+        public IEnumerable<T> Items { get; init; } = new List<T>();
 
-        public int Page { get; set; }
-        public int PageSize { get; set; }
+        public int Page { get; init; }
+        public int PageSize { get; init; }
 
-        public int TotalItems { get; set; }
-        public int TotalPages { get; set; }
+        public int TotalItems { get; init; }
+        public int TotalPages { get; init; }
 
         public bool HasNext => Page < TotalPages;
         public bool HasPrevious => Page > 1;

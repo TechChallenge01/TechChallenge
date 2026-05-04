@@ -30,21 +30,21 @@ namespace Infra.Repositories
         public async Task<Cliente?> GetByCnpj(Cnpj cnpj, CancellationToken ct = default)
         {
             return await _appDbContext.Clientes
-                                        .Include(c => c.Veiculos)
+                                        .Include(c => c.Veiculos.Where(v => v.Ativo))
                                         .FirstOrDefaultAsync(c => c.Cnpj != null && c.Cnpj.Valor == cnpj.Valor && c.Ativo, ct);
         }
 
         public async Task<Cliente?> GetByCpf(Cpf cpf, CancellationToken ct = default)
         {
             return await _appDbContext.Clientes
-                                        .Include(c => c.Veiculos)
+                                        .Include(c => c.Veiculos.Where(v => v.Ativo))
                                         .FirstOrDefaultAsync(c => c.Cpf != null && c.Cpf.Valor == cpf.Valor && c.Ativo, ct);
         }
 
         public async Task<Cliente?> GetById(Guid Id, CancellationToken ct)
         {
             return await _appDbContext.Clientes
-                                      .Include(c => c.Veiculos)
+                                      .Include(c => c.Veiculos.Where(v => v.Ativo))
                                       .FirstOrDefaultAsync(c => c.Id == Id && c.Ativo, ct);
         }
 
@@ -55,6 +55,7 @@ namespace Infra.Repositories
             var clientes = await query.Skip((page - 1) * pageSize)
                                       .Take(pageSize)
                                       .AsNoTracking()
+                                      .Include(c => c.Veiculos.Where(v => v.Ativo))
                                       .ToListAsync(ct);
 
             var total = await query.CountAsync(ct);

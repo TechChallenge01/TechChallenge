@@ -2,7 +2,7 @@
 {
     public record EstoqueResponseDTO
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; init; }
         public int QuantidadeDisponivel { get; init; }
         public int QuantidadeReservada { get; init; }
         public int QuantidadeTotal { get; init; }

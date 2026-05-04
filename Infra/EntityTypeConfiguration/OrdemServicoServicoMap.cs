@@ -38,8 +38,13 @@ public class OrdemServicoServicoMap : IEntityTypeConfiguration<OrdemServicoServi
 
         builder.HasOne(oss => oss.OrdemServico)
                .WithMany(os => os.Servicos)
-               .HasForeignKey(oss => oss.ServicoId)
+               .HasForeignKey(oss => oss.OrdemServicoId) 
                .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(oss => oss.Servico)
+               .WithMany(s => s.OrdemServicoServicos)
+               .HasForeignKey(oss => oss.ServicoId) 
+               .OnDelete(DeleteBehavior.Restrict);
 
         builder.Ignore(oss => oss.ValorTotal);
     }

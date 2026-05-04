@@ -6,13 +6,13 @@ namespace Application.Clientes.DTOs.Requests
     public record ClienteRequestDTO
     {
         [Required]
-        public string Nome { get; set; }
-        public string Cpf { get; set; }
-        public string Cnpj { get; set; }
+        public string Nome { get; init; }
+        public string Cpf { get; init; }
+        public string Cnpj { get; init; }
         [Required]
-        public string Email { get; set; }
+        public string Email { get; init; }
         [Required]
-        public TelefoneDTO Telefone { get; set; }
-        public EnderecoDTO Enderecos { get; set; }
+        public TelefoneDTO Telefone { get; init; }
+        public EnderecoDTO Enderecos { get; init; }
     }
 }

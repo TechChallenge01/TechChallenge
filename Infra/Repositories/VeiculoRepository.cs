@@ -14,9 +14,10 @@ namespace Infra.Repositories
             _appDbContext = appDbContext;
         }
 
-        public async Task Add(Veiculo veiculo, CancellationToken ct)
+        public async Task Create(Veiculo veiculo, CancellationToken ct)
         {
             await _appDbContext.Veiculos.AddAsync(veiculo, ct);
+            await _appDbContext.SaveChangesAsync(ct);
         }
 
         public async Task Delete(Veiculo veiculo, CancellationToken ct)

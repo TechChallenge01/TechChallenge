@@ -24,7 +24,6 @@ namespace Application.Insumos.Services
             _unitOfWork = unitOfWork;
             _estoqueRepository = estoqueRepository;
         }
-
         public async Task<ICommandResult<Guid>> Create(InsumoRequestDTO request, Guid idUsuario, CancellationToken cancellationToken)
         {
             try
@@ -33,7 +32,7 @@ namespace Application.Insumos.Services
 
                 await _insumoRepository.Create(insumo, cancellationToken);
 
-                var estoque = new Estoque(insumo.Id, null, 0, Guid.Empty, DateTime.UtcNow);
+                var estoque = new Estoque(insumo.Id, null, 0, idUsuario, DateTime.UtcNow);
                 await _estoqueRepository.Create(estoque, cancellationToken);
 
                 return new CommandResult<Guid> { StatusCode = HttpStatusCode.Created, Message = "Insumo criado com sucesso!", Data = insumo.Id };
@@ -47,7 +46,6 @@ namespace Application.Insumos.Services
                 return new CommandResult<Guid> { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
             }
         }
-
         public async Task<ICommandResult> Delete(Guid id, Guid idUsuario, CancellationToken cancellationToken)
         {
             try
@@ -80,7 +78,6 @@ namespace Application.Insumos.Services
                 return new CommandResult { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
             }
         }
-
         public async Task<ICommandResult<InsumoResponseDTO>> GetById(Guid id, CancellationToken cancellationToken)
         {
             try
@@ -103,7 +100,6 @@ namespace Application.Insumos.Services
                 return new CommandResult<InsumoResponseDTO> { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
             }
         }
-
         public async Task<ICommandResult<PagedResultDTO<InsumoResponseDTO>>> GetPaginated(int page, int pageSize, CancellationToken cancellationToken)
         {
             try
@@ -121,7 +117,7 @@ namespace Application.Insumos.Services
                     TotalPages = (int)Math.Ceiling((double)insumos.total / pageSize)
                 };
 
-                return new CommandResult<PagedResultDTO<InsumoResponseDTO>> { StatusCode = HttpStatusCode.OK, Message = "Insumos retornados com sucesso!", Data = pagedResult };
+                return new CommandResult<PagedResultDTO<InsumoResponseDTO>> { StatusCode = HttpStatusCode.PartialContent, Message = "Insumos retornados com sucesso!", Data = pagedResult };
             }
             catch (ArgumentException ex)
             {
@@ -132,7 +128,6 @@ namespace Application.Insumos.Services
                 return new CommandResult<PagedResultDTO<InsumoResponseDTO>> { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
             }
         }
-
         public async Task<ICommandResult> Update(Guid id, Guid idUsuario, InsumoRequestDTO request, CancellationToken cancellationToken)
         {
             try

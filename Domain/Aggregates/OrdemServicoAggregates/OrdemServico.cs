@@ -14,7 +14,7 @@ public class OrdemServico : Base
     public string? Observacao { get; private set; }
     public decimal ValorTotal { get; private set; }
     public decimal ValorDesconto { get; private set; } = 0;
-    public DateTime InicioExecucao { get; private set; }
+    public DateTime? InicioExecucao { get; private set; }
     public DateTime? TerminoExecucao { get; private set; }
 
     public ICollection<OrdemServicoServico> Servicos { get; private set; } = new List<OrdemServicoServico>();
@@ -24,7 +24,7 @@ public class OrdemServico : Base
     public virtual Cliente Cliente { get; private set; }
     public virtual Veiculo Veiculo { get; private set; }
 
-    public TimeSpan TempoExecucao => TerminoExecucao.HasValue ? TerminoExecucao.Value - InicioExecucao : TimeSpan.Zero;
+    public TimeSpan TempoExecucao => TerminoExecucao.HasValue && InicioExecucao.HasValue ? TerminoExecucao.Value - InicioExecucao.Value : TimeSpan.Zero;
 
     protected OrdemServico() {}
 

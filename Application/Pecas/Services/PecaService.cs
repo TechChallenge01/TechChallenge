@@ -23,7 +23,6 @@ namespace Application.Pecas.Services
             _estoqueRepository = estoqueRepository;
             _unitOfWork = unitOfWork;
         }
-
         public async Task<ICommandResult<PagedResultDTO<PecaResponseDTO>>> GetPaginated(int page, int pageSize, CancellationToken ct)
         {
             try
@@ -41,7 +40,7 @@ namespace Application.Pecas.Services
                     TotalPages = (int)Math.Ceiling((double)pecas.total / pageSize)
                 };
 
-                return new CommandResult<PagedResultDTO<PecaResponseDTO>> { StatusCode = HttpStatusCode.OK, Data = pagedResult, Message = "Pecas retornadas com sucesso!" };
+                return new CommandResult<PagedResultDTO<PecaResponseDTO>> { StatusCode = HttpStatusCode.PartialContent, Data = pagedResult, Message = "Pecas retornadas com sucesso!" };
             }
             catch (ArgumentException ex)
             {
@@ -52,7 +51,6 @@ namespace Application.Pecas.Services
                 return new CommandResult<PagedResultDTO<PecaResponseDTO>>    { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
             }
         }
-
         public async Task<ICommandResult<Guid>> Create(PecaRequestDTO request, Guid idUsuario, CancellationToken ct)
         {
             try
@@ -74,7 +72,6 @@ namespace Application.Pecas.Services
                 return new CommandResult<Guid> { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
             }
         }
-
         public async Task<ICommandResult> Delete(Guid id, Guid idUsuario, CancellationToken ct)
         {
             try
@@ -95,7 +92,7 @@ namespace Application.Pecas.Services
 
                 await _unitOfWork.SaveChangesAsync(ct);
 
-                return new CommandResult { StatusCode = HttpStatusCode.OK, Message = "Peça excluída com sucesso!" };
+                return new CommandResult { StatusCode = HttpStatusCode.NoContent, Message = "Peça excluída com sucesso!" };
             }
             catch (ArgumentException ex)
             {
@@ -106,7 +103,6 @@ namespace Application.Pecas.Services
                 return new CommandResult { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
             }
         }
-
         public async Task<ICommandResult> Update(Guid id, Guid idUsuario, PecaRequestDTO request, CancellationToken ct)
         {
             try
@@ -125,7 +121,7 @@ namespace Application.Pecas.Services
 
                 await _unitOfWork.SaveChangesAsync(ct);
 
-                return new CommandResult { StatusCode = HttpStatusCode.OK, Message = "Peça atualizada com sucesso!" };
+                return new CommandResult { StatusCode = HttpStatusCode.NoContent, Message = "Peça atualizada com sucesso!" };
             }
             catch (ArgumentException ex)
             {
@@ -136,7 +132,6 @@ namespace Application.Pecas.Services
                 return new CommandResult { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
             }
         }
-
         public async Task<ICommandResult<PecaResponseDTO>> GetById(Guid id, CancellationToken ct)
         {
             try
@@ -144,11 +139,7 @@ namespace Application.Pecas.Services
                 var peca = await _pecaRepository.GetById(id, ct);
 
                 if (peca is null)
-                    return new CommandResult<PecaResponseDTO>
-                    {
-                        StatusCode = HttpStatusCode.NotFound,
-                        Message = "Peça não encontrada."
-                    };
+                    return new CommandResult<PecaResponseDTO>{ StatusCode = HttpStatusCode.NotFound, Message = "Peça não encontrada." };
 
                 var response = peca.ToDto();
 

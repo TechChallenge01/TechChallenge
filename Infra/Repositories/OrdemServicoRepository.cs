@@ -1,5 +1,7 @@
-﻿using Domain.Aggregates.OrdemServicoAggregates;
+﻿using Application.OrdemServicos.Services;
+using Domain.Aggregates.OrdemServicoAggregates;
 using Domain.Aggregates.OrdemServicoAggregates.Repositories;
+using Domain.ValueObjects;
 using Infra.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,12 +26,17 @@ public class OrdemServicoRepository : IOrdemServicoRepository
         return await _appDbContext.OrdensServico
                     .Include(os => os.Servicos)
                     .Include(os => os.Pecas)
+                    .Include(os => os.Insumos)
                     .FirstOrDefaultAsync(os => os.Id == id && os.Ativo, ct);
     }
 
-    public Task<ICollection<TimeSpan>> GetByIdsSTimeSpanDataExecucao(ICollection<Guid> ids, CancellationToken ct)
+    public async Task<ICollection<TimeSpan?>> GetByIdsSTimeSpanDataExecucao(ICollection<Guid> ids, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        IQueryable<OrdemServicoServico?> query = _appDbContext.OrdensServico.SelectMany(os => os.Servicos).Where(s => ids.Contains(s.ServicoId));
+
+        var result = await query.Select(s => s.DataTerminoExecucao - s.DataInicioExecucao).ToListAsync(ct);
+
+        return result;
     }
 
     public async Task<(ICollection<OrdemServico> OrdemServicos, int Total)> GetPaginated(int page, int pageSize, CancellationToken ct)
@@ -39,6 +46,9 @@ public class OrdemServicoRepository : IOrdemServicoRepository
         var ordemServicos = await query.Skip((page - 1) * pageSize)
                                        .Take(pageSize)
                                        .AsNoTracking()
+                                       .Include(os => os.Servicos)
+                                       .Include(os => os.Pecas)
+                                       .Include(os => os.Insumos)
                                        .ToListAsync(ct);
 
         var total = await query.CountAsync(ct);

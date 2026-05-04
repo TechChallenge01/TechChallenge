@@ -1,4 +1,5 @@
 ﻿using Domain.BaseEntity;
+using Domain.ValueObjects;
 
 namespace Domain.Entities
 {
@@ -26,6 +27,7 @@ namespace Domain.Entities
         public string Nome { get; private set; }
         public string Descricao { get; private set; }
         public decimal ValorUnitario { get; private set; }
+        public ICollection<OrdemServicoServico> OrdemServicoServicos { get; private set; } = new List<OrdemServicoServico>();
         public TimeSpan? TempoMedioExecucao { get; private set; }
 
 
@@ -67,12 +69,10 @@ namespace Domain.Entities
         }
         public void AtualizarTempoMedio(ICollection<TimeSpan> tempos)
         {
-            if (!tempos.Any())
-                return;
-
-            TempoMedioExecucao = TimeSpan.FromTicks(
-                (long)tempos.Average(t => t.Ticks)
-            );
+            if (tempos.Any())
+            {
+                TempoMedioExecucao = TimeSpan.FromTicks((long)tempos.Average(t => t.Ticks));
+            }
         }
     }
 }

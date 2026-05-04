@@ -2,11 +2,11 @@
 
 public record OrdemServicoServicoResponseDTO
 {
-    public Guid ServicoId { get; set; }
-    public string NomeServico { get; set; }
-    public string DescricaoServico { get; set; }
-    public decimal ValorUnitario { get; set; }
-    public int Quantidade { get; set; }
-    public decimal ValorTotal { get; set; }
-    public string StatusOS { get; set; }
+    public Guid ServicoId { get; init; }
+    public string NomeServico { get; init; }
+    public string DescricaoServico { get; init; }
+    public decimal ValorUnitario { get; init; }
+    public int Quantidade { get; init; }
+    public decimal ValorTotal { get; init; }
+    public string StatusOS { get; init; }
 }

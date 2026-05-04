@@ -4,12 +4,12 @@ namespace Application.Estoques.DTOs.Requests
 {
     public record EstoqueRequestDTO
     {
-        public Guid? PecaId { get; set; }
-        public Guid? InsumoId { get; set; }
+        public Guid? PecaId { get; init; }
+        public Guid? InsumoId { get; init; }
 
         [Required]
-        public string TipoMovimentacao { get; set; }
+        public string TipoMovimentacao { get; init; }
         [Required]
-        public int Quantidade { get; set; }
+        public int Quantidade { get; init; }
     }
 }

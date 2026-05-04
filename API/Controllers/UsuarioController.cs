@@ -1,4 +1,5 @@
-﻿using Application.Auth.DTOs.Requests;
+﻿using API.Extensions;
+using Application.Auth.DTOs.Requests;
 using Application.Auth.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +21,9 @@ namespace API.Controllers
         [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> CriarUsuario([FromBody] CriarUsuarioRequestDTO request, CancellationToken ct)
         {
-            var result = await _authService.CriarUsuario(request, ct);
+            var idUsuario = User.ObterIdUsuario();
+
+            var result = await _authService.CriarUsuario(request, idUsuario, ct);
 
             return result.ToResult();
         }

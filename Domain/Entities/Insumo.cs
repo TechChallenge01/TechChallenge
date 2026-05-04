@@ -1,4 +1,5 @@
 ﻿using Domain.BaseEntity;
+using Domain.ValueObjects;
 
 public class Insumo : Base
 {
@@ -20,6 +21,7 @@ public class Insumo : Base
     public string Nome { get; private set; }
     public string Descricao { get; private set; }
     public decimal CustoUnitario { get; private set; }
+    public ICollection<OrdemServicoInsumo> OrdemServicoInsumos { get; private set;  } = new List<OrdemServicoInsumo>();
 
     private void ValidarNome(string nome)
     {

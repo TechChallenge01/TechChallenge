@@ -39,7 +39,6 @@ public class ServicoService : IServicoService
             return new CommandResult<Guid> { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
         }
     }
-
     public async Task<ICommandResult> Delete(Guid Id, Guid idUsuario, CancellationToken ct)
     {
         var servico = await _servico.GetById(Id, ct);
@@ -54,7 +53,6 @@ public class ServicoService : IServicoService
 
         return new CommandResult<Guid> { StatusCode = HttpStatusCode.NoContent, Message = "Serviço deletado com sucesso." };
     }
-
     public async Task<ICommandResult<ServicoResponseDTO>> GetById(Guid Id, CancellationToken ct)
     {
         try 
@@ -77,15 +75,11 @@ public class ServicoService : IServicoService
             return new CommandResult<ServicoResponseDTO> { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
         }
     }
-
     public async Task<ICommandResult<PagedResultDTO<ServicoResponseDTO>>> GetPaginated(int page, int pageSize, CancellationToken ct)
     {
         try
         {
             var servicos = await _servico.GetPaginatedList(page, pageSize, ct);
-
-            if (servicos.servicos.Count == 0)
-                return new CommandResult<PagedResultDTO<ServicoResponseDTO>> { StatusCode = HttpStatusCode.NoContent, Message = "Nenhum serviço encontrado." };
 
             var response = servicos.servicos.ToDtoList();
 
@@ -98,7 +92,7 @@ public class ServicoService : IServicoService
                 TotalPages = (int)Math.Ceiling(servicos.total / (double)pageSize)
             };
 
-            return new CommandResult<PagedResultDTO<ServicoResponseDTO>> { StatusCode = HttpStatusCode.OK, Message = "Serviços recuperados com sucesso.", Data = pagedResult };
+            return new CommandResult<PagedResultDTO<ServicoResponseDTO>> { StatusCode = HttpStatusCode.PartialContent, Message = "Serviços recuperados com sucesso.", Data = pagedResult };
         }
         catch (ArgumentException ex)
         {
@@ -109,7 +103,6 @@ public class ServicoService : IServicoService
             return new CommandResult<PagedResultDTO<ServicoResponseDTO>> { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
         }
     }
-
     public async Task<ICommandResult> Update(Guid Id, Guid idUsuario, ServicoRequestDTO request, CancellationToken ct)
     {
         try
@@ -127,7 +120,7 @@ public class ServicoService : IServicoService
 
             await _unitOfWork.SaveChangesAsync(ct);
 
-            return new CommandResult<ICommandResult> { StatusCode = HttpStatusCode.OK, Message = "Serviço atualizado com sucesso." };
+            return new CommandResult<ICommandResult> { StatusCode = HttpStatusCode.NoContent, Message = "Serviço atualizado com sucesso." };
 
         }
         catch (ArgumentException ex)

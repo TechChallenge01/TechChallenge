@@ -7,5 +7,5 @@ namespace Application.Auth.Services;
 public interface IAuthService
 {
     Task<ICommandResult<LoginResponseDTO>> Login(LoginRequestDTO request, CancellationToken ct);
-    Task<ICommandResult<Guid>> CriarUsuario(CriarUsuarioRequestDTO request, CancellationToken ct);
+    Task<ICommandResult<Guid>> CriarUsuario(CriarUsuarioRequestDTO request, Guid IdUsuario, CancellationToken ct);
 }

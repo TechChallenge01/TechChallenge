@@ -23,7 +23,7 @@ namespace Domain.ValueObjects
         public int Quantidade { get; private set; }
         public decimal CustoUnitario { get; private set; }
         public decimal ValorTotal => Quantidade * CustoUnitario;
-        public virtual Insumo insumo { get; private set; }
+        public virtual Insumo Insumo { get; private set; }
         public virtual OrdemServico OrdemServico { get; private set; }
         private void ValidarQuantidade(int quantidade)
         {

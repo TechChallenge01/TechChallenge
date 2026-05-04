@@ -4,12 +4,13 @@ namespace Application.Clientes.DTOs.Responses
 {
     public record ClienteResponseDTO
     {
-        public Guid Id { get; set; }
-        public string Nome { get; set; }
-        public string? Cpf { get; set; }
-        public string? Cnpj { get; set; }
-        public string Email { get; set; }
-        public TelefoneDTO Telefone { get; set; }
-        public EnderecoDTO Endereco { get; set; }
+        public Guid Id { get; init; }
+        public string Nome { get; init; }
+        public string? Cpf { get; init; }
+        public string? Cnpj { get; init; }
+        public string Email { get; init; }
+        public TelefoneDTO Telefone { get; init; }
+        public EnderecoDTO Endereco { get; init; }
+        public List<Guid> Veiculos { get; init; }
     }
 }

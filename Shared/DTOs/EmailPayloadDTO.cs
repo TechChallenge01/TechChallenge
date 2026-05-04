@@ -2,9 +2,9 @@
 {
     public record EmailPayloadDTO
     {
-        public string To { get; set; }
-        public string Subject { get; set; }
-        public string Body { get; set; }
-        public bool IsHtml { get; set; } = false;
+        public string To { get; init; }
+        public string Subject { get; init; }
+        public string Body { get; init; }
+        public bool IsHtml { get; init; } = false;
     }
 }

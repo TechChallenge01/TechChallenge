@@ -32,7 +32,8 @@ namespace Application.Clientes.Presenters
                     Logradouro = cliente.Endereco.Logradouro,
                     Numero = cliente.Endereco.Numero,
                     Uf = cliente.Endereco.Uf
-                }
+                },
+                Veiculos = cliente.Veiculos.Select(v => v.Id).ToList()
             };
         }
 

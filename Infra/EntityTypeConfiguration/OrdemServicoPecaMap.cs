@@ -10,6 +10,7 @@ namespace Infra.EntityTypeConfiguration
         {
             builder.ToTable("OrdemServicoPecas");
 
+            // Chave composta
             builder.HasKey(osp => new { osp.OrdemServicoId, osp.PecaId });
 
             builder.Property(osp => osp.OrdemServicoId)
@@ -27,8 +28,13 @@ namespace Infra.EntityTypeConfiguration
 
             builder.HasOne(osp => osp.OrdemServico)
                    .WithMany(os => os.Pecas)
-                   .HasForeignKey(osp => osp.PecaId)
+                   .HasForeignKey(osp => osp.OrdemServicoId)
                    .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(osp => osp.Peca)
+                   .WithMany(p => p.OrdemServicoPecas)
+                   .HasForeignKey(osp => osp.PecaId)
+                   .OnDelete(DeleteBehavior.Restrict);
 
             builder.Ignore(osp => osp.ValorTotal);
         }

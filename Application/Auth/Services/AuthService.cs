@@ -17,7 +17,7 @@ namespace Application.Auth.Services
             _usuarioRepository = usuarioRepository;
             _jwtService = jwtService;
         }
-        public async Task<ICommandResult<Guid>> CriarUsuario(CriarUsuarioRequestDTO request, CancellationToken ct)
+        public async Task<ICommandResult<Guid>> CriarUsuario(CriarUsuarioRequestDTO request, Guid idUsuario, CancellationToken ct)
         {
             try 
             { 
@@ -28,7 +28,7 @@ namespace Application.Auth.Services
 
                 var senhaHash = BCrypt.Net.BCrypt.HashPassword(request.Senha);
 
-                var usuario = new Usuario(request.Nome, request.Email, senhaHash, request.Perfil, Guid.Empty);
+                var usuario = new Usuario(request.Nome, request.Email, senhaHash, request.Perfil, idUsuario);
 
                 await _usuarioRepository.Create(usuario, ct);
 

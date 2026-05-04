@@ -44,7 +44,7 @@ namespace Application.Estoques.Services
                     TotalPages = (int)Math.Ceiling((double)estoque.total / pageSize)
                 };
 
-                return new CommandResult<PagedResultDTO<EstoqueResponseDTO>> { StatusCode = HttpStatusCode.OK, Data = pagedResult , Message = "Estoques retornados com sucesso!"};
+                return new CommandResult<PagedResultDTO<EstoqueResponseDTO>> { StatusCode = HttpStatusCode.PartialContent, Data = pagedResult , Message = "Estoques retornados com sucesso!"};
             }
             catch (ArgumentException ex)
             {

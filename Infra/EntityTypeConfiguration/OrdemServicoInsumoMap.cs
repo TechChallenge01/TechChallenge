@@ -24,6 +24,21 @@ namespace Infra.EntityTypeConfiguration
                     .HasForeignKey(osi => osi.InsumoId)
                     .OnDelete(DeleteBehavior.Cascade);
 
+            builder.HasOne(osi => osi.Insumo)
+                   .WithMany(i => i.OrdemServicoInsumos)
+                   .HasForeignKey(osi => osi.InsumoId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(osi => osi.OrdemServico)
+                    .WithMany(os => os.Insumos)
+                    .HasForeignKey(osi => osi.OrdemServicoId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(osi => osi.Insumo)
+                   .WithMany(i => i.OrdemServicoInsumos)
+                   .HasForeignKey(osi => osi.InsumoId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
             builder.Ignore(x => x.ValorTotal);
         }
     }
