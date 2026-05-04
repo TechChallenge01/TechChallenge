@@ -13,6 +13,6 @@ namespace Application.Clientes.DTOs.Requests
         public string Email { get; init; }
         [Required]
         public TelefoneDTO Telefone { get; init; }
-        public EnderecoDTO Enderecos { get; init; }
+        public EnderecoDTO Endereco { get; init; }
     }
 }

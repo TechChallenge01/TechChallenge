@@ -74,7 +74,7 @@ namespace Application.Clientes.Services
                         return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = "Cnpj já cadastrado em outro cliente" };
                 }
 
-                var Endereco = new Endereco(request.Enderecos.Logradouro, request.Enderecos.Numero, request.Enderecos.Complemento, request.Enderecos.Bairro, request.Enderecos.Cidade, request.Enderecos.Uf, request.Enderecos.Cep);
+                var Endereco = new Endereco(request.Endereco.Logradouro, request.Endereco.Numero, request.Endereco.Complemento, request.Endereco.Bairro, request.Endereco.Cidade, request.Endereco.Uf, request.Endereco.Cep);
                 var Telefone = new Telefone(request.Telefone.DDD, request.Telefone.DDI, request.Telefone.Numero);
 
                 Cliente entity;
@@ -135,7 +135,7 @@ namespace Application.Clientes.Services
                 if (cliente is null)
                     return new CommandResult { StatusCode = HttpStatusCode.NotFound, Message = "Cliente não encontrado!" };
 
-                var Endereco = new Endereco(request.Enderecos.Logradouro, request.Enderecos.Numero, request.Enderecos.Complemento, request.Enderecos.Bairro, request.Enderecos.Cidade, request.Enderecos.Uf, request.Enderecos.Cep);
+                var Endereco = new Endereco(request.Endereco.Logradouro, request.Endereco.Numero, request.Endereco.Complemento, request.Endereco.Bairro, request.Endereco.Cidade, request.Endereco.Uf, request.Endereco.Cep);
                 var Telefone = new Telefone(request.Telefone.DDD, request.Telefone.DDI, request.Telefone.Numero);
 
                 cliente.AlterarEmail(new Email(request.Email));

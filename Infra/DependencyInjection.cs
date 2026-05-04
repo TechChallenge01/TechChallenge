@@ -1,13 +1,11 @@
 ﻿using Application.Auth.Services;
 using Application.EmailServices;
-using Application.PasswordsServices;
 using Application.UnitOfWork;
 using Domain.Aggregates.ClienteAggregates.Repositories;
 using Domain.Aggregates.EstoqueAggregates.Repositories;
 using Domain.Aggregates.OrdemServicoAggregates.Repositories;
 using Domain.Entities.Repositories;
 using Infra.Context;
-using Infra.PasswordServices;
 using Infra.Persistencia;
 using Infra.Repositories;
 using Infra.Services;
@@ -25,7 +23,6 @@ namespace Infra
             services.AddScoped<IEstoqueRepository, EstoqueRepository>();
             services.AddScoped<IOrdemServicoRepository, OrdemServicoRepository>();
             services.AddScoped<IEmailService, EmailService>();
-            services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
             services.AddScoped<IPecaRepository, PecaRepository>();

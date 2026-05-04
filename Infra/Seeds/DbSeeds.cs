@@ -150,7 +150,7 @@ namespace Infra.Seeds
             {
                 new Cliente(
                     "João Silva",
-                    new Cpf("12345678901"),
+                    new Cpf("52998224725"),
                     usuarioId,
                     new Endereco("Rua das Flores", "123", "Apto 101", "Centro", "São Paulo", "SP", "01310100"),
                     new Telefone("11", "55", "987654321"),
@@ -158,7 +158,7 @@ namespace Infra.Seeds
                 ),
                 new Cliente(
                     "Maria Santos",
-                    new Cpf("98765432109"),
+                    new Cpf("12345678909"),
                     usuarioId,
                     new Endereco("Av. Paulista", "1000", null, "Bela Vista", "São Paulo", "SP", "01310100"),
                     new Telefone("11", "55", "987654322"),
@@ -166,7 +166,7 @@ namespace Infra.Seeds
                 ),
                 new Cliente(
                     "Carlos Oliveira",
-                    new Cpf("55555555555"),
+                    new Cpf("11144477735"),
                     usuarioId,
                     new Endereco("Rua do Comércio", "456", "Sala 201", "Consolação", "São Paulo", "SP", "01310100"),
                     new Telefone("11", "55", "987654323"),
@@ -174,7 +174,7 @@ namespace Infra.Seeds
                 ),
                 new Cliente(
                     "Ana Costa",
-                    new Cpf("44444444444"),
+                    new Cpf("93541134780"),
                     usuarioId,
                     new Endereco("Rua de Janeiro", "789", null, "Vila Mariana", "São Paulo", "SP", "01310100"),
                     new Telefone("11", "55", "987654324"),
@@ -182,7 +182,7 @@ namespace Infra.Seeds
                 ),
                 new Cliente(
                     "Tech Solutions Ltda",
-                    new Cnpj("12345678000195"),
+                    new Cnpj("68380757000191"),
                     usuarioId,
                     new Endereco("Av. Tecnológica", "2000", "Bloco A", "Parque Tecnológico", "São Paulo", "SP", "01310100"),
                     new Telefone("11", "55", "33333333"),
@@ -190,7 +190,7 @@ namespace Infra.Seeds
                 ),
                 new Cliente(
                     "Serviços Gerais Ltda",
-                    new Cnpj("98765432000100"),
+                    new Cnpj("56432696000180"),
                     usuarioId,
                     new Endereco("Rua Industrial", "3000", null, "Vila Prudente", "São Paulo", "SP", "01310100"),
                     new Telefone("11", "55", "44444444"),

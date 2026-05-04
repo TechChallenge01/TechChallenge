@@ -57,3 +57,5 @@ app.MapControllers();
 app.MapGet("/", () => Results.Ok("TechChallenge API - Running"));
 
 app.Run();
+
+public partial class Program() { }

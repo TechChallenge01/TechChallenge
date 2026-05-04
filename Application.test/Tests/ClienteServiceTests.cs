@@ -33,7 +33,7 @@ namespace Application.test.Tests
                 Cpf = "50872558843",
                 Email = "joao@email.com",
                 Telefone = new TelefoneDTO { DDD = "11", DDI = "55", Numero = "987654321" },
-                Enderecos = new EnderecoDTO { Logradouro = "Rua A", Numero = "123", Complemento = null, Bairro = "Centro",Cidade = "São Paulo",Uf = "SP",Cep = "01310100" }
+                Endereco = new EnderecoDTO { Logradouro = "Rua A", Numero = "123", Complemento = null, Bairro = "Centro",Cidade = "São Paulo",Uf = "SP",Cep = "01310100" }
             };
             var usuarioId = Guid.NewGuid();
 
@@ -80,7 +80,7 @@ namespace Application.test.Tests
                 Cpf = "50872558843",
                 Email = "joao.novo@email.com",
                 Telefone = new TelefoneDTO { DDD = "11", DDI = "55", Numero = "987654321" },
-                Enderecos = new EnderecoDTO { Logradouro = "Rua B", Numero = "456", Complemento = null, Bairro = "Vila", Cidade = "São Paulo", Uf = "SP", Cep = "01310100" }
+                Endereco = new EnderecoDTO { Logradouro = "Rua B", Numero = "456", Complemento = null, Bairro = "Vila", Cidade = "São Paulo", Uf = "SP", Cep = "01310100" }
             };
             var cliente = new Cliente("João", new Cpf("50872558843"), usuarioId,
                 new Endereco("Rua", "123", null, "Centro", "São Paulo", "SP", "01310100"),
