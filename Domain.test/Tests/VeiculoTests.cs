@@ -1,6 +1,5 @@
 using Domain.Entities;
 using Domain.ValueObjects;
-using Xunit;
 
 namespace Domain.test.Tests
 {

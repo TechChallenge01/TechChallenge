@@ -1,5 +1,4 @@
-﻿using Application.Estoques.Presenters;
-using Application.Insumos.DTOs.Requests;
+﻿using Application.Insumos.DTOs.Requests;
 using Application.Insumos.DTOs.Responses;
 using Application.Insumos.Presenters;
 using Application.UnitOfWork;

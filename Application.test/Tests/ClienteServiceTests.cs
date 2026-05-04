@@ -6,7 +6,6 @@ using Domain.ValueObjects;
 using Moq;
 using System.Net;
 using Application.UnitOfWork;
-using Xunit;
 using Application.Clientes.DTOs.Shared;
 
 namespace Application.test.Tests

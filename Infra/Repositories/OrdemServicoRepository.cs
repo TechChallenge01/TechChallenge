@@ -1,5 +1,4 @@
-﻿using Application.OrdemServicos.Services;
-using Domain.Aggregates.OrdemServicoAggregates;
+﻿using Domain.Aggregates.OrdemServicoAggregates;
 using Domain.Aggregates.OrdemServicoAggregates.Repositories;
 using Domain.ValueObjects;
 using Infra.Context;

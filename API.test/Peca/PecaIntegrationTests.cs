@@ -1,26 +1,20 @@
 ﻿using API.test.Infrastructure;
 using Application.Pecas.DTOs.Requests;
 using FluentAssertions;
-using Microsoft.AspNetCore.Routing.Constraints;
-using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http.Json;
-using System.Text;
 
 namespace API.test.Peca;
 
 [Collection("IntegrationTests")]
-public class PecaIntegrationTests : IClassFixture<IntegrationTestBase>
+public class PecaIntegrationTests
 {
-    private readonly HttpClient _client;
     private readonly IntegrationTestBase _fixture;
     private const string BaseRoute = "/api/Peca";
 
     public PecaIntegrationTests(IntegrationTestBase fixture)
     {
         _fixture = fixture;
-        _client = _fixture.Client;
     }
 
     private static PecaRequestDTO RequestValido(string nome = "Pastilha de Freio", decimal preco = 150.00m)
@@ -35,9 +29,9 @@ public class PecaIntegrationTests : IClassFixture<IntegrationTestBase>
     [Fact]
     public async Task GetPaginated_DeveRetornarOk_ParaMecanico()
     {
-        _fixture.AutenticarClient(Guid.NewGuid(), "Mecanico Silva", "Mecanico");
+        var client = _fixture.CriarClienteAutenticado(Guid.NewGuid(), "Mecanico Silva", "Mecanico");
 
-        var response = await _client.GetAsync($"{BaseRoute}?page=1&pageSize=10");
+        var response = await client.GetAsync($"{BaseRoute}?page=1&pageSize=10");
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
@@ -45,9 +39,9 @@ public class PecaIntegrationTests : IClassFixture<IntegrationTestBase>
     [Fact]
     public async Task GetById_DeveRetornarNotFound_QuandoPecaNaoExiste()
     {
-        _fixture.AutenticarClient(Guid.NewGuid(), "Rafaela Atendente", "Funcionario");
+        var client = _fixture.CriarClienteAutenticado(Guid.NewGuid(), "Rafaela Atendente", "Funcionario");
 
-        var response = await _client.GetAsync($"{BaseRoute}/{Guid.NewGuid()}");
+        var response = await client.GetAsync($"{BaseRoute}/{Guid.NewGuid()}");
 
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
@@ -55,9 +49,9 @@ public class PecaIntegrationTests : IClassFixture<IntegrationTestBase>
     [Fact]
     public async Task GetPaginated_DeveRetornarUnauthorized_SemToken()
     {
-        _fixture.RemoverAutenticacao();
+        var client = _fixture.CriarClienteSemAutenticacao();
 
-        var response = await _client.GetAsync(BaseRoute);
+        var response = await client.GetAsync(BaseRoute);
 
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
@@ -65,11 +59,11 @@ public class PecaIntegrationTests : IClassFixture<IntegrationTestBase>
     [Fact]
     public async Task Create_DeveRetornarOk_QuandoDadosSaoValidos()
     {
-        _fixture.AutenticarClient(Guid.NewGuid(), "Carlos Almoxarife", "Almoxarifado");
+        var client = _fixture.CriarClienteAutenticado(Guid.NewGuid(), "Carlos Almoxarife", "Almoxarifado");
 
         var request = RequestValido();
 
-        var response = await _client.PostAsJsonAsync(BaseRoute, request);
+        var response = await client.PostAsJsonAsync(BaseRoute, request);
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
@@ -77,7 +71,7 @@ public class PecaIntegrationTests : IClassFixture<IntegrationTestBase>
     [Fact]
     public async Task Create_DeveRetornarBadRequest_QuandoNomeOuMarcaVazios()
     {
-        _fixture.AutenticarClient(Guid.NewGuid(), "Admin", "Administrador");
+        var client = _fixture.CriarClienteAutenticado(Guid.NewGuid(), "Admin", "Administrador");
 
         var request = new PecaRequestDTO
         {
@@ -87,7 +81,7 @@ public class PecaIntegrationTests : IClassFixture<IntegrationTestBase>
             PrecoVenda = 10
         };
 
-        var response = await _client.PostAsJsonAsync(BaseRoute, request);
+        var response = await client.PostAsJsonAsync(BaseRoute, request);
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
@@ -95,9 +89,9 @@ public class PecaIntegrationTests : IClassFixture<IntegrationTestBase>
     [Fact]
     public async Task Create_DeveRetornarForbidden_ParaFuncionario()
     {
-        _fixture.AutenticarClient(Guid.NewGuid(), "Rafaela Atendente", "Funcionario");
+        var client = _fixture.CriarClienteAutenticado(Guid.NewGuid(), "Rafaela Atendente", "Funcionario");
 
-        var response = await _client.PostAsJsonAsync(BaseRoute, RequestValido());
+        var response = await client.PostAsJsonAsync(BaseRoute, RequestValido());
 
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
     }
@@ -105,10 +99,10 @@ public class PecaIntegrationTests : IClassFixture<IntegrationTestBase>
     [Fact]
     public async Task Update_DeveRetornarOk_QuandoExecutadoPorAdmin()
     {
-        _fixture.AutenticarClient(Guid.NewGuid(), "Admin", "Administrador");
+        var client = _fixture.CriarClienteAutenticado(Guid.NewGuid(), "Admin", "Administrador");
         var id = Guid.NewGuid();
 
-        var response = await _client.PutAsJsonAsync($"{BaseRoute}/{id}", RequestValido("Disco de Freio"));
+        var response = await client.PutAsJsonAsync($"{BaseRoute}/{id}", RequestValido("Disco de Freio"));
 
         response.StatusCode.Should().Match(s => s == HttpStatusCode.OK || s == HttpStatusCode.NotFound);
     }
@@ -116,9 +110,9 @@ public class PecaIntegrationTests : IClassFixture<IntegrationTestBase>
     [Fact]
     public async Task Delete_DeveRetornarForbidden_ParaMecanico()
     {
-        _fixture.AutenticarClient(Guid.NewGuid(), "Augusto Mecanico", "Mecanico");
+        var client = _fixture.CriarClienteAutenticado(Guid.NewGuid(), "Augusto Mecanico", "Mecanico");
 
-        var response = await _client.DeleteAsync($"{BaseRoute}/{Guid.NewGuid()}");
+        var response = await client.DeleteAsync($"{BaseRoute}/{Guid.NewGuid()}");
 
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
     }

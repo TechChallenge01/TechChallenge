@@ -1,6 +1,3 @@
-using Domain.Entities;
-using Xunit;
-
 namespace Domain.test.Tests
 {
     public class InsumoTests

@@ -1,7 +1,5 @@
 ﻿using Application.UnitOfWork;
-using Domain.Aggregates.EstoqueAggregates;
 using Infra.Context;
-using Microsoft.EntityFrameworkCore;
 
 namespace Infra.Persistencia
 {

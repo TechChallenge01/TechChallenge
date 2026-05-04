@@ -5,10 +5,8 @@ using Domain.Aggregates.EstoqueAggregates.Repositories;
 using Domain.Entities;
 using Domain.Entities.Repositories;
 using Moq;
-using Shared.Result;
 using System.Net;
 using Application.UnitOfWork;
-using Xunit;
 
 namespace Application.test.Tests
 {

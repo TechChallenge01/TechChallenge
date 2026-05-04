@@ -1,4 +1,6 @@
-﻿using Infra.Context;
+﻿using Domain.Entities;
+using Domain.Enums;
+using Infra.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -16,23 +18,20 @@ namespace API.test.Infrastructure;
 
 public class IntegrationTestBase : WebApplicationFactory<Program>
 {
-    private const string TestJwtKey = "chave-de-teste-minimo-32-caracteres-aqui!!";
-
-    public HttpClient Client { get; }
-
-    public IntegrationTestBase()
-    {
-        Client = CreateClient();
-    }
+    // Mesma chave usada no PostConfigure — todos os tokens gerados aqui serão aceitos pela API em memória
+    public const string TestJwtKey = "chave-de-teste-minimo-32-caracteres-aqui!!";
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureServices(services =>
         {
+            // Remove o DbContext original e substitui pelo InMemory com nome único por instância
+            // para evitar compartilhamento de estado entre classes de teste
             services.RemoveAll<DbContextOptions<AppDbContext>>();
             services.AddDbContext<AppDbContext>(options =>
-                options.UseInMemoryDatabase("TechChallengerTest"));
+                options.UseInMemoryDatabase($"TechChallengerTest_{Guid.NewGuid()}"));
 
+            // Substitui a validação JWT para usar a chave de teste
             services.PostConfigure<JwtBearerOptions>(
                 JwtBearerDefaults.AuthenticationScheme, options =>
                 {
@@ -43,31 +42,47 @@ public class IntegrationTestBase : WebApplicationFactory<Program>
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(
-                                                     Encoding.UTF8.GetBytes(TestJwtKey)),
+                            Encoding.UTF8.GetBytes(TestJwtKey)),
                         ClockSkew = TimeSpan.Zero
                     };
                 });
 
+            // Cria o banco e aplica o seed
             var sp = services.BuildServiceProvider();
             using var scope = sp.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             db.Database.EnsureCreated();
+            SeedDatabase(db);
         });
     }
 
-    public void AutenticarClient(Guid idUsuario, string nome, string perfil)
+    // Seed com usuário admin para testes de login
+    private static void SeedDatabase(AppDbContext db)
     {
+        if (db.Usuarios.Any()) return;
+
+        db.Usuarios.Add(new Usuario("test", "admin@seed.com", BCrypt.Net.BCrypt.HashPassword("123456"), EPerfilUsuario.Administrador, Guid.Empty));
+
+        db.SaveChanges();
+    }
+
+    // Cria um HttpClient com o token já configurado
+    public HttpClient CriarClienteAutenticado(Guid idUsuario, string nome, string perfil)
+    {
+        var client = CreateClient();
         var token = GerarToken(idUsuario, nome, perfil);
-        Client.DefaultRequestHeaders.Authorization =
+        client.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue("Bearer", token);
+        return client;
     }
 
-    public void RemoverAutenticacao()
+    // Cria um HttpClient sem autenticação
+    public HttpClient CriarClienteSemAutenticacao()
     {
-        Client.DefaultRequestHeaders.Authorization = null;
+        return CreateClient();
     }
 
-    private static string GerarToken(Guid idUsuario, string nome, string perfil)
+    public static string GerarToken(Guid idUsuario, string nome, string perfil)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(TestJwtKey));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -75,7 +90,7 @@ public class IntegrationTestBase : WebApplicationFactory<Program>
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub,   idUsuario.ToString()),
-            new Claim(JwtRegisteredClaimNames.Email, $"{nome.ToLower()}@teste.com"),
+            new Claim(JwtRegisteredClaimNames.Email, $"{nome.ToLower().Replace(" ", "")}@teste.com"),
             new Claim(ClaimTypes.Name,               nome),
             new Claim(ClaimTypes.Role,               perfil),
             new Claim(JwtRegisteredClaimNames.Jti,   Guid.NewGuid().ToString())

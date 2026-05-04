@@ -1,5 +1,4 @@
 using Domain.Aggregates.OrdemServicoAggregates;
-using Xunit;
 
 namespace Domain.test.Tests
 {

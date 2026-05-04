@@ -1,5 +1,4 @@
 using Domain.Aggregates.EstoqueAggregates;
-using Xunit;
 
 namespace Domain.test.Tests
 {

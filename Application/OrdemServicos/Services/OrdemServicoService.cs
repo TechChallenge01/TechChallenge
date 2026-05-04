@@ -11,7 +11,6 @@ using Domain.Aggregates.OrdemServicoAggregates;
 using Domain.Aggregates.OrdemServicoAggregates.Repositories;
 using Domain.Entities.Repositories;
 using Domain.ValueObjects;
-using Org.BouncyCastle.Asn1.Cms;
 using Shared.DTOs;
 using Shared.Result;
 using System.Net;

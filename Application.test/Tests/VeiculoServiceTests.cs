@@ -8,7 +8,6 @@ using Domain.ValueObjects;
 using Moq;
 using System.Net;
 using Application.UnitOfWork;
-using Xunit;
 
 namespace Application.test.Tests
 {

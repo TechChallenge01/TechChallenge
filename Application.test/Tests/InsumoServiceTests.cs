@@ -2,12 +2,10 @@ using Application.Insumos.DTOs.Requests;
 using Application.Insumos.Services;
 using Domain.Aggregates.EstoqueAggregates;
 using Domain.Aggregates.EstoqueAggregates.Repositories;
-using Domain.Entities;
 using Domain.Entities.Repositories;
 using Moq;
 using System.Net;
 using Application.UnitOfWork;
-using Xunit;
 
 namespace Application.test.Tests
 {

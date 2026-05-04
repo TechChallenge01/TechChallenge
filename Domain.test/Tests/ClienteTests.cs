@@ -1,6 +1,5 @@
 using Domain.Aggregates.ClienteAggregates;
 using Domain.ValueObjects;
-using Xunit;
 
 namespace Domain.test.Tests
 {
