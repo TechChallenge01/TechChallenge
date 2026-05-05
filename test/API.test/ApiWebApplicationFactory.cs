@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -11,14 +12,18 @@ namespace API.test
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            builder.ConfigureServices(s =>
+            builder.UseEnvironment("IntegrationTests");
+
+            builder.ConfigureServices((context, services) =>
             {
-                s.RemoveAll(typeof(DbContextOptions<AppDbContext>));
+                services.RemoveAll(typeof(DbContextOptions<AppDbContext>));
 
-                s.AddDbContext<AppDbContext>(o =>
-                    o.UseSqlServer("Server=localhost,1433;Database=AppDb_IntegrationTests;User Id=sa;Password=Str0ng@Passw0rd!;TrustServerCertificate=True;"));
+                var connectionString = context.Configuration.GetConnectionString("DefaultTestConnection");
 
-                var sp = s.BuildServiceProvider();
+                services.AddDbContext<AppDbContext>(options =>
+                    options.UseSqlServer(connectionString));
+
+                var sp = services.BuildServiceProvider();
 
                 using var scope = sp.CreateScope();
                 var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();

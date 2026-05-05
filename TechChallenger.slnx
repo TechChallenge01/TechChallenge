@@ -3,18 +3,18 @@
     <File Path="docker-compose.yml" />
   </Folder>
   <Folder Name="/src/">
-    <Project Path="API/API.csproj" />
-    <Project Path="Application/Application.csproj" Id="d3e044ea-9a0d-4bf9-9304-a1157904cb5c" />
-    <Project Path="Domain/Domain.csproj" Id="9a3abb68-fac5-415c-898e-285d42d01007" />
-    <Project Path="Infra/Infra.csproj" Id="c1560a46-449f-4d01-8628-2f423d9b4074" />
-    <Project Path="Shared/Shared.csproj" Id="ee821b86-bac4-4f96-b611-ead881575cd1" />
+    <Project Path="src/API/API.csproj" />
+    <Project Path="src/Application/Application.csproj" Id="d3e044ea-9a0d-4bf9-9304-a1157904cb5c" />
+    <Project Path="src/Domain/Domain.csproj" Id="9a3abb68-fac5-415c-898e-285d42d01007" />
+    <Project Path="src/Infra/Infra.csproj" Id="c1560a46-449f-4d01-8628-2f423d9b4074" />
+    <Project Path="src/Shared/Shared.csproj" Id="ee821b86-bac4-4f96-b611-ead881575cd1" />
   </Folder>
   <Folder Name="/tests/" />
   <Folder Name="/tests/TestesIntegracao/">
-    <Project Path="API.test/API.test.csproj" Id="182f7626-5606-4e32-85cc-ce661c535d22" />
+    <Project Path="test/API.test/API.test.csproj" Id="182f7626-5606-4e32-85cc-ce661c535d22" />
   </Folder>
   <Folder Name="/tests/TestesUnitarios/">
-    <Project Path="Application.test/Application.test.csproj" Id="94f8b3f4-d5a3-4c4f-8493-4549f04e0f5d" />
-    <Project Path="Domain.test/Domain.test.csproj" Id="e1d8550e-a215-4e19-8817-b1ae8d052ed1" />
+    <Project Path="test/Application.test/Application.test.csproj" Id="94f8b3f4-d5a3-4c4f-8493-4549f04e0f5d" />
+    <Project Path="test/Domain.test/Domain.test.csproj" Id="e1d8550e-a215-4e19-8817-b1ae8d052ed1" />
   </Folder>
 </Solution>

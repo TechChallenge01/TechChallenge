@@ -23,17 +23,16 @@ services:
     networks:
       - app-network
     healthcheck:
-      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'Str0ng@Passw0rd!' -Q 'SELECT 1' || exit 1"]
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Str0ng@Passw0rd!' -Q 'SELECT 1' -C || exit 1"]
       interval: 15s
       timeout: 10s
       retries: 5
-      start_period: 30s
-
+      start_period: 40s
 
   api:
     build:
-      context: ..
-      dockerfile: API/Dockerfile
+      context: .
+      dockerfile: src/API/Dockerfile
     container_name: app-api
     environment:
       ASPNETCORE_ENVIRONMENT: Development
@@ -44,6 +43,7 @@ services:
       Jwt__Audience: "TechChallenger"
 
       ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=AppDb;User Id=sa;Password=Str0ng@Passw0rd!;TrustServerCertificate=True;"
+      ConnectionStrings__DefaultTestConnection: "Server=sqlserver,1433;Database=AppDb_IntegrationTests;User Id=sa;Password=Str0ng@Passw0rd!;TrustServerCertificate=True;"
     ports:
       - "8080:8080"
     depends_on:
@@ -52,27 +52,3 @@ services:
     networks:
       - app-network
     restart: on-failure
-
-
-  integration-tests:
-    build:
-      context: ..
-      dockerfile: API.Test/Dockerfile
-    container_name: app-integration-tests
-    environment:
-      ASPNETCORE_ENVIRONMENT: IntegrationTests
-      ApiBaseUrl: http://api:8080
-
-      Jwt__Key: "f3a7c9b8e1d2a3f4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8"
-      Jwt__Issuer: "TechChallenger"
-      Jwt__Audience: "TechChallenger"
-
-      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=AppDb_IntegrationTests;User Id=sa;Password=Str0ng@Passw0rd!;TrustServerCertificate=True;"
-    depends_on:
-      api:
-        condition: service_started
-      sqlserver:
-        condition: service_healthy
-    networks:
-      - app-network
-    restart: "no"
