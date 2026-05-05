@@ -28,6 +28,9 @@ namespace Application.Veiculos.Services
         {
             try
             {
+                if (page <= 0 || pageSize <= 0)
+                    return new CommandResult<PagedResultDTO<VeiculoResponseDTO>> { StatusCode = HttpStatusCode.BadRequest, Message = "A página e o tamanho da página devem ser maiores que zero." };
+
                 var veiculos = await _veiculoRepository.GetPaginated(page, pageSize, ct);
 
                 var response = veiculos.veiculos.ToDtoList();

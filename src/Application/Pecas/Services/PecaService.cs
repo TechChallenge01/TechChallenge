@@ -1,14 +1,15 @@
-﻿using Application.Pecas.Presenters;
+﻿using Application.Insumos.DTOs.Responses;
 using Application.Pecas.DTOs.Requests;
 using Application.Pecas.DTOs.Responses;
+using Application.Pecas.Presenters;
+using Application.UnitOfWork;
 using Domain.Aggregates.EstoqueAggregates;
 using Domain.Aggregates.EstoqueAggregates.Repositories;
 using Domain.Entities;
 using Domain.Entities.Repositories;
+using Shared.DTOs;
 using Shared.Result;
 using System.Net;
-using Application.UnitOfWork;
-using Shared.DTOs;
 
 namespace Application.Pecas.Services
 {
@@ -27,6 +28,9 @@ namespace Application.Pecas.Services
         {
             try
             {
+                if (page <= 0 || pageSize <= 0)
+                    return new CommandResult<PagedResultDTO<PecaResponseDTO>> { StatusCode = HttpStatusCode.BadRequest, Message = "A página e o tamanho da página devem ser maiores que zero." };
+
                 var pecas = await _pecaRepository.GetPaginated(page, pageSize, ct);
 
                 var response = pecas.pecas.ToDtoList();

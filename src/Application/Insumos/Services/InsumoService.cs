@@ -103,6 +103,9 @@ namespace Application.Insumos.Services
         {
             try
             {
+                if (page <= 0 || pageSize <= 0)
+                    return new CommandResult<PagedResultDTO<InsumoResponseDTO>> { StatusCode = HttpStatusCode.BadRequest, Message = "A página e o tamanho da página devem ser maiores que zero."};
+
                 var insumos = await _insumoRepository.GetPaginatedAsync(page, pageSize, cancellationToken);
 
                 var response = insumos.insumos.ToDtoList();

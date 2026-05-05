@@ -1,4 +1,5 @@
-﻿using Application.Servicos.DTOs.Requests;
+﻿using Application.Pecas.DTOs.Responses;
+using Application.Servicos.DTOs.Requests;
 using Application.Servicos.DTOs.Response;
 using Application.Servicos.Presenters;
 using Application.UnitOfWork;
@@ -79,6 +80,9 @@ public class ServicoService : IServicoService
     {
         try
         {
+            if (page <= 0 || pageSize <= 0)
+                return new CommandResult<PagedResultDTO<ServicoResponseDTO>> { StatusCode = HttpStatusCode.BadRequest, Message = "A página e o tamanho da página devem ser maiores que zero." };
+
             var servicos = await _servico.GetPaginatedList(page, pageSize, ct);
 
             var response = servicos.servicos.ToDtoList();

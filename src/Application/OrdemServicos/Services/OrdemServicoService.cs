@@ -138,6 +138,10 @@ public class OrdemServicoService : IOrdemServicoService
         {
             return new CommandResult { StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
         }
+        catch (InvalidOperationException ex)
+        {
+            return new CommandResult { StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
+        }
         catch (Exception ex)
         {
             return new CommandResult { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
@@ -187,6 +191,10 @@ public class OrdemServicoService : IOrdemServicoService
             return new CommandResult<Guid> { StatusCode = HttpStatusCode.NoContent, Message = "Serviço finalizado com sucesso." };
         }
         catch (ArgumentException ex)
+        {
+            return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
+        }
+        catch (InvalidOperationException ex)
         {
             return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
         }
@@ -512,6 +520,10 @@ public class OrdemServicoService : IOrdemServicoService
         {
             return new CommandResult { StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
         }
+        catch (InvalidOperationException ex)
+        {
+            return new CommandResult { StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
+        }
         catch (Exception ex)
         {
             return new CommandResult { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
@@ -537,6 +549,10 @@ public class OrdemServicoService : IOrdemServicoService
         {
             return new CommandResult { StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
         }
+        catch (InvalidOperationException ex)
+        {
+            return new CommandResult { StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
+        }
         catch (Exception ex)
         {
             return new CommandResult { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
@@ -559,6 +575,10 @@ public class OrdemServicoService : IOrdemServicoService
             return new CommandResult { StatusCode = HttpStatusCode.NoContent, Message = "Veículo entregue e OS encerrada com sucesso!" };
         }
         catch (ArgumentException ex)
+        {
+            return new CommandResult { StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
+        }
+        catch (InvalidOperationException ex)
         {
             return new CommandResult { StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
         }

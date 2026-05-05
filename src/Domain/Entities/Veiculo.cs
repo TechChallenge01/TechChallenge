@@ -2,6 +2,7 @@
 using Domain.Aggregates.OrdemServicoAggregates;
 using Domain.BaseEntity;
 using Domain.ValueObjects;
+using System.Xml.Schema;
 
 namespace Domain.Entities
 {
@@ -26,6 +27,7 @@ namespace Domain.Entities
             Ano = ano;
             Placa = placa.ToString();
             Cor = cor;
+            Ativo = true;
         }
 
         protected Veiculo() { }

@@ -1,4 +1,5 @@
-﻿using Application.Insumos.DTOs.Requests;
+﻿using Application.Auth.DTOs.Responses;
+using Application.Insumos.DTOs.Requests;
 using Domain.Aggregates.EstoqueAggregates;
 using Infra.Context;
 using Microsoft.Extensions.DependencyInjection;
@@ -208,5 +209,75 @@ public class InsumoTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+    }
+
+    [Fact]
+    public async Task Insumo_Get_GetPaginated_PaginaInvalida_BadRequest()
+    {
+        // Act 
+        var result = await _client.GetAsync($"{ApiKey}?page=0");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+    }
+
+    [Fact]
+    public async Task Insumo_Post_Create_ArgumentException_BadRequest()
+    {
+        // Arrange 
+        var request = new InsumoRequestDTO
+        {
+            Nome = "Teste de insumo",
+            Descricao = "Insumo com valor de custo unitario negativo",
+            CustoUnitario = -10.0m
+        };
+
+        // Act
+        var result = await _client.PostAsJsonAsync(ApiKey, request);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+    }
+
+    [Fact]
+    public async Task Insumo_Put_Update_DadosInvalidos_BadRequest()
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        var updateRequest = new InsumoRequestDTO
+        {
+            Nome = "",
+            Descricao = "Desc",
+            CustoUnitario = -50 
+        };
+
+        // Act
+        var result = await _client.PutAsJsonAsync($"{ApiKey}/{id}", updateRequest);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+    }
+
+    [Fact]
+    public async Task Insumo_Delete_NaoExistente_NotFound()
+    {
+        // Arrange
+        var idInexistente = Guid.NewGuid();
+
+        // Act
+        var result = await _client.DeleteAsync($"{ApiKey}/{idInexistente}");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+    }
+
+    [Fact]
+    public async Task Insumo_Get_GetPaginated_FiltroVazio_PartialContent()
+    {
+        // Act
+        var result = await _client.GetAsync($"{ApiKey}?page=1&pageSize=100");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.PartialContent, result.StatusCode);
     }
 }

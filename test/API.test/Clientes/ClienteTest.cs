@@ -358,5 +358,113 @@ namespace API.test.Clientes
             // assert
             Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
         }
+
+        [Fact]
+        public async Task Cliente_Post_Create_CpfDuplicado_Conflict()
+        {
+            // arrange
+            var cpf = "79171883029";
+            var clienteOriginal = new ClienteRequestDTO
+            {
+                Nome = "Primeiro Cadastro",
+                Cpf = cpf,
+                Cnpj = "", 
+                Email = "sucesso@email.com",
+                Endereco = new EnderecoDTO
+                {
+                    Bairro = "Bairro",
+                    Cep = "04349000",
+                    Cidade = "SP",
+                    Logradouro = "Rua",
+                    Numero = "1",
+                    Uf = "SP",
+                    Complemento = "SN" 
+                },
+                Telefone = new TelefoneDTO { DDD = "11", DDI = "55", Numero = "999999999" }
+            };
+
+            // Act 1
+            var resp1 = await _client.PostAsJsonAsync(ApiKey, clienteOriginal);
+
+            // Act 2
+            var clienteDuplicado = clienteOriginal with { Email = "outro@email.com" };
+            var result = await _client.PostAsJsonAsync(ApiKey, clienteDuplicado);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Conflict, result.StatusCode);
+        }
+
+        [Fact]
+        public async Task Cliente_Get_GetById_Inexistente_NotFound()
+        {
+            // act
+            var result = await _client.GetAsync($"{ApiKey}/{Guid.NewGuid()}");
+
+            // assert
+            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+        }
+
+        [Fact]
+        public async Task Cliente_Delete_Inexistente_NotFound()
+        {
+            // act
+            var result = await _client.DeleteAsync($"{ApiKey}/{Guid.NewGuid()}");
+
+            // assert
+            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+        }
+
+        [Fact]
+        public async Task Cliente_Post_Create_AmbosCpfCnpjPreenchidos_BadRequest()
+        {
+            // arrange
+            var faker = new Faker("pt_BR");
+            var cliente = new ClienteRequestDTO
+            {
+                Nome = "Erro Teste",
+                Cpf = faker.Person.Cpf(includeFormatSymbols: false),
+                Cnpj = faker.Company.Cnpj(includeFormatSymbols: false), 
+                Email = "erro@email.com",
+                Endereco = new EnderecoDTO { Bairro = "Bairro", Cep = "04349000", Cidade = "SP", Logradouro = "Rua", Numero = "1", Uf = "SP" },
+                Telefone = new TelefoneDTO { DDD = "11", DDI = "55", Numero = "999999999" }
+            };
+
+            // act
+            var result = await _client.PostAsJsonAsync(ApiKey, cliente);
+
+            // assert
+            Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+        }
+
+        [Fact]
+        public async Task Cliente_Post_Create_SemCpfESemCnpj_BadRequest()
+        {
+            // arrange
+            var cliente = new ClienteRequestDTO
+            {
+                Nome = "Erro Teste",
+                Cpf = "", 
+                Cnpj = "",
+                Email = "erro@email.com",
+                Endereco = new EnderecoDTO { Bairro = "Bairro", Cep = "04349000", Cidade = "SP", Logradouro = "Rua", Numero = "1", Uf = "SP" },
+                Telefone = new TelefoneDTO { DDD = "11", DDI = "55", Numero = "999999999" }
+            };
+
+            // act
+            var result = await _client.PostAsJsonAsync(ApiKey, cliente);
+
+            // assert
+            Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+        }
+
+        [Fact]
+        public async Task Cliente_Get_GetPaginated_PaginaInvalida_BadRequest()
+        {
+            // act
+            var result = await _client.GetAsync($"{ApiKey}?page=0&pageSize=10");
+
+            // assert
+            Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+        }
     }
 }

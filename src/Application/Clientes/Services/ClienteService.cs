@@ -25,6 +25,12 @@ namespace Application.Clientes.Services
         {
             try
             {
+                if (page <= 0 || pageSize <= 0)
+                {
+                    return new CommandResult<PagedResultDTO<ClienteResponseDTO>>{
+                        StatusCode = HttpStatusCode.BadRequest, Message = "A página e o tamanho da página devem ser maiores que zero."};
+                }
+
                 var clientes = await _clienteRepository.GetPaginated(page, pageSize, ct);
 
                 var response = clientes.Clientes.ToListDTO();
@@ -65,13 +71,13 @@ namespace Application.Clientes.Services
                 {
                     var cliente = await _clienteRepository.GetByCpf(new Cpf(request.Cpf), ct);
                     if (cliente is not null)
-                        return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = "CPF já cadastrado em outro cliente" };
+                        return new CommandResult<Guid> { StatusCode = HttpStatusCode.Conflict, Message = "CPF já cadastrado em outro cliente" };
                 }
                 else
                 {
                     var cliente = await _clienteRepository.GetByCnpj(new Cnpj(request.Cnpj), ct);
                     if (cliente is not null)
-                        return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = "Cnpj já cadastrado em outro cliente" };
+                        return new CommandResult<Guid> { StatusCode = HttpStatusCode.Conflict, Message = "Cnpj já cadastrado em outro cliente" };
                 }
 
                 var Endereco = new Endereco(request.Endereco.Logradouro, request.Endereco.Numero, request.Endereco.Complemento, request.Endereco.Bairro, request.Endereco.Cidade, request.Endereco.Uf, request.Endereco.Cep);

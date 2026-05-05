@@ -204,4 +204,64 @@ public class PecaTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
     }
+
+    [Fact]
+    public async Task Peca_Get_GetPaginated_OK()
+    {
+        // Act
+        var result = await _client.GetAsync($"{ApiKey}?page=1&pageSize=5");
+
+        // Assert 
+        Assert.Equal(HttpStatusCode.PartialContent, result.StatusCode);
+    }
+
+    [Fact]
+    public async Task Peca_Get_GetPaginated_PaginaInvalida_BadRequest()
+    {
+        // Act 
+        var result = await _client.GetAsync($"{ApiKey}?page=0");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+    }
+
+    [Fact]
+    public async Task Peca_Get_GetPaginated_Unauthorized()
+    {
+        // Arrange 
+        using var anonymousClient = _factory.CreateClient();
+
+        // Act
+        var result = await anonymousClient.GetAsync(ApiKey);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
+    }
+
+    [Fact]
+    public async Task Peca_Put_Update_DadosInvalidos_BadRequest()
+    {
+        // Arrange
+        Guid pecaId;
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var peca = new Domain.Entities.Peca("Original", "Desc", "Marca", 50, Guid.Empty, DateTime.UtcNow);
+            context.Pecas.Add(peca);
+            await context.SaveChangesAsync();
+            pecaId = peca.Id;
+        }
+
+        var updateRequest = new PecaRequestDTO
+        {
+            Nome = "", 
+            PrecoVenda = -1.0m
+        };
+
+        // Act
+        var result = await _client.PutAsJsonAsync($"{ApiKey}/{pecaId}", updateRequest);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+    }
 }

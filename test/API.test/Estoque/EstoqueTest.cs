@@ -242,4 +242,59 @@ public class EstoqueTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
         Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
     }
 
+    [Fact]
+    public async Task Estoque_Post_Saida_Insumo_SaldoInsuficiente_BadRequest()
+    {
+        // Arrange
+        Guid insumoId;
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var admin = context.Usuarios.First();
+
+            var insumo = new Insumo("Óleo", "Desc", 50m, admin.Id, DateTime.UtcNow);
+            context.Insumos.Add(insumo);
+
+            var estoque = new Domain.Aggregates.EstoqueAggregates.Estoque(insumo.Id, null, 5, admin.Id, DateTime.UtcNow);
+            context.Estoques.Add(estoque);
+            await context.SaveChangesAsync();
+            insumoId = insumo.Id;
+        }
+
+        var request = new EstoqueRequestDTO
+        {
+            InsumoId = insumoId,
+            TipoMovimentacao = "Saida",
+            Quantidade = 10 
+        };
+
+        // Act
+        var result = await _client.PostAsJsonAsync(ApiKey, request);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+    }
+
+    [Fact]
+    public async Task Estoque_Get_GetPaginated_PaginaInvalida_BadRequest()
+    {
+        // Act
+        var result = await _client.GetAsync($"{ApiKey}?page=0");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+    }
+
+    [Fact]
+    public async Task Estoque_Get_GetById_NonExistent_NotFound()
+    {
+        // Arrange
+        var idInexistente = Guid.NewGuid();
+
+        // Act
+        var result = await _client.GetAsync($"{ApiKey}/{idInexistente}");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+    }
 }

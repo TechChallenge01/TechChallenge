@@ -31,6 +31,9 @@ namespace Application.Estoques.Services
         {
             try
             {
+                if(page <= 0 || pageSize <= 0)
+                    return new CommandResult<PagedResultDTO<EstoqueResponseDTO>> { StatusCode = HttpStatusCode.BadRequest, Message = "Page e PageSize devem ser maiores que zero!" };
+
                 var estoque = await _estoqueRepository.GetPaginated(page, pageSize, ct);
 
                 var response = estoque.estoques.ToDTOList();
@@ -138,6 +141,10 @@ namespace Application.Estoques.Services
                 return new CommandResult<Guid> { StatusCode = HttpStatusCode.Created, Data = estoque.Id, Message = "Movimentação realizada com sucesso!" };
             }
             catch (ArgumentException ex)
+            {
+                return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
+            }
+            catch (InvalidOperationException ex)
             {
                 return new CommandResult<Guid> { StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
             }

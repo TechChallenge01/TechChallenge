@@ -28,7 +28,9 @@ namespace Infra.Repositories
 
         public async Task<Veiculo?> GetById(Guid id, CancellationToken ct)
         {
-            return await _appDbContext.Veiculos.FirstOrDefaultAsync(v => v.Id == id && v.Ativo, ct);
+            return await _appDbContext.Veiculos
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync(v => v.Id == id && v.Ativo, ct);
         }
 
         public async Task<(List<Veiculo> veiculos, int total)> GetPaginated(int page, int pageSize, CancellationToken ct)

@@ -197,4 +197,55 @@ public class ServicoTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
         // Assert
         Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
     }
+
+    [Fact]
+    public async Task Servico_Get_GetPaginated_PaginaZero_BadRequest()
+    {
+        // Act 
+        var result = await _client.GetAsync($"{ApiKey}?page=0");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+    }
+
+    [Fact]
+    public async Task Servico_Put_Update_PrecoNegativo_BadRequest()
+    {
+        // Arrange
+        Guid servicoId;
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var servico = new Domain.Entities.Servico("Teste", "Desc", 10m, Guid.Empty, DateTime.UtcNow);
+            context.Servicos.Add(servico);
+            await context.SaveChangesAsync();
+            servicoId = servico.Id;
+        }
+
+        var updateRequest = new ServicoRequestDTO
+        {
+            Nome = "Teste Atualizado",
+            Descricao = "Desc",
+            PrecoVenda = -1.0m // Valor inválido
+        };
+
+        // Act
+        var result = await _client.PutAsJsonAsync($"{ApiKey}/{servicoId}", updateRequest);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+    }
+
+    [Fact]
+    public async Task Servico_Delete_NonExistent_NotFound()
+    {
+        // Arrange
+        var idInexistente = Guid.NewGuid();
+
+        // Act
+        var result = await _client.DeleteAsync($"{ApiKey}/{idInexistente}");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+    }
 }
