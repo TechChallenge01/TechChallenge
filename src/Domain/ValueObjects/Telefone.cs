@@ -5,12 +5,15 @@
 
         public Telefone(string ddd, string ddi, string numero)
         {
+            numero = numero.Replace("-", "").Replace("(", "").Replace(")", "");
+
             if (string.IsNullOrWhiteSpace(ddd))
                 throw new ArgumentException("O DDD não pode ser nulo ou vazio.");
             if (string.IsNullOrWhiteSpace(ddi))
                 throw new ArgumentException("O DDI não pode ser nulo ou vazio.");
             if (string.IsNullOrWhiteSpace(numero))
                 throw new ArgumentException("O número não pode ser nulo ou vazio.");
+            validarTelefone(numero);
 
             DDD = ddd.Trim();
             DDI = ddi.Trim();
@@ -23,20 +26,10 @@
         public string DDI { get; private set; }
         public string Numero { get; private set; }
 
-        public override bool Equals(object obj)
+        private void validarTelefone(string numero)
         {
-            if (obj is Telefone outro) 
-            {
-                return DDI == outro.DDI && 
-                       DDD == outro.DDD && 
-                       Numero == outro.Numero;
-            }
-            return false;
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(DDI, DDD, Numero);
+            if (numero.Length < 8 || numero.Length > 9)
+                throw new ArgumentException("Numero de telefone inválido");
         }
 
     }

@@ -35,12 +35,11 @@ public class VeiculoTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
         using (var scope = _factory.Services.CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            var admin = context.Usuarios.First();
 
             var telefone = new Telefone("11","55", "988887777");
             var endereco = new Endereco("Avenida Paulista", "1000", "SN", "Bela Vista", "São Paulo", "SP", "01310-100");
 
-            var cliente = new Cliente("João Silva", new Cpf("72814249061"), admin.Id, endereco, telefone, new Email("joao@email.com"));
+            var cliente = new Cliente("João Silva", new Cpf("72814249061"), Guid.Empty, endereco, telefone, new Email("joao@email.com"));
             context.Clientes.Add(cliente);
             await context.SaveChangesAsync();
             clienteId = cliente.Id;
@@ -71,15 +70,14 @@ public class VeiculoTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
         using (var scope = _factory.Services.CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            var admin = context.Usuarios.First();
 
             var telefone = new Telefone("11", "55", "988887777");
             var endereco = new Endereco("Avenida Paulista", "1000", "SN", "Bela Vista", "São Paulo", "SP", "01310-100");
 
-            var cliente = new Cliente("João Silva", new Cpf("72814249061"), admin.Id, endereco, telefone, new Email("joao@email.com"));
+            var cliente = new Cliente("João Silva", new Cpf("72814249061"), Guid.Empty, endereco, telefone, new Email("joao@email.com"));
             context.Clientes.Add(cliente);
 
-            var veiculo = new Domain.Entities.Veiculo("Corolla", "Toyota", cliente.Id, 2023, new Placa("BRA2E19"), "Preto", admin.Id);
+            var veiculo = new Domain.Entities.Veiculo("Corolla", "Toyota", cliente.Id, 2023, new Placa("BRA2E19"), "Preto", Guid.Empty);
             context.Veiculos.Add(veiculo);
             await context.SaveChangesAsync();
             veiculoId = veiculo.Id;

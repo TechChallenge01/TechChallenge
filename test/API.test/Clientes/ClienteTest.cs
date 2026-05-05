@@ -1,5 +1,8 @@
 ﻿using Application.Clientes.DTOs.Requests;
 using Application.Clientes.DTOs.Shared;
+using Azure;
+using Bogus;
+using Bogus.Extensions.Brazil;
 using Domain.Aggregates.ClienteAggregates;
 using Domain.ValueObjects;
 using Infra.Context;
@@ -55,10 +58,14 @@ namespace API.test.Clientes
         public async Task Cliente_Post_Create_cpf_correto_Created()
         {
             //arrange
+            var faker = new Faker("pt_BR");
+
+            // CPF válido aleatório (só números)
+            var cpf = faker.Person.Cpf(includeFormatSymbols: false); // "13247904077"
             var cliente = new ClienteRequestDTO
             {
                 Nome = "Test test",
-                Cpf = "72814249061",
+                Cpf = cpf,
                 Cnpj = "",
                 Email = "testecpf@email.com",
                 Endereco = new EnderecoDTO
@@ -89,11 +96,14 @@ namespace API.test.Clientes
         public async Task Cliente_Post_Create_cnpj_correto_Created()
         {
             //arrange
+            var faker = new Faker("pt_BR");
+            var cnpj = faker.Company.Cnpj(includeFormatSymbols: false);
+
             var cliente = new ClienteRequestDTO
             {
                 Nome = "Test test",
                 Cpf = "",
-                Cnpj = "54635822000178",
+                Cnpj = cnpj,
                 Email = "testecpnj@email.com",
                 Endereco = new EnderecoDTO
                 {

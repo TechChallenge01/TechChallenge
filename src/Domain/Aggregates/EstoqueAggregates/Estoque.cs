@@ -16,7 +16,7 @@ public class Estoque : Base
         if(pecaId is not null)
             ValidarPecaId((Guid)pecaId);
 
-        if(Insumo is not null)
+        if(insumoId is not null)
             ValidarInsumoId((Guid)insumoId);
 
         ValidarQuantidadeDisponivel(quantidadeDisponivel);
@@ -94,12 +94,13 @@ public class Estoque : Base
         QuantidadeDisponivel -= quantidade;
         QuantidadeReservada += quantidade;
     }
+
     public void LiberarReserva(int quantidade, Guid usuarioCriacaoId) 
     {
         ValidarQuantidadeReservada(quantidade);
 
-        if(quantidade > QuantidadeReservada)
-            Console.WriteLine("Não há estoque reservado suficiente para liberar a quantidade solicitada.");
+        if (quantidade > QuantidadeReservada)
+            throw new ArgumentException("Quantidade maior que a quantidade reservada!");
         
        
         QuantidadeReservada -= quantidade;

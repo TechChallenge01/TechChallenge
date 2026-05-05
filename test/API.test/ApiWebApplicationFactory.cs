@@ -1,12 +1,7 @@
 ﻿using Infra.Context;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-<<<<<<< HEAD:test/API.test/ApiWebApplicationFactory.cs
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-=======
 using Microsoft.Data.SqlClient;
->>>>>>> feat/testes-integracao:API.test/ApiWebApplicationFactory.cs
 using Microsoft.Extensions.DependencyInjection;
 using Respawn;
 using Respawn.Graph;
@@ -22,29 +17,13 @@ namespace API.test
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-<<<<<<< HEAD:test/API.test/ApiWebApplicationFactory.cs
-            builder.UseEnvironment("IntegrationTests");
-
-            builder.ConfigureServices((context, services) =>
-            {
-                services.RemoveAll(typeof(DbContextOptions<AppDbContext>));
-
-                var connectionString = context.Configuration.GetConnectionString("DefaultTestConnection");
-
-                services.AddDbContext<AppDbContext>(options =>
-                    options.UseSqlServer(connectionString));
-
-                var sp = services.BuildServiceProvider();
-
-=======
             builder.ConfigureServices(services =>
             {
                 var sp = services.BuildServiceProvider();
->>>>>>> feat/testes-integracao:API.test/ApiWebApplicationFactory.cs
                 using var scope = sp.CreateScope();
                 var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-                db.Database.EnsureCreated(); 
+                db.Database.EnsureCreated();
             });
         }
 

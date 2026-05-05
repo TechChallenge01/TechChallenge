@@ -77,5 +77,29 @@ namespace Domain.test.Tests
             // Assert
             Assert.Equal(novoEmail.EnderecoEmail, cliente.Email.EnderecoEmail);
         }
+
+        [Fact]
+        public void CriarTelefone_DDDNulo_DeveThrowArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() => new Telefone(string.Empty, "55", "959972016"));
+        }
+
+        [Fact]
+        public void CriarTelefone_DDINulo_DeveThrowArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() => new Telefone("11", string.Empty, "959972016"));
+        }
+
+        [Fact]
+        public void CriarTelefone_NumeroNulo_DeveThrowArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() => new Telefone("11", "55", string.Empty));
+        }
+
+        [Fact]
+        public void CriarTelefone_NumeroInvalido_DeveThrowArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() => new Telefone("11", "55", "1111111111"));
+        }
     }
 }

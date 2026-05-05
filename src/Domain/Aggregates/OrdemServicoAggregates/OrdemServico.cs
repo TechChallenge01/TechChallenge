@@ -3,6 +3,7 @@ using Domain.BaseEntity;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.ValueObjects;
+using System.Collections;
 
 namespace Domain.Aggregates.OrdemServicoAggregates;
 public class OrdemServico : Base
@@ -57,7 +58,7 @@ public class OrdemServico : Base
             throw new InvalidOperationException("Observação é obrigatória para registrar um diagnóstico.");
 
         Observacao = observacao;
-        StatusOS = EStatusOS.AguardandoAprovacao.ToString()     ;
+        StatusOS = EStatusOS.AguardandoAprovacao.ToString();
     }
 
     public void Entregar()
@@ -101,7 +102,7 @@ public class OrdemServico : Base
 
     private void RecalcularValorTotal()
     {
-        var totalServicos = Servicos.Sum(s => s.ValorUnitario);
+        var totalServicos = Servicos.Sum(s => s.ValorUnitario * s.Quantidade);
         var totalPecas = Pecas.Sum(p => p.ValorUnitario * p.Quantidade);
         var totalInsumos = Insumos.Sum(i => i.CustoUnitario * i.Quantidade);
         ValorTotal = totalServicos + totalPecas + totalInsumos - ValorDesconto;
@@ -109,8 +110,8 @@ public class OrdemServico : Base
 
     public void AlterarServico(List<OrdemServicoServico> osServico)
     {
-        if (osServico == null)
-            throw new ArgumentNullException(nameof(osServico));
+        if (osServico.Count == 0)
+            throw new ArgumentException("Lista de servicos não podem estar nula");
 
         ValidarStatusParaEdicao();
 
@@ -121,8 +122,8 @@ public class OrdemServico : Base
 
     public void AlterarPeca(List<OrdemServicoPeca> osPeca)
     {
-        if (osPeca == null)
-            throw new ArgumentNullException(nameof(osPeca));
+        if (osPeca.Count == 0)
+            throw new ArgumentException("Lista de pecas não podem estar nula");
 
         ValidarStatusParaEdicao();
 
@@ -133,8 +134,8 @@ public class OrdemServico : Base
 
     public void AlterarInsumo(List<OrdemServicoInsumo> osInsumo)
     {
-        if (osInsumo == null)
-            throw new ArgumentNullException(nameof(osInsumo));
+        if (osInsumo.Count == 0)
+            throw new ArgumentException("Lista de insumos não podem estar nula");
 
         ValidarStatusParaEdicao();
 
@@ -153,13 +154,6 @@ public class OrdemServico : Base
 
         ValorDesconto = valorDesconto;
         RecalcularValorTotal();
-    }
-
-    public void RegistrarEntrega()
-    {
-        ValidarTransicao(EStatusOS.Finalizada, EStatusOS.Entregue);
-        
-        StatusOS = EStatusOS.Entregue.ToString();
     }
 
     private void ValidarStatusParaEdicao()

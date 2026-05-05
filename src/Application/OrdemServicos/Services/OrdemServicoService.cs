@@ -551,7 +551,7 @@ public class OrdemServicoService : IOrdemServicoService
             if (ordemServico is null)
                 return new CommandResult { StatusCode = HttpStatusCode.NotFound, Message = "Ordem de serviço não encontrada." };
 
-            ordemServico.RegistrarEntrega();
+            ordemServico.Entregar();
             ordemServico.RastrearAlteracao(idUsuario, DateTime.UtcNow);
 
             await _unitOfWork.SaveChangesAsync(ct);

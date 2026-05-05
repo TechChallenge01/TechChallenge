@@ -51,6 +51,78 @@ namespace Domain.test.Tests
             // Act & Assert
             Assert.Throws<ArgumentException>(() => new Estoque(Guid.NewGuid(), Guid.NewGuid(), 10, Guid.NewGuid(), DateTime.UtcNow));
         }
+        [Fact]
+        public void CriarEstoque_ComPecaInvalida_DeveThrowArgumentException()
+        {
+            // Act & Assert
+            Assert.Throws<ArgumentException>(() => new Estoque(null, Guid.Empty, 10, Guid.NewGuid(), DateTime.UtcNow));
+        }
+        [Fact]
+        public void CriarEstoque_ComQuantidadeDisponivelInvalida_DeveThrowArgumentException()
+        {
+            // Act & Assert
+            Assert.Throws<ArgumentException>(() => new Estoque(null, Guid.Empty, -10, Guid.NewGuid(), DateTime.UtcNow));
+        }
+
+        [Fact]
+        public void CriarEstoque_ComInsumoInvalido_DeveThrowArgumentException()
+        {
+            // Act & Assert
+            Assert.Throws<ArgumentException>(() => new Estoque(Guid.Empty, null, 10, Guid.NewGuid(), DateTime.UtcNow));
+        }
+
+        [Fact]
+        public void CriarEstoque_ReservarEstoque_DeveReservarComSucesso()
+        {
+            // Arrange
+            var pecaId = Guid.NewGuid();
+            var quantidade = 10;
+            var usuarioId = Guid.NewGuid();
+
+            // Act
+            var estoque = new Estoque(null, pecaId, quantidade, usuarioId, DateTime.UtcNow);
+            estoque.ReservarEstoque(quantidade, Guid.NewGuid());
+
+            // Assert
+            Assert.NotNull(estoque);
+            Assert.Equal(pecaId, estoque.PecaId);
+            Assert.Equal(quantidade, estoque.QuantidadeReservada);
+            Assert.Equal(0, estoque.QuantidadeDisponivel);
+        }
+        [Fact]
+        public void CriarEstoque_ReservarEstoqueComQuantidadeIndisponivel_DeveThrowArgumentException()
+        {
+            // Arrange
+            var pecaId = Guid.NewGuid();
+            var quantidade = 10;
+            var usuarioId = Guid.NewGuid();
+
+            // Act
+            var estoque = new Estoque(null, pecaId, quantidade, usuarioId, DateTime.UtcNow);
+
+            // Assert
+            Assert.Throws<ArgumentException>(() => estoque.ReservarEstoque(-10, Guid.NewGuid()));
+        }
+
+        [Fact]
+        public void CriarEstoque_RetirarReservaEstoque_DeveRetirarReservaComSucesso()
+        {
+            // Arrange
+            var pecaId = Guid.NewGuid();
+            var quantidade = 10;
+            var usuarioId = Guid.NewGuid();
+
+            // Act
+            var estoque = new Estoque(null, pecaId, quantidade, usuarioId, DateTime.UtcNow);
+            estoque.ReservarEstoque(quantidade, Guid.NewGuid());
+            estoque.LiberarReserva(quantidade, Guid.NewGuid());
+
+            // Assert
+            Assert.NotNull(estoque);
+            Assert.Equal(pecaId, estoque.PecaId);
+            Assert.Equal(quantidade, estoque.QuantidadeDisponivel);
+            Assert.Equal(0, estoque.QuantidadeReservada);
+        }
 
         [Fact]
         public void AdicionarEstoque_ComQuantidadeValida_DeveAdicionarComSucesso()

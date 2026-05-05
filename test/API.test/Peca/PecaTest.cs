@@ -51,14 +51,13 @@ public class PecaTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
         using (var scope = _factory.Services.CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            var admin = context.Usuarios.First(u => u.Email == "Admin@email.com");
 
             var peca = new Domain.Entities.Peca(
                 "Disco de Freio",
                 "Ventilado",
                 "Brembo",
                 180.00m,
-                admin.Id,
+                Guid.Empty,
                 DateTime.UtcNow
             );
 
@@ -82,9 +81,8 @@ public class PecaTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
         using (var scope = _factory.Services.CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            var admin = context.Usuarios.First();
 
-            var peca = new Domain.Entities.Peca("Vela", "Iridium", "NGK", 60.00m, admin.Id, DateTime.UtcNow);
+            var peca = new Domain.Entities.Peca("Vela", "Iridium", "NGK", 60.00m, Guid.Empty, DateTime.UtcNow);
             context.Pecas.Add(peca);
             await context.SaveChangesAsync();
             pecaId = peca.Id;
@@ -113,12 +111,11 @@ public class PecaTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
         using (var scope = _factory.Services.CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            var admin = context.Usuarios.First();
 
-            var peca = new Domain.Entities.Peca("Filtro", "Ar", "Fram", 45.00m, admin.Id, DateTime.UtcNow);
+            var peca = new Domain.Entities.Peca("Filtro", "Ar", "Fram", 45.00m, Guid.Empty, DateTime.UtcNow);
             context.Pecas.Add(peca);
 
-            context.Estoques.Add(new Domain.Aggregates.EstoqueAggregates.Estoque(null, peca.Id ,0, admin.Id, DateTime.UtcNow));
+            context.Estoques.Add(new Domain.Aggregates.EstoqueAggregates.Estoque(null, peca.Id ,0, Guid.Empty, DateTime.UtcNow));
 
             await context.SaveChangesAsync();
             pecaId = peca.Id;
@@ -171,12 +168,11 @@ public class PecaTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
         using (var scope = _factory.Services.CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            var admin = context.Usuarios.First();
 
-            var peca = new Domain.Entities.Peca("Peca Travada", "Desc", "Marca", 50, admin.Id, DateTime.UtcNow);
+            var peca = new Domain.Entities.Peca("Peca Travada", "Desc", "Marca", 50, Guid.Empty, DateTime.UtcNow);
             context.Pecas.Add(peca);
 
-            context.Estoques.Add(new Domain.Aggregates.EstoqueAggregates.Estoque(null, peca.Id, 10, admin.Id, DateTime.UtcNow));
+            context.Estoques.Add(new Domain.Aggregates.EstoqueAggregates.Estoque(null, peca.Id, 10, Guid.Empty, DateTime.UtcNow));
 
             await context.SaveChangesAsync();
             pecaId = peca.Id;

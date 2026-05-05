@@ -62,13 +62,12 @@ public class ServicoTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
         using (var scope = _factory.Services.CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            var admin = context.Usuarios.First(u => u.Email == "Admin@email.com");
 
             var servico = new Domain.Entities.Servico(
                 "Alinhamento",
                 "Alinhamento e balanceamento 3D",
                 120.00m,
-                admin.Id,
+                Guid.Empty,
                 DateTime.UtcNow
             );
 
@@ -92,9 +91,8 @@ public class ServicoTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
         using (var scope = _factory.Services.CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            var admin = context.Usuarios.First();
 
-            var servico = new Domain.Entities.Servico("Lavagem", "Lavagem simples", 50.00m, admin.Id, DateTime.UtcNow);
+            var servico = new Domain.Entities.Servico("Lavagem", "Lavagem simples", 50.00m, Guid.Empty, DateTime.UtcNow);
             context.Servicos.Add(servico);
             await context.SaveChangesAsync();
             servicoId = servico.Id;
@@ -122,9 +120,8 @@ public class ServicoTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
         using (var scope = _factory.Services.CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            var admin = context.Usuarios.First();
 
-            var servico = new Domain.Entities.Servico("Revisão", "Revisão Geral", 200.00m, admin.Id, DateTime.UtcNow);
+            var servico = new Domain.Entities.Servico("Revisão", "Revisão Geral", 200.00m, Guid.Empty, DateTime.UtcNow);
             context.Servicos.Add(servico);
             await context.SaveChangesAsync();
             servicoId = servico.Id;
