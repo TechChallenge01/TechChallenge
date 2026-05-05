@@ -3,29 +3,27 @@ using Application.Clientes.DTOs.Shared;
 using Domain.Aggregates.ClienteAggregates;
 using Domain.ValueObjects;
 using Infra.Context;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text;
 
 namespace API.test.Clientes
 {
-    public class ClienteTest : IClassFixture<ClientTestFixture>
+    public class ClienteTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
     {
-
         const string ApiKey = "api/Cliente";
         private readonly HttpClient _client;
+        private readonly ApiWebApplicationFactory _factory;
 
-        public ClienteTest(ClientTestFixture fixture)
+        public async Task InitializeAsync() => await _factory.ResetDatabaseAsync();
+
+        public Task DisposeAsync() => Task.CompletedTask;
+
+        public ClienteTest(IntegrationTestFixture fixture)
         {
             _client = fixture.Client;
+            _factory = fixture.App;
         }
-
 
         [Fact]
         public async Task Cliente_Get_GetPaginated_PartialContent()
@@ -38,6 +36,7 @@ namespace API.test.Clientes
             //assert
             Assert.Equal(HttpStatusCode.PartialContent, result.StatusCode);
         }
+
         [Fact]
         public async Task Cliente_Get_GetPaginated_Unauthorized()
         {
@@ -51,6 +50,7 @@ namespace API.test.Clientes
             //assert
             Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
         }
+
         [Fact]
         public async Task Cliente_Post_Create_cpf_correto_Created()
         {
@@ -58,9 +58,9 @@ namespace API.test.Clientes
             var cliente = new ClienteRequestDTO
             {
                 Nome = "Test test",
-                Cpf = "45073010094",
+                Cpf = "72814249061",
                 Cnpj = "",
-                Email = "teste@email.com",
+                Email = "testecpf@email.com",
                 Endereco = new EnderecoDTO
                 {
                     Bairro = "Bairro test",
@@ -93,8 +93,8 @@ namespace API.test.Clientes
             {
                 Nome = "Test test",
                 Cpf = "",
-                Cnpj = "01254112000131",
-                Email = "teste@email.com",
+                Cnpj = "54635822000178",
+                Email = "testecpnj@email.com",
                 Endereco = new EnderecoDTO
                 {
                     Bairro = "Bairro test",

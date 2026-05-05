@@ -57,7 +57,7 @@ services:
   integration-tests:
     build:
       context: ..
-      dockerfile: API.Test/Dockerfile
+      dockerfile: API.test/Dockerfile
     container_name: app-integration-tests
     environment:
       ASPNETCORE_ENVIRONMENT: IntegrationTests
