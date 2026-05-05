@@ -26,21 +26,4 @@
     }
 
     protected Endereco() { }
-
-    public override bool Equals(object obj)
-    {
-        if (obj is Endereco outro)
-            return Logradouro == outro.Logradouro &&
-                   Numero == outro.Numero &&
-                   Complemento == outro.Complemento &&
-                   Bairro == outro.Bairro &&
-                   Cidade == outro.Cidade &&
-                   Uf == outro.Uf &&
-                   Cep == outro.Cep;
-
-        return false;
-    }
-
-    public override int GetHashCode() =>
-        HashCode.Combine(Logradouro.ToLower(), Numero.ToLower(), Complemento.ToLower(), Cep);
 }

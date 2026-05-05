@@ -101,5 +101,31 @@ namespace Domain.test.Tests
         {
             Assert.Throws<ArgumentException>(() => new Telefone("11", "55", "1111111111"));
         }
+        [Fact]
+        public void CriarEndereco_LogradouroNulo_DeveThrowArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() => new Endereco(string.Empty, "10", null, "jabaquara", "são paulo", "SP", "01213001"));
+        }
+        [Fact]
+        public void CriarEndereco_NumeroNulo_DeveThrowArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() => new Endereco("rua cleber", string.Empty, null, "jabaquara", "são paulo", "SP", "01213001"));
+        }
+
+        [Fact]
+        public void CriarEndereco_cepNulo_DeveThrowArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() => new Endereco("rua cleber", "10", null, "jabaquara", "são paulo", "SP", string.Empty));
+        }
+        [Fact]
+        public void CriarEndereco_CidadeNulo_DeveThrowArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() => new Endereco("rua cleber", "10", null, "jabaquara", string.Empty, "SP", "01213001"));
+        }
+
+        public void CriarEndereco_UfNulo_DeveThrowArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() => new Endereco("rua cleber", "10", null, "jabaquara", "São Paulo", string.Empty, "01213001"));
+        }
     }
 }

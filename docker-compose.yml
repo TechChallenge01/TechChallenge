@@ -67,7 +67,7 @@ services:
 
       ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=AppDb_IntegrationTests;User Id=sa;Password=Str0ng@Passw0rd!;TrustServerCertificate=True;"
     ports:
-      - "8080:8080"
+      - "9090:9090"
     depends_on:
       sqlserver:
         condition: service_healthy

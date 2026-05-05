@@ -3,13 +3,14 @@ using Domain.Aggregates.ClienteAggregates;
 using Domain.ValueObjects;
 using Infra.Context;
 using Microsoft.Extensions.DependencyInjection;
+using Domain.Aggregates.OrdemServicoAggregates;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 
-namespace API.test.OrdemServico;
+namespace API.test.OrdemServicos;
 
 public class OrdemServicoTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
 {
@@ -68,9 +69,9 @@ public class OrdemServicoTest : IClassFixture<IntegrationTestFixture>, IAsyncLif
             var (cpf, vId, _) = await CriarDependenciasAsync(context, admin.Id);
             var cliente = context.Clientes.First();
 
-            var os = new Domain.Aggregates.OrdemServicoAggregates.OrdemServico(cliente.Id, vId, admin.Id);
+            var os = new OrdemServico(cliente.Id, vId, admin.Id);
 
-            context.Set<Domain.Aggregates.OrdemServicoAggregates.OrdemServico>().Add(os);
+            context.Set<OrdemServico>().Add(os);
             await context.SaveChangesAsync();
             osId = os.Id;
         }
@@ -95,10 +96,10 @@ public class OrdemServicoTest : IClassFixture<IntegrationTestFixture>, IAsyncLif
             var (_, vId, sId) = await CriarDependenciasAsync(context, admin.Id);
             servicoId = sId;
 
-            var os = new Domain.Aggregates.OrdemServicoAggregates.OrdemServico(context.Clientes.First().Id, vId, admin.Id);
+            var os = new OrdemServico(context.Clientes.First().Id, vId, admin.Id);
             os.IniciarDiagnostico();
 
-            context.Set<Domain.Aggregates.OrdemServicoAggregates.OrdemServico>().Add(os);
+            context.Set<OrdemServico>().Add(os);
             await context.SaveChangesAsync();
             osId = os.Id;
         }
@@ -137,8 +138,8 @@ public class OrdemServicoTest : IClassFixture<IntegrationTestFixture>, IAsyncLif
             var (cpf, vId, _) = await CriarDependenciasAsync(context, admin.Id);
             var cliente = context.Clientes.First();
 
-            var os = new Domain.Aggregates.OrdemServicoAggregates.OrdemServico(cliente.Id, vId, admin.Id);
-            context.Set<Domain.Aggregates.OrdemServicoAggregates.OrdemServico>().Add(os);
+            var os = new OrdemServico(cliente.Id, vId, admin.Id);
+            await context.OrdensServico.AddAsync(os);
             await context.SaveChangesAsync();
             osId = os.Id;
         }
@@ -193,8 +194,8 @@ public class OrdemServicoTest : IClassFixture<IntegrationTestFixture>, IAsyncLif
             var (cpf, vId, _) = await CriarDependenciasAsync(context, admin.Id);
             var cliente = context.Clientes.First();
 
-            var os = new Domain.Aggregates.OrdemServicoAggregates.OrdemServico(cliente.Id, vId, admin.Id);
-            context.Set<Domain.Aggregates.OrdemServicoAggregates.OrdemServico>().Add(os);
+            var os = new OrdemServico(cliente.Id, vId, admin.Id);
+            context.Set<OrdemServico>().Add(os);
             await context.SaveChangesAsync();
             osId = os.Id;
         }
@@ -220,8 +221,8 @@ public class OrdemServicoTest : IClassFixture<IntegrationTestFixture>, IAsyncLif
             var (cpf, vId, _) = await CriarDependenciasAsync(context, admin.Id);
             var cliente = context.Clientes.First();
 
-            var os = new Domain.Aggregates.OrdemServicoAggregates.OrdemServico(cliente.Id, vId, admin.Id);
-            context.Set<Domain.Aggregates.OrdemServicoAggregates.OrdemServico>().Add(os);
+            var os = new OrdemServico(cliente.Id, vId, admin.Id);
+            context.Set<OrdemServico>().Add(os);
             await context.SaveChangesAsync();
             osId = os.Id;
         }
@@ -277,12 +278,12 @@ public class OrdemServicoTest : IClassFixture<IntegrationTestFixture>, IAsyncLif
             var admin = context.Usuarios.First();
             var (_, vId, _) = await CriarDependenciasAsync(context, admin.Id);
 
-            var os = new Domain.Aggregates.OrdemServicoAggregates.OrdemServico(context.Clientes.First().Id, vId, admin.Id);
+            var os = new OrdemServico(context.Clientes.First().Id, vId, admin.Id);
 
             os.IniciarDiagnostico();
             os.RegistrarDiagnostico("Problema identificado"); 
 
-            context.Set<Domain.Aggregates.OrdemServicoAggregates.OrdemServico>().Add(os);
+            context.Set<OrdemServico>().Add(os);
             await context.SaveChangesAsync();
             osId = os.Id;
         }
@@ -306,13 +307,13 @@ public class OrdemServicoTest : IClassFixture<IntegrationTestFixture>, IAsyncLif
             var (_, vId, sId) = await CriarDependenciasAsync(context, admin.Id);
             servicoId = sId;
 
-            var os = new Domain.Aggregates.OrdemServicoAggregates.OrdemServico(context.Clientes.First().Id, vId, admin.Id);
+            var os = new OrdemServico(context.Clientes.First().Id, vId, admin.Id);
 
             os.IniciarDiagnostico(); 
             os.RegistrarDiagnostico("Diagnóstico realizado"); 
             os.AprovarOrdemServico(); 
 
-            context.Set<Domain.Aggregates.OrdemServicoAggregates.OrdemServico>().Add(os);
+            context.Set<OrdemServico>().Add(os);
             await context.SaveChangesAsync();
             osId = os.Id;
         }
@@ -339,14 +340,14 @@ public class OrdemServicoTest : IClassFixture<IntegrationTestFixture>, IAsyncLif
             var adminId = context.Usuarios.First().Id;
             var (_, vId, sId) = await CriarDependenciasAsync(context, adminId);
 
-            var os = new Domain.Aggregates.OrdemServicoAggregates.OrdemServico(context.Clientes.First().Id, vId, adminId);
+            var os = new OrdemServico(context.Clientes.First().Id, vId, adminId);
 
             os.IniciarDiagnostico();
             os.RegistrarDiagnostico("Diagnostico OK");
             os.AprovarOrdemServico();
             os.FinalizarOrdemServico(new List<Guid> { sId });
 
-            context.Set<Domain.Aggregates.OrdemServicoAggregates.OrdemServico>().Add(os);
+            context.Set<OrdemServico>().Add(os);
             await context.SaveChangesAsync();
             osId = os.Id;
         }
@@ -442,12 +443,12 @@ public class OrdemServicoTest : IClassFixture<IntegrationTestFixture>, IAsyncLif
             var admin = context.Usuarios.First();
             var (_, vId, _) = await CriarDependenciasAsync(context, admin.Id);
 
-            var os = new Domain.Aggregates.OrdemServicoAggregates.OrdemServico(
+            var os = new OrdemServico(
                 context.Clientes.First().Id, vId, admin.Id);
 
             os.IniciarDiagnostico(); 
 
-            context.Set<Domain.Aggregates.OrdemServicoAggregates.OrdemServico>().Add(os);
+            context.Set<OrdemServico>().Add(os);
             await context.SaveChangesAsync();
             osId = os.Id;
         }
@@ -470,13 +471,13 @@ public class OrdemServicoTest : IClassFixture<IntegrationTestFixture>, IAsyncLif
             var admin = context.Usuarios.First();
             var (_, vId, sId) = await CriarDependenciasAsync(context, admin.Id);
 
-            var os = new Domain.Aggregates.OrdemServicoAggregates.OrdemServico(
+            var os = new OrdemServico(
                 context.Clientes.First().Id, vId, admin.Id);
 
             os.IniciarDiagnostico();
             os.RegistrarDiagnostico("Diagnóstico realizado");
 
-            context.Set<Domain.Aggregates.OrdemServicoAggregates.OrdemServico>().Add(os);
+            context.Set<OrdemServico>().Add(os);
             await context.SaveChangesAsync();
             osId = os.Id;
         }
@@ -533,10 +534,10 @@ public class OrdemServicoTest : IClassFixture<IntegrationTestFixture>, IAsyncLif
             var admin = context.Usuarios.First();
             var (_, vId, _) = await CriarDependenciasAsync(context, admin.Id);
 
-            var os = new Domain.Aggregates.OrdemServicoAggregates.OrdemServico(
+            var os = new OrdemServico(
                 context.Clientes.First().Id, vId, admin.Id);
 
-            context.Set<Domain.Aggregates.OrdemServicoAggregates.OrdemServico>().Add(os);
+            context.Set<OrdemServico>().Add(os);
             await context.SaveChangesAsync();
             osId = os.Id;
         }
@@ -592,10 +593,10 @@ public class OrdemServicoTest : IClassFixture<IntegrationTestFixture>, IAsyncLif
             var (_, vId, sId) = await CriarDependenciasAsync(context, admin.Id);
             servicoId = sId;
 
-            var os = new Domain.Aggregates.OrdemServicoAggregates.OrdemServico(
+            var os = new OrdemServico(
                 context.Clientes.First().Id, vId, admin.Id);
 
-            context.Set<Domain.Aggregates.OrdemServicoAggregates.OrdemServico>().Add(os);
+            context.Set<OrdemServico>().Add(os);
             await context.SaveChangesAsync();
             osId = os.Id;
         }
@@ -652,14 +653,14 @@ public class OrdemServicoTest : IClassFixture<IntegrationTestFixture>, IAsyncLif
             var admin = context.Usuarios.First();
             var (_, vId, _) = await CriarDependenciasAsync(context, admin.Id);
 
-            var os = new Domain.Aggregates.OrdemServicoAggregates.OrdemServico(
+            var os = new OrdemServico(
                 context.Clientes.First().Id, vId, admin.Id);
 
             os.IniciarDiagnostico();
             os.RegistrarDiagnostico("Diagnóstico realizado");
             os.AprovarOrdemServico(); // EmExecucao — não pode entregar ainda
 
-            context.Set<Domain.Aggregates.OrdemServicoAggregates.OrdemServico>().Add(os);
+            context.Set<OrdemServico>().Add(os);
             await context.SaveChangesAsync();
             osId = os.Id;
         }
@@ -696,12 +697,12 @@ public class OrdemServicoTest : IClassFixture<IntegrationTestFixture>, IAsyncLif
             var admin = context.Usuarios.First();
             var (_, vId, _) = await CriarDependenciasAsync(context, admin.Id);
 
-            var os = new Domain.Aggregates.OrdemServicoAggregates.OrdemServico(
+            var os = new OrdemServico(
                 context.Clientes.First().Id, vId, admin.Id);
 
             os.IniciarDiagnostico();
 
-            context.Set<Domain.Aggregates.OrdemServicoAggregates.OrdemServico>().Add(os);
+            context.Set<OrdemServico>().Add(os);
             await context.SaveChangesAsync();
             osId = os.Id;
         }

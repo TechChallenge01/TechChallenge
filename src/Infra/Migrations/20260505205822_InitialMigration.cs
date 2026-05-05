@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -278,8 +279,8 @@ namespace Infra.Migrations
                 {
                     table.PrimaryKey("PK_OrdemServicoPecas", x => new { x.OrdemServicoId, x.PecaId });
                     table.ForeignKey(
-                        name: "FK_OrdemServicoPecas_OrdemServico_PecaId",
-                        column: x => x.PecaId,
+                        name: "FK_OrdemServicoPecas_OrdemServico_OrdemServicoId",
+                        column: x => x.OrdemServicoId,
                         principalTable: "OrdemServico",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -307,8 +308,8 @@ namespace Infra.Migrations
                 {
                     table.PrimaryKey("PK_OrdemServicoServicos", x => new { x.OrdemServicoId, x.ServicoId });
                     table.ForeignKey(
-                        name: "FK_OrdemServicoServicos_OrdemServico_ServicoId",
-                        column: x => x.ServicoId,
+                        name: "FK_OrdemServicoServicos_OrdemServico_OrdemServicoId",
+                        column: x => x.OrdemServicoId,
                         principalTable: "OrdemServico",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
