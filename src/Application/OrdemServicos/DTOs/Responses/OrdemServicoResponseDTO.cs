@@ -2,11 +2,9 @@
 
 public record OrdemServicoResponseDTO
 {
-    public Guid Id { get; init; }
-    public string NomeCliente { get;  init; }
-    public string ModeloVeiculo { get;  init; }
-    public string PlacaVeiculo { get;  init; }
-    public string MarcaVeiculo { get;  init; }   
+    public Guid Id { get; init; }  
+    public Guid ClienteId {  get; init; }
+    public Guid VeiculoId {  get; init; }
     public string StatusOS { get;  init; }
     public string? Observacao { get;  init; }
     public decimal ValorTotal { get;  init; }

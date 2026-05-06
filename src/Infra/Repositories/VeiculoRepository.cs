@@ -23,7 +23,6 @@ namespace Infra.Repositories
         public async Task<Veiculo?> GetById(Guid id, CancellationToken ct)
         {
             return await _appDbContext.Veiculos
-                        .AsNoTracking()
                         .FirstOrDefaultAsync(v => v.Id == id && v.Ativo, ct);
         }
 

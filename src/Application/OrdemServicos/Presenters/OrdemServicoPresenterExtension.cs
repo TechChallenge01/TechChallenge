@@ -10,6 +10,8 @@ public static class OrdemServicoPresenterExtension
         return new OrdemServicoResponseDTO
         {
             Id = ordemServico.Id,
+            ClienteId = ordemServico.ClienteId,
+            VeiculoId = ordemServico.VeiculoId,
             StatusOS = ordemServico.StatusOS.ToString(),
             Observacao = ordemServico.Observacao,
             ValorTotal = ordemServico.ValorTotal,
@@ -29,7 +31,7 @@ public static class OrdemServicoPresenterExtension
                 Quantidade = s.Quantidade,
                 ValorUnitario = s.ValorUnitario,
                 ValorTotal = s.ValorTotal,
-                StatusOS = s.Status
+                StatusServico = s.Status
             }).ToList(),
             Insumos = ordemServico.Insumos == null ? null : ordemServico.Insumos.Select(i => new OrdemServicoInsumoResponseDTO
             {

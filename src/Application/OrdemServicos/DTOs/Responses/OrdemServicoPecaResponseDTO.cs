@@ -3,8 +3,6 @@
 public record OrdemServicoPecaResponseDTO
 {
     public Guid PecaId { get; init; }
-    public string NomePeca { get; init; }
-    public string DescricaoPeca { get;  init; }
     public int Quantidade { get; init; }
     public decimal ValorUnitario { get; init; }
     public decimal ValorTotal {  get; init; }

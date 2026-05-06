@@ -113,6 +113,14 @@ namespace Application.Clientes.Services
                 if (cliente is null)
                     return new CommandResult { StatusCode = HttpStatusCode.NotFound, Message = "Cliente não encontrado!" };
 
+                if(cliente.Veiculos.Any())
+                {  
+                    foreach (var veiculo in cliente.Veiculos)
+                    {
+                        veiculo.Inativar();
+                    }
+                }
+
                 //exclusão lógica
                 cliente.Inativar();
 
