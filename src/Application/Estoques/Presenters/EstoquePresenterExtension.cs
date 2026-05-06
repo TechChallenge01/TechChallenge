@@ -5,6 +5,25 @@ namespace Application.Estoques.Presenters
 {
     public static class EstoquePresenterExtension
     {
+        public static EstoqueByIdResponseDTO ToDTOId(this Estoque estoque)
+        {
+            return new EstoqueByIdResponseDTO
+            {
+                Id = estoque.Id,
+                QuantidadeDisponivel = estoque.QuantidadeDisponivel,
+                QuantidadeReservada = estoque.QuantidadeReservada,
+                QuantidadeTotal = estoque.QuantidadeTotal,
+                PecaId = estoque.PecaId,
+                InsumoId = estoque.InsumoId,
+                Historico = estoque.Historicos.Select(h => new EstoqueHistoricoResponseDTO
+                {
+                    EstoqueId = estoque.Id,
+                    Observacao = h.Observacao,
+                    Quantidade = h.Quantidade,
+                    TipoMovimentacao = h.TipoMovimentacao.ToString()
+                }).ToList()
+            };
+        }
         public static EstoqueResponseDTO ToDTO(this Estoque estoque)
         {
             return new EstoqueResponseDTO

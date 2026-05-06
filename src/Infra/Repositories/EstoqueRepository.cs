@@ -62,7 +62,6 @@ public class EstoqueRepository : IEstoqueRepository
 
         var estoque = await query.Skip((page - 1) * pageSize)
                                  .Take(pageSize)
-                                 .Include(e => e.Historicos)
                                  .AsNoTracking()
                                  .ToListAsync(ct);
 

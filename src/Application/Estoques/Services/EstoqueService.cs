@@ -6,6 +6,7 @@ using Domain.Aggregates.EstoqueAggregates;
 using Domain.Aggregates.EstoqueAggregates.Repositories;
 using Domain.Entities.Repositories;
 using Domain.Enums;
+using Microsoft.Extensions.DependencyInjection;
 using Shared.DTOs;
 using Shared.Result;
 using System.Net;
@@ -59,26 +60,26 @@ namespace Application.Estoques.Services
             }
         }
 
-        public async Task<ICommandResult<EstoqueResponseDTO>> GetById(Guid id, CancellationToken ct)
+        public async Task<ICommandResult<EstoqueByIdResponseDTO>> GetById(Guid id, CancellationToken ct)
         {
             try
             {
                 var estoque = await _estoqueRepository.GetById(id, ct);
 
                 if (estoque is null)
-                    return new CommandResult<EstoqueResponseDTO> { StatusCode = HttpStatusCode.NotFound, Message = "Estoque não encontrado" };
+                    return new CommandResult<EstoqueByIdResponseDTO> { StatusCode = HttpStatusCode.NotFound, Message = "Estoque não encontrado" };
 
-                var response = estoque.ToDTO();
+                var response = estoque.ToDTOId();
 
-                return new CommandResult<EstoqueResponseDTO> { StatusCode = HttpStatusCode.OK, Data = response, Message = "Estoque retornado com sucesso!" };
+                return new CommandResult<EstoqueByIdResponseDTO> { StatusCode = HttpStatusCode.OK, Data = response, Message = "Estoque retornado com sucesso!" };
             }
             catch (ArgumentException ex)
             {
-                return new CommandResult<EstoqueResponseDTO> { StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
+                return new CommandResult<EstoqueByIdResponseDTO> { StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
             }
             catch (Exception ex)
             {
-                return new CommandResult<EstoqueResponseDTO> { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
+                return new CommandResult<EstoqueByIdResponseDTO> { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
             }
         }
 
