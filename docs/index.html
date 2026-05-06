@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechChallenge API | Gestão Automotiva Enterprise</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Google Fonts (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind Config & Custom CSS -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        background: '#000000',
+                        surface: '#0a0a0a',
+                        surface2: '#111111',
+                        border: 'rgba(255, 255, 255, 0.1)',
+                        accent: '#3b82f6', // Blue
+                        accent2: '#8b5cf6', // Violet
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                        'hero-glow': 'conic-gradient(from 180deg at 50% 50%, #2a8af633 0deg, #a853ba33 180deg, #e92a6733 360deg)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Ambient Glow */
+        .ambient-glow {
+            position: fixed;
+            top: -20vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80vw;
+            height: 50vh;
+            background: theme('backgroundImage.hero-glow');
+            filter: blur(100px);
+            opacity: 0.5;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Linear-like Grids */
+        .grid-bg {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+        }
+
+        /* Glass Cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 1rem;
+            transition: all 0.3s ease;
+        }
+
+            .glass-card:hover {
+                border-color: rgba(255, 255, 255, 0.2);
+                background: rgba(255, 255, 255, 0.05);
+                transform: translateY(-2px);
+            }
+
+        /* Text Gradients */
+        .text-gradient {
+            background: linear-gradient(to right, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Scroll Reveal Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+            .reveal.active {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        /* Architecture Layers Animation */
+        .layer-box {
+            transition: all 0.3s ease;
+        }
+
+            .layer-box:hover {
+                transform: scale(1.02) translateX(10px);
+                border-color: rgba(139, 92, 246, 0.5);
+                box-shadow: 0 0 20px rgba(139, 92, 246, 0.1);
+            }
+    </style>
+</head>
+<body class="antialiased selection:bg-accent2 selection:text-white">
+
+    <div class="ambient-glow"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 border-b border-white/10 bg-black/50 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2 text-white font-semibold tracking-tight">
+                <i class="ph ph-hexagon-fill text-accent text-2xl"></i>
+                <span>TechChallenge API</span>
+            </div>
+            <div class="hidden md:flex items-center gap-8 text-sm text-gray-400 font-medium">
+                <a href="#pitch" class="hover:text-white transition-colors">Pitch</a>
+                <a href="#architecture" class="hover:text-white transition-colors">Arquitetura</a>
+                <a href="#docs" class="hover:text-white transition-colors">Documentação</a>
+                <a href="#quality" class="hover:text-white transition-colors">Qualidade & Segurança</a>
+                <a href="#team" class="hover:text-white transition-colors">Equipe</a>
+            </div>
+            <div>
+                <a href="#docs" class="bg-white text-black px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-200 transition-colors flex items-center gap-2">
+                    <i class="ph ph-github-logo text-lg"></i> Repositório
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-40 pb-20 px-6 min-h-[90vh] flex flex-col items-center justify-center text-center overflow-hidden">
+        <div class="grid-bg"></div>
+        <div class="max-w-4xl mx-auto z-10">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-medium text-gray-300 mb-8 animate-fade-in">
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                v1.0 Produção Ready
+            </div>
+
+            <h1 class="text-5xl md:text-7xl font-bold tracking-tighter mb-6 leading-tight reveal">
+                Gestão Automotiva <br>
+                <span class="text-gradient">Padrão Enterprise</span>
+            </h1>
+
+            <p class="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto reveal" style="transition-delay: 100ms;">
+                Uma solução robusta e escalável desenvolvida em ASP.NET Core 10,
+                aplicando Clean Architecture, Domain-Driven Design e as melhores práticas de engenharia de software.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 reveal" style="transition-delay: 200ms;">
+                <a href="#pitch" class="px-8 py-3 rounded-full bg-white text-black font-semibold hover:bg-gray-200 transition-all w-full sm:w-auto flex items-center justify-center gap-2">
+                    <i class="ph ph-play-circle text-xl"></i>
+                    Assistir Apresentação
+                </a>
+                <a href="#architecture" class="px-8 py-3 rounded-full border border-white/20 bg-white/5 text-white font-semibold hover:bg-white/10 transition-all w-full sm:w-auto flex items-center justify-center gap-2">
+                    <i class="ph ph-code text-xl"></i>
+                    Explorar Arquitetura
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Pitch Section -->
+    <section id="pitch" class="py-24 px-6 relative border-t border-white/10 bg-surface">
+        <div class="max-w-5xl mx-auto reveal">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">Pitch de Apresentação</h2>
+                <p class="text-gray-400">Conheça os detalhes do projeto, desafios técnicos e demonstração da API.</p>
+            </div>
+
+            <div class="glass-card p-2 md:p-4 rounded-2xl relative group overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <!-- YouTube Iframe Placeholder -->
+                <div class="aspect-video w-full rounded-xl overflow-hidden bg-surface2 relative border border-white/10 shadow-2xl flex items-center justify-center">
+
+                    <!-- SUBSTITUA O IFRAME ABAIXO PELO LINK REAL DO YOUTUBE -->
+                    <!-- <iframe width="100%" height="100%" src="https://www.youtube.com/embed/SEU_ID_AQUI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
+
+                    <div class="text-center text-gray-500 z-10">
+                        <i class="ph ph-youtube-logo text-6xl text-red-500 mb-2"></i>
+                        <p>Insira o iframe do YouTube aqui</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Funcionalidades e Domínio (Features) -->
+    <section class="py-24 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="mb-16 reveal">
+                <h2 class="text-3xl font-bold mb-4">Domínio Core</h2>
+                <p class="text-gray-400 max-w-2xl">Módulos altamente desacoplados construídos para suportar alto tráfego e regras de negócio complexas de uma oficina mecânica.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Card 1 -->
+                <div class="glass-card p-8 reveal" style="transition-delay: 100ms;">
+                    <div class="w-12 h-12 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center text-2xl mb-6">
+                        <i class="ph ph-users"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Gestão de Clientes</h3>
+                    <p class="text-gray-400 text-sm">Suporte para PF e PJ, com validações complexas de documentos (CPF/CNPJ) implementadas como Value Objects.</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="glass-card p-8 reveal" style="transition-delay: 200ms;">
+                    <div class="w-12 h-12 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center text-2xl mb-6">
+                        <i class="ph ph-car-profile"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Controle de Veículos</h3>
+                    <p class="text-gray-400 text-sm">Vínculo cliente-veículo com suporte flexível a formatos de placas antigos e do padrão Mercosul.</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="glass-card p-8 reveal" style="transition-delay: 300ms;">
+                    <div class="w-12 h-12 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl mb-6">
+                        <i class="ph ph-wrench"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Ordem de Serviço (O.S.)</h3>
+                    <p class="text-gray-400 text-sm">Coração do sistema. Rastreamento de status, integração com serviços, consumo de peças e insumos.</p>
+                </div>
+                <!-- Card 4 -->
+                <div class="glass-card p-8 reveal" style="transition-delay: 400ms;">
+                    <div class="w-12 h-12 rounded-lg bg-orange-500/20 text-orange-400 flex items-center justify-center text-2xl mb-6">
+                        <i class="ph ph-package"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Gestão de Estoque</h3>
+                    <p class="text-gray-400 text-sm">Rastreio completo do histórico. Entradas, saídas, ajustes e devoluções garantindo integridade de dados.</p>
+                </div>
+                <!-- Card 5 -->
+                <div class="glass-card p-8 reveal" style="transition-delay: 500ms;">
+                    <div class="w-12 h-12 rounded-lg bg-red-500/20 text-red-400 flex items-center justify-center text-2xl mb-6">
+                        <i class="ph ph-shield-check"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Autenticação JWT</h3>
+                    <p class="text-gray-400 text-sm">Segurança robusta baseada em Roles (Administrador, Funcionário) com tokens de 8h de expiração via HMAC SHA256.</p>
+                </div>
+                <!-- Card 6 -->
+                <div class="glass-card p-8 reveal" style="transition-delay: 600ms;">
+                    <div class="w-12 h-12 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-2xl mb-6">
+                        <i class="ph ph-browsers"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Paginação Nativa</h3>
+                    <p class="text-gray-400 text-sm">Respostas HTTP 206 (Partial Content) para listagens volumosas, otimizando latência e banda de rede.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section id="architecture" class="py-24 px-6 bg-surface border-y border-white/10 relative overflow-hidden">
+        <!-- Decoration -->
+        <div class="absolute right-0 top-0 w-[500px] h-[500px] bg-accent2/10 blur-[120px] rounded-full mix-blend-screen"></div>
+
+        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16 items-center relative z-10">
+            <div class="w-full lg:w-1/2 reveal">
+                <div class="inline-block px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-medium text-accent2 mb-6">
+                    <i class="ph ph-layers align-middle mr-1"></i> Design Pattern
+                </div>
+                <h2 class="text-4xl font-bold mb-6">Arquitetura Limpa <br>& DDD</h2>
+                <p class="text-gray-400 mb-6">
+                    O sistema foi construído em 4 camadas distintas, garantindo que as regras de negócio permaneçam agnósticas a frameworks ou banco de dados.
+                </p>
+
+                <ul class="space-y-4 text-sm text-gray-300">
+                    <li class="flex items-start gap-3">
+                        <i class="ph ph-check-circle text-accent text-lg mt-0.5"></i>
+                        <div>
+                            <strong class="text-white block">Repository & Unit of Work</strong>
+                            Coordenação transacional segura para o Entity Framework Core.
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i class="ph ph-check-circle text-accent text-lg mt-0.5"></i>
+                        <div>
+                            <strong class="text-white block">Command Result Pattern</strong>
+                            Padronização de retornos da API contendo Dados, Mensagens e Status HTTP.
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i class="ph ph-check-circle text-accent text-lg mt-0.5"></i>
+                        <div>
+                            <strong class="text-white block">DTO Pattern</strong>
+                            Isolamento total entre o modelo de domínio (Entities) e a exposição externa via API.
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Stack Visual Representation -->
+            <div class="w-full lg:w-1/2 reveal font-mono text-sm">
+                <div class="glass-card p-6 border-l-4 border-l-blue-500 layer-box mb-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-blue-400 font-bold">1. API Layer (Controllers)</span>
+                        <span class="text-gray-500 text-xs">9 Endpoints REST</span>
+                    </div>
+                    <p class="text-gray-400 text-xs">Autenticação JWT, Recebimento de requests, Validações primárias.</p>
+                </div>
+
+                <div class="flex justify-center my-2 text-gray-600"><i class="ph ph-arrow-down"></i></div>
+
+                <div class="glass-card p-6 border-l-4 border-l-purple-500 layer-box mb-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-purple-400 font-bold">2. Application Layer</span>
+                        <span class="text-gray-500 text-xs">Services & DTOs</span>
+                    </div>
+                    <p class="text-gray-400 text-xs">Orquestração de lógica, mapeamento de objetos, regras de aplicação.</p>
+                </div>
+
+                <div class="flex justify-center my-2 text-gray-600"><i class="ph ph-arrow-down"></i></div>
+
+                <div class="glass-card p-6 border-l-4 border-l-emerald-500 layer-box mb-4 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-emerald-500/5"></div>
+                    <div class="relative z-10">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-emerald-400 font-bold">3. Domain Layer</span>
+                            <span class="text-gray-500 text-xs">Core Business</span>
+                        </div>
+                        <p class="text-gray-400 text-xs">Entidades ricas, Agregados (Cliente, O.S, Estoque), Value Objects (CPF/CNPJ, Email).</p>
+                    </div>
+                </div>
+
+                <div class="flex justify-center my-2 text-gray-600"><i class="ph ph-arrow-down"></i></div>
+
+                <div class="glass-card p-6 border-l-4 border-l-gray-500 layer-box">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-gray-400 font-bold">4. Infrastructure Layer</span>
+                        <span class="text-gray-500 text-xs">Data Access</span>
+                    </div>
+                    <p class="text-gray-400 text-xs">EF Core, SQL Server 2022, Migrations, Repositories Concretos.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Planning & Documentation (Miro, Drive, Postman) -->
+    <section id="docs" class="py-24 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-3xl font-bold mb-4">Design, Planejamento e API</h2>
+                <p class="text-gray-400">Documentação funcional, modelagem de domínio estruturada e collections da API.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Domain Storytelling -->
+                <a href="#" target="_blank" class="glass-card p-8 group block reveal" style="transition-delay: 100ms;">
+                    <div class="flex justify-between items-start mb-6">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Drive_icon_%282020%29.svg" alt="Google Drive" class="w-10 h-10 grayscale group-hover:grayscale-0 transition-all">
+                        <i class="ph ph-arrow-up-right text-gray-500 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Domain Storytelling</h3>
+                    <p class="text-gray-400 text-sm">Arquivos detalhando o fluxo operacional da oficina mecânica e os atores envolvidos (Acessar Drive).</p>
+                </a>
+
+                <!-- Event Storming -->
+                <a href="#" target="_blank" class="glass-card p-8 group block reveal" style="transition-delay: 200ms;">
+                    <div class="flex justify-between items-start mb-6">
+                        <!-- Miro Logo SVG representation -->
+                        <svg class="w-10 h-10 grayscale group-hover:grayscale-0 transition-all text-[#050038]" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M24 11.238L21.432.181l-3.238 2.05L19.5 12.396 24 11.238zm-4.761 1.488L17.755 1.54l-3.238 2.051 1.484 11.185 3.238-2.05zm-4.761 1.583L12.986 2.93l-3.238 2.05 1.492 11.378 3.238-2.05zm-4.762 1.624L8.225 4.316l-3.238 2.05 1.492 11.615 3.237-2.048zm-4.761 1.63L3.463 5.672.225 7.722l1.492 11.888L4.955 17.56z" /></svg>
+                        <i class="ph ph-arrow-up-right text-gray-500 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Event Storming</h3>
+                    <p class="text-gray-400 text-sm">Mapeamento visual no Miro dos eventos de domínio, comandos, agregados e políticas do sistema.</p>
+                </a>
+
+                <!-- Postman / Swagger -->
+                <a href="#" target="_blank" class="glass-card p-8 group block reveal" style="transition-delay: 300ms;">
+                    <div class="flex justify-between items-start mb-6">
+                        <img src="https://www.vectorlogo.zone/logos/getpostman/getpostman-icon.svg" alt="Postman" class="w-10 h-10 grayscale group-hover:grayscale-0 transition-all">
+                        <i class="ph ph-arrow-up-right text-gray-500 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Postman & Open API</h3>
+                    <p class="text-gray-400 text-sm">Acesse a documentação interativa (Scalar) e baixe a Collection completa com requisições prontas.</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quality & Security (Sonar + OWASP ZAP) -->
+    <section id="quality" class="py-24 px-6 bg-surface2 border-t border-white/10">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col lg:flex-row gap-12">
+
+                <!-- SonarQube Coverage Prints -->
+                <div class="w-full lg:w-2/3 reveal">
+                    <h2 class="text-3xl font-bold mb-4 flex items-center gap-3">
+                        <i class="ph ph-chart-line-up text-accent"></i> Cobertura de Testes
+                    </h2>
+                    <p class="text-gray-400 mb-8 max-w-xl">
+                        Múltiplas suítes de testes usando xUnit, Moq e FluentAssertions.
+                        Garantindo a estabilidade das camadas de API (Integração), Application e Domain (Unitários).
+                    </p>
+
+                    <div class="glass-card p-2 rounded-2xl">
+                        <div class="bg-surface rounded-xl overflow-hidden border border-white/5 relative group min-h-[300px] flex items-center justify-center">
+
+                            <!-- PLACEHOLDER DO PRINT DO SONAR -->
+                            <!-- Instrução: Substitua a div abaixo pela tag <img> com o seu print -->
+                            <div class="text-center text-gray-500 p-8">
+                                <i class="ph ph-image text-4xl mb-3 opacity-50"></i>
+                                <p class="text-sm font-medium">Insira aqui a imagem (print) do dashboard do SonarQube</p>
+                                <code class="text-xs mt-2 block bg-black/50 p-2 rounded">&lt;img src="assets/sonar-print.png" /&gt;</code>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- OWASP ZAP -->
+                <div class="w-full lg:w-1/3 reveal" style="transition-delay: 200ms;">
+                    <h2 class="text-3xl font-bold mb-4 flex items-center gap-3 text-red-400">
+                        <i class="ph ph-shield-warning"></i> Security ZAP
+                    </h2>
+                    <p class="text-gray-400 mb-8">
+                        Análise de vulnerabilidades na API executada através do OWASP ZAP, garantindo proteção contra injeções, configurações de segurança e vazamentos.
+                    </p>
+
+                    <div class="glass-card p-8 border-t-4 border-t-red-500 flex flex-col h-[calc(100%-8.5rem)] justify-between">
+                        <div>
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-3 h-3 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]"></div>
+                                <span class="text-sm font-mono text-gray-300">Scan Finalizado</span>
+                            </div>
+                            <h3 class="text-lg font-bold mb-2 text-white">Relatório de Vulnerabilidades</h3>
+                            <p class="text-sm text-gray-400 mb-6">Acesse o HTML gerado diretamente pela ferramenta de testes DAST.</p>
+                        </div>
+
+                        <a href="docs/zap-report.html" target="_blank" class="w-full bg-white/10 hover:bg-white/20 border border-white/10 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all">
+                            Abrir zap-report.html <i class="ph ph-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="team" class="py-24 px-6 border-t border-white/10">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl font-bold mb-12 reveal">Desenvolvedores (FIAP)</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- João Freitas -->
+                <div class="glass-card p-8 flex flex-col items-center reveal" style="transition-delay: 100ms;">
+                    <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 p-1 mb-4">
+                        <div class="w-full h-full bg-surface rounded-full flex items-center justify-center text-3xl font-bold text-white overflow-hidden">
+                            <!-- Trocar por imagem real se tiver: <img src="foto-joao.jpg" class="w-full h-full object-cover"> -->
+                            JF
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold text-white">João Freitas</h3>
+                    <p class="text-gray-400 text-sm mb-4">RM: [Inserir RM]</p>
+                    <div class="flex gap-3">
+                        <a href="#" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+                            <i class="ph ph-linkedin-logo"></i>
+                        </a>
+                        <a href="#" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+                            <i class="ph ph-github-logo"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Leonardo Pagni -->
+                <div class="glass-card p-8 flex flex-col items-center reveal" style="transition-delay: 200ms;">
+                    <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-emerald-500 to-blue-500 p-1 mb-4">
+                        <div class="w-full h-full bg-surface rounded-full flex items-center justify-center text-3xl font-bold text-white overflow-hidden">
+                            <!-- Trocar por imagem real se tiver: <img src="foto-leonardo.jpg" class="w-full h-full object-cover"> -->
+                            LP
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold text-white">Leonardo Pagni</h3>
+                    <p class="text-gray-400 text-sm mb-4">RM: [Inserir RM]</p>
+                    <div class="flex gap-3">
+                        <a href="#" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+                            <i class="ph ph-linkedin-logo"></i>
+                        </a>
+                        <a href="#" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+                            <i class="ph ph-github-logo"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 px-6 border-t border-white/10 bg-black text-center text-gray-500 text-sm">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-2">
+                <i class="ph ph-hexagon-fill text-accent"></i>
+                TechChallenge API &copy; 2025
+            </div>
+            <div>
+                Projeto acadêmico construído para o TechChallenge da FIAP.
+            </div>
+            <div class="flex gap-4">
+                <span class="hover:text-white cursor-pointer transition-colors">ASP.NET Core</span>
+                <span class="hover:text-white cursor-pointer transition-colors">Docker</span>
+                <span class="hover:text-white cursor-pointer transition-colors">SQL Server</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript para animações -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Intersection Observer para animação "reveal" (fade-in + slide up)
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.15
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        // Opcional: parar de observar após a animação acontecer uma vez
+                        // observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            const revealElements = document.querySelectorAll('.reveal');
+            revealElements.forEach(el => observer.observe(el));
+        });
+    </script>
+</body>
+</html>
