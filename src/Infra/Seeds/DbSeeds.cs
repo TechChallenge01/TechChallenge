@@ -62,28 +62,28 @@ namespace Infra.Seeds
             var usuarioId = context.Usuarios.First().Id;
             var agora = DateTime.UtcNow;
 
-            var pecas = new List<(Peca peca, int quantidadeEstoque)>
+            var pecas = new List<Peca>
             {
-                (new Peca("Filtro de Ar", "Filtro de ar premium para motores", "Bosch", 85.50m, usuarioId, agora), 15),
-                (new Peca("Pastilha de Freio", "Pastilha de freio cerâmica de alta performance", "Frenmax", 120.00m, usuarioId, agora), 8),
-                (new Peca("Vela de Ignição", "Vela de ignição de platina", "NGK", 45.00m, usuarioId, agora), 20),
-                (new Peca("Bateria Automotiva", "Bateria 12V 60Ah", "Moura", 350.00m, usuarioId, agora), 5),
-                (new Peca("Amortecedor Dianteiro", "Amortecedor dianteiro com mola", "Monroe", 280.00m, usuarioId, agora), 6),
-                (new Peca("Correia Dentada", "Correia de distribuição", "Contitech", 150.00m, usuarioId, agora), 10),
-                (new Peca("Pneu aro 14", "Pneu 195/65 R14", "Bridgestone", 320.00m, usuarioId, agora), 12),
-                (new Peca("Óleo Lubrificante", "Óleo sintético 5W-40", "Shell", 75.00m, usuarioId, agora), 30),
-                (new Peca("Disco de Freio", "Disco de freio ventilado", "Brembo", 180.00m, usuarioId, agora), 9),
-                (new Peca("Radiador", "Radiador de alumínio", "Valeo", 420.00m, usuarioId, agora), 4),
+                (new Peca("Filtro de Ar", "Filtro de ar premium para motores", "Bosch", 85.50m, usuarioId, agora)),
+                (new Peca("Pastilha de Freio", "Pastilha de freio cerâmica de alta performance", "Frenmax", 120.00m, usuarioId, agora)),
+                (new Peca("Vela de Ignição", "Vela de ignição de platina", "NGK", 45.00m, usuarioId, agora)),
+                (new Peca("Bateria Automotiva", "Bateria 12V 60Ah", "Moura", 350.00m, usuarioId, agora)),
+                (new Peca("Amortecedor Dianteiro", "Amortecedor dianteiro com mola", "Monroe", 280.00m, usuarioId, agora)),
+                (new Peca("Correia Dentada", "Correia de distribuição", "Contitech", 150.00m, usuarioId, agora)),
+                (new Peca("Pneu aro 14", "Pneu 195/65 R14", "Bridgestone", 320.00m, usuarioId, agora)),
+                (new Peca("Óleo Lubrificante", "Óleo sintético 5W-40", "Shell", 75.00m, usuarioId, agora)),
+                (new Peca("Disco de Freio", "Disco de freio ventilado", "Brembo", 180.00m, usuarioId, agora)),
+                (new Peca("Radiador", "Radiador de alumínio", "Valeo", 420.00m, usuarioId, agora)),
             };
 
-            foreach (var (peca, quantidade) in pecas)
+            foreach (var peca in pecas)
             {
                 // Adicionar peça
                 context.Pecas.Add(peca);
                 context.SaveChanges();
 
                 // Criar estoque imediatamente após a peça
-                var estoque = new Estoque(null, peca.Id, quantidade, usuarioId, agora);
+                var estoque = new Estoque(null, peca.Id, 0, usuarioId, agora);
                 context.Estoques.Add(estoque);
                 context.SaveChanges();
             }
@@ -94,28 +94,28 @@ namespace Infra.Seeds
             var usuarioId = context.Usuarios.First().Id;
             var agora = DateTime.UtcNow;
 
-            var insumos = new List<(Insumo insumo, int quantidadeEstoque)>
+            var insumos = new List<Insumo>
             {
-                (new Insumo("Limpador Desengordurante", "Limpador desengraxante para peças automotivas", 25.50m, usuarioId, agora), 25),
-                (new Insumo("Graxa Multiuso", "Graxa NLGI grade 2", 15.00m, usuarioId, agora), 40),
-                (new Insumo("Fluido de Freio", "Fluido de freio DOT 4", 35.00m, usuarioId, agora), 20),
-                (new Insumo("Refrigerante", "Refrigerante rosa concentrado", 22.00m, usuarioId, agora), 35),
-                (new Insumo("Combustível Aditivo", "Aditivo para combustível", 18.00m, usuarioId, agora), 30),
-                (new Insumo("Silicone Automotivo", "Silicone protetor de borracha", 12.50m, usuarioId, agora), 45),
-                (new Insumo("Álcool Isopropílico", "Álcool isopropílico 99%", 8.00m, usuarioId, agora), 60),
-                (new Insumo("Lápis para Retoque", "Lápis para retoque de pintura", 20.00m, usuarioId, agora), 15),
-                (new Insumo("Estopa", "Estopa branca 500g", 5.50m, usuarioId, agora), 100),
-                (new Insumo("Fita de Isolamento", "Fita de isolamento elétrica", 3.50m, usuarioId, agora), 80),
+                (new Insumo("Limpador Desengordurante", "Limpador desengraxante para peças automotivas", 25.50m, usuarioId, agora)),
+                (new Insumo("Graxa Multiuso", "Graxa NLGI grade 2", 15.00m, usuarioId, agora)),
+                (new Insumo("Fluido de Freio", "Fluido de freio DOT 4", 35.00m, usuarioId, agora)),
+                (new Insumo("Refrigerante", "Refrigerante rosa concentrado", 22.00m, usuarioId, agora)),
+                (new Insumo("Combustível Aditivo", "Aditivo para combustível", 18.00m, usuarioId, agora)),
+                (new Insumo("Silicone Automotivo", "Silicone protetor de borracha", 12.50m, usuarioId, agora)),
+                (new Insumo("Álcool Isopropílico", "Álcool isopropílico 99%", 8.00m, usuarioId, agora)),
+                (new Insumo("Lápis para Retoque", "Lápis para retoque de pintura", 20.00m, usuarioId, agora)),
+                (new Insumo("Estopa", "Estopa branca 500g", 5.50m, usuarioId, agora)),
+                (new Insumo("Fita de Isolamento", "Fita de isolamento elétrica", 3.50m, usuarioId, agora)),
             };
 
-            foreach (var (insumo, quantidade) in insumos)
+            foreach (var insumo in insumos)
             {
                 // Adicionar insumo
                 context.Insumos.Add(insumo);
                 context.SaveChanges();
 
                 // Criar estoque imediatamente após o insumo
-                var estoque = new Estoque(insumo.Id, null, quantidade, usuarioId, agora);
+                var estoque = new Estoque(insumo.Id, null, 0, usuarioId, agora);
                 context.Estoques.Add(estoque);
                 context.SaveChanges();
             }

@@ -31,6 +31,22 @@ API REST para gerenciamento de oficina mecânica, desenvolvida em .NET 10 com ar
    http://localhost:8080
    ```
 
+## Documentação da API
+
+A API utiliza o **Scalar** como interface de documentação interativa. Com a aplicação em execução, acesse:
+```
+http://localhost:8080/scalar
+```
+
+Também está disponível uma collection do **Postman** com todos os endpoints e exemplos de request prontos para uso:
+```
+docs/collection/
+```
+
+Importe o arquivo no Postman e configure a variável `baseUrl` como `http://localhost:8080` para começar a usar.
+
+---
+
 ## Autenticação
 Todos os endpoints (exceto login) requerem um token JWT no header:
 ```
@@ -405,4 +421,5 @@ TechChallenge/
 - As senhas são armazenadas de forma segura (hash)
 - Os campos `cpf` e `cnpj` em Cliente e OS são mutuamente exclusivos — informe apenas o documento aplicável
 - A aplicação utiliza banco de dados relacional (verifique o `docker-compose.yml` para detalhes de conexão)
+    -   Foi escolhido o SQL server por ser um dos bancos de dados relacionais mais robustos do mercado, e também pela alta sinergia que ele tem com o .Net 10, por conta das duas tecnologias serem da mesma empresa (Microsoft).
 - Para testes, use as credenciais padrão: `Admin@email.com` / `12345678`
