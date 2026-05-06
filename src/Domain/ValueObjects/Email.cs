@@ -28,19 +28,5 @@
                 return false;
             }
         }
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is Email outroEmail)
-            {
-                return EnderecoEmail == outroEmail.EnderecoEmail;
-            }
-            return false;
-        }
-
-        public override int GetHashCode()
-        {
-            return EnderecoEmail.GetHashCode();
-        }
     }
 }

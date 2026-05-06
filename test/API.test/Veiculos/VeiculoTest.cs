@@ -3,13 +3,10 @@ using Domain.Aggregates.ClienteAggregates;
 using Domain.ValueObjects;
 using Infra.Context;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http.Json;
-using System.Text;
 
-namespace API.test.Veiculo;
+namespace API.test.Veiculos;
 public class VeiculoTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
 {
     const string ApiKey = "api/Veiculo";
@@ -63,6 +60,41 @@ public class VeiculoTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
     }
 
     [Fact]
+    public async Task Veiculo_Post_Create_BadRequest()
+    {
+        // Arrange
+        Guid clienteId;
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            var telefone = new Telefone("11","55", "988887777");
+            var endereco = new Endereco("Avenida Paulista", "1000", "SN", "Bela Vista", "São Paulo", "SP", "01310-100");
+
+            var cliente = new Cliente("João Silva", new Cpf("72814249061"), Guid.Empty, endereco, telefone, new Email("joao@email.com"));
+            context.Clientes.Add(cliente);
+            await context.SaveChangesAsync();
+            clienteId = cliente.Id;
+        }
+
+        var request = new VeiculoRequestDTO
+        {
+            Modelo = "Civic",
+            MarcaVeiculo = "Honda",
+            ClienteId = clienteId,
+            Ano = 1800,
+            Placa = "ABC1D23",
+            Cor = "Prata"
+        };
+
+        // Act
+        var result = await _client.PostAsJsonAsync(ApiKey, request);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+    }
+
+    [Fact]
     public async Task Veiculo_Get_GetById_OK()
     {
         // Arrange
@@ -88,6 +120,33 @@ public class VeiculoTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+    }
+    [Fact]
+    public async Task Veiculo_Get_GetPaginated_PartialContent()
+    {
+        // Arrange
+        Guid veiculoId;
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            var telefone = new Telefone("11", "55", "988887777");
+            var endereco = new Endereco("Avenida Paulista", "1000", "SN", "Bela Vista", "São Paulo", "SP", "01310-100");
+
+            var cliente = new Cliente("João Silva", new Cpf("72814249061"), Guid.Empty, endereco, telefone, new Email("joao@email.com"));
+            context.Clientes.Add(cliente);
+
+            var veiculo = new Domain.Entities.Veiculo("Corolla", "Toyota", cliente.Id, 2023, new Placa("BRA2E19"), "Preto", Guid.Empty);
+            context.Veiculos.Add(veiculo);
+            await context.SaveChangesAsync();
+            veiculoId = veiculo.Id;
+        }
+
+        // Act
+        var result = await _client.GetAsync($"{ApiKey}/");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.PartialContent, result.StatusCode);
     }
 
     [Fact]

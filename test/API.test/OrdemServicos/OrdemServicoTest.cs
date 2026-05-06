@@ -4,11 +4,10 @@ using Domain.ValueObjects;
 using Infra.Context;
 using Microsoft.Extensions.DependencyInjection;
 using Domain.Aggregates.OrdemServicoAggregates;
-using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http.Json;
-using System.Text;
+using Domain.Entities;
+using Domain.Aggregates.EstoqueAggregates;
 
 namespace API.test.OrdemServicos;
 
@@ -261,6 +260,49 @@ public class OrdemServicoTest : IClassFixture<IntegrationTestFixture>, IAsyncLif
     [Fact]
     public async Task OrdemServico_Get_GetPaginated_OK()
     {
+        //Arrange
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var admin = context.Usuarios.First();
+            var cliente = context.Clientes.FirstOrDefault(c => c.Cnpj != null);
+
+            var veiculo = new Veiculo("teste", "marcaTeste", cliente.Id, 2002, new Placa("ABC1234"), "Preto", admin.Id);
+            var peca = new Peca("pneu", "penu preto", "Michellin", 10, admin.Id, DateTime.UtcNow);
+            var Insumo = new Insumo("Oleo", "Teste teste", 10, admin.Id, DateTime.UtcNow);
+            var Servico = new Servico("Teste", "testestestes", 10, admin.Id, DateTime.UtcNow);
+
+            var estoquePeca = new Estoque(null, peca.Id, 1, admin.Id, DateTime.UtcNow);
+            var estoqueInsumo = new Estoque(Insumo.Id, null, 1, admin.Id, DateTime.UtcNow);
+            var ordemServico = new OrdemServico(cliente.Id, veiculo.Id, admin.Id);
+            ordemServico.AlterarPeca(new List<OrdemServicoPeca>
+            {
+                new OrdemServicoPeca(ordemServico.Id, peca.Id, 1, 1)
+            });
+
+            ordemServico.AlterarInsumo(new List<OrdemServicoInsumo>
+            {
+                new OrdemServicoInsumo(ordemServico.Id, Insumo.Id, 1, 1)
+            });
+
+            ordemServico.AlterarServico(new List<OrdemServicoServico>
+            {
+                new OrdemServicoServico(ordemServico.Id, Servico.Id, 1, 1)
+            });
+
+            await context.Veiculos.AddAsync(veiculo);
+            await context.Pecas.AddAsync(peca);
+            await context.Insumos.AddAsync(Insumo);
+            await context.Servicos.AddAsync(Servico);
+            await context.Estoques.AddRangeAsync(new List<Estoque>
+            {
+                estoqueInsumo, estoquePeca
+            });
+            await context.OrdensServico.AddAsync(ordemServico);
+
+            await context.SaveChangesAsync();
+        }
+
         // Act
         var result = await _client.GetAsync($"{ApiKey}?page=1&pageSize=10");
 
@@ -410,6 +452,84 @@ public class OrdemServicoTest : IClassFixture<IntegrationTestFixture>, IAsyncLif
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
     }
+    [Fact]
+    public async Task OrdemServico_Post_Create_Created_Sucesso()
+    {
+        // Arrange 
+        string cnpj;
+        Guid veiculoId;
+        Guid PecaId;
+        Guid InsumoId;
+        Guid ServicoId;
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var admin = context.Usuarios.First();
+            var cliente = context.Clientes.FirstOrDefault(c => c.Cnpj != null);
+            cnpj = cliente.Cnpj.Valor;
+
+            var veiculo = new Veiculo("teste", "marcaTeste", cliente.Id, 2002, new Placa("ABC1234"), "Preto", admin.Id);
+            var peca = new Peca("pneu", "penu preto", "Michellin", 10, admin.Id, DateTime.UtcNow);
+            var Insumo = new Insumo("Oleo", "Teste teste", 10, admin.Id, DateTime.UtcNow);
+            var Servico = new Servico("Teste", "testestestes", 10, admin.Id, DateTime.UtcNow);
+
+            var estoquePeca = new Estoque(null, peca.Id, 1, admin.Id, DateTime.UtcNow);
+            var estoqueInsumo = new Estoque(Insumo.Id, null, 1, admin.Id, DateTime.UtcNow);
+
+            PecaId = peca.Id;
+            InsumoId = Insumo.Id;
+            ServicoId = Servico.Id;
+            veiculoId = veiculo.Id;
+
+            await context.Veiculos.AddAsync(veiculo);
+            await context.Pecas.AddAsync(peca);
+            await context.Insumos.AddAsync(Insumo);
+            await context.Servicos.AddAsync(Servico);
+            await context.Estoques.AddRangeAsync(new List<Estoque>
+            {
+                estoqueInsumo, estoquePeca
+            });
+
+            await context.SaveChangesAsync();
+        }
+        var request = new OrdemServicoRequestDTO
+        {
+            Cpf = "",
+            Cnpj = cnpj,
+            VeiculoId = veiculoId,
+            Pecas = new List<OrdemServicoPecaRequestDTO>
+            {
+                new OrdemServicoPecaRequestDTO
+                {
+                    PecaId = PecaId,
+                    Quantidade = 1
+                }
+            },
+            Servicos = new List<OrdemServicoServicoRequestDTO>
+            {
+                new OrdemServicoServicoRequestDTO
+                {
+                    Quantidade = 1,
+                    ServicoId = ServicoId
+                }
+            },
+            Insumos = new List<OrdemServicoInsumoRequestDTO>
+            {
+                new OrdemServicoInsumoRequestDTO
+                {
+                    InsumoId = InsumoId,
+                    Quantidade = 1
+                }
+            }
+        };
+
+        // Act
+        var result = await _client.PostAsJsonAsync(ApiKey, request);
+        var body = result.Content.ReadAsStringAsync();
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Created, result.StatusCode);
+    }
 
     [Fact]
     public async Task OrdemServico_Post_Create_NotFound_ClienteNaoCadastrado()
@@ -487,6 +607,104 @@ public class OrdemServicoTest : IClassFixture<IntegrationTestFixture>, IAsyncLif
 
         // Assert
         Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
+    }
+
+    [Fact]
+    public async Task OrdemServico_Put_AprovarComPecasEInsumos_NoContent_StatusCorreto()
+    {
+        // Arrange
+        Guid osId;
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var admin = context.Usuarios.First();
+            var (_, vId, sId) = await CriarDependenciasAsync(context, admin.Id);
+            var peca = new Peca("pneu", "penu preto", "Michellin", 10, admin.Id, DateTime.UtcNow);
+            var Insumo = new Insumo("Oleo", "Teste teste", 10, admin.Id, DateTime.UtcNow);
+
+            var estoquePeca = new Estoque(null, peca.Id, 0, admin.Id, DateTime.UtcNow);
+            var estoqueInsumo = new Estoque(Insumo.Id, null, 0, admin.Id, DateTime.UtcNow);
+            estoquePeca.ReservarEstoque(1, admin.Id);
+            estoqueInsumo.ReservarEstoque(1, admin.Id);
+
+            var os = new OrdemServico(context.Clientes.First().Id, vId, admin.Id);
+
+            var ordemServicoPeca = new List<OrdemServicoPeca>
+            {
+                new OrdemServicoPeca(os.Id,peca.Id,1,peca.ValorUnitario)
+            };
+
+            var ordemServicoInsumo = new List<OrdemServicoInsumo>
+            {
+                new OrdemServicoInsumo(os.Id,Insumo.Id,1,peca.ValorUnitario)
+            };
+
+            os.IniciarDiagnostico();
+            os.AlterarPeca(ordemServicoPeca);
+            os.AlterarInsumo(ordemServicoInsumo);
+            os.RegistrarDiagnostico("Diagnóstico realizado");
+
+            await context.Pecas.AddAsync(peca);
+            await context.Insumos.AddAsync(Insumo);
+            await context.Estoques.AddRangeAsync(new List<Estoque> { estoqueInsumo, estoquePeca });
+            await context.OrdensServico.AddAsync(os);
+            await context.SaveChangesAsync();
+            osId = os.Id;
+        }
+
+        // Act
+        var result = await _client.PutAsync($"{ApiKey}/{osId}/Aprovar", null);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
+    }
+
+    [Fact]
+    public async Task OrdemServico_Put_AprovarComPecasEInsumosSemEstoque_BadRequest()
+    {
+        // Arrange
+        Guid osId;
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var admin = context.Usuarios.First();
+            var (_, vId, sId) = await CriarDependenciasAsync(context, admin.Id);
+            var peca = new Peca("pneu", "penu preto", "Michellin", 10, admin.Id, DateTime.UtcNow);
+            var Insumo = new Insumo("Oleo", "Teste teste", 10, admin.Id, DateTime.UtcNow);
+
+            var estoquePeca = new Estoque(null, peca.Id, 0, admin.Id, DateTime.UtcNow);
+            var estoqueInsumo = new Estoque(Insumo.Id, null, 0, admin.Id, DateTime.UtcNow);
+
+            var os = new OrdemServico(context.Clientes.First().Id, vId, admin.Id);
+
+            var ordemServicoPeca = new List<OrdemServicoPeca>
+            {
+                new OrdemServicoPeca(os.Id,peca.Id,1,peca.ValorUnitario)
+            };
+
+            var ordemServicoInsumo = new List<OrdemServicoInsumo>
+            {
+                new OrdemServicoInsumo(os.Id,Insumo.Id,1,peca.ValorUnitario)
+            };
+
+            os.IniciarDiagnostico();
+            os.AlterarPeca(ordemServicoPeca);
+            os.AlterarInsumo(ordemServicoInsumo);
+            os.RegistrarDiagnostico("Diagnóstico realizado");
+
+            await context.Pecas.AddAsync(peca);
+            await context.Insumos.AddAsync(Insumo);
+            await context.Estoques.AddRangeAsync(new List<Estoque> { estoqueInsumo, estoquePeca });
+            await context.OrdensServico.AddAsync(os);
+            await context.SaveChangesAsync();
+            osId = os.Id;
+        }
+
+        // Act
+        var result = await _client.PutAsync($"{ApiKey}/{osId}/Aprovar", null);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
     }
 
     [Fact]

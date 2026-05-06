@@ -1,10 +1,7 @@
 ﻿using Application.Auth.DTOs.Requests;
 using Domain.Enums;
-using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http.Json;
-using System.Text;
 
 namespace API.test.Usuarios;
 

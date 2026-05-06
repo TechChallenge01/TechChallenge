@@ -1,5 +1,4 @@
 using Domain.Aggregates.OrdemServicoAggregates;
-using Domain.Entities;
 using Domain.Enums;
 using Domain.ValueObjects;
 

@@ -1,14 +1,10 @@
 ﻿using Application.Estoques.DTOs.Requests;
-using Domain.Enums;
 using Infra.Context;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http.Json;
-using System.Text;
 
-namespace API.test.Estoque;
+namespace API.test.Estoques;
 
 public class EstoqueTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
 {
@@ -283,6 +279,16 @@ public class EstoqueTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+    }
+
+    [Fact]
+    public async Task Estoque_Get_GetPaginated_PartialContent_Sucesso()
+    {
+        // Act
+        var result = await _client.GetAsync($"{ApiKey}/");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.PartialContent, result.StatusCode);
     }
 
     [Fact]

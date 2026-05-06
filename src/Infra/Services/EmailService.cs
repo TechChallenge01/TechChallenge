@@ -1,6 +1,7 @@
 ﻿using Application.EmailServices;
 using Microsoft.Extensions.Configuration;
 using Shared.DTOs;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Mail;
 
@@ -25,6 +26,7 @@ namespace Infra.Services
                 EnableSsl = true,
             };
         }
+        [ExcludeFromCodeCoverage]
         public async Task Send(EmailPayloadDTO payload, CancellationToken cancellationToken)
         {
             bool mock = true;

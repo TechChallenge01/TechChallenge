@@ -1,6 +1,4 @@
-﻿using Application.Auth.DTOs.Responses;
-using Application.Insumos.DTOs.Requests;
-using Domain.Aggregates.EstoqueAggregates;
+﻿using Application.Insumos.DTOs.Requests;
 using Infra.Context;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;

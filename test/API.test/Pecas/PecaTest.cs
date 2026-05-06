@@ -1,12 +1,11 @@
 ﻿using Application.Pecas.DTOs.Requests;
-using Domain.Aggregates.EstoqueAggregates;
 using Infra.Context;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.Net.Http.Json;
 using Domain.Entities;
 
-namespace API.test.Peca;
+namespace API.test.Pecas;
 
 public class PecaTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
 {
@@ -52,7 +51,7 @@ public class PecaTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
         {
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-            var peca = new Domain.Entities.Peca(
+            var peca = new Peca(
                 "Disco de Freio",
                 "Ventilado",
                 "Brembo",
@@ -82,7 +81,7 @@ public class PecaTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
         {
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-            var peca = new Domain.Entities.Peca("Vela", "Iridium", "NGK", 60.00m, Guid.Empty, DateTime.UtcNow);
+            var peca = new Peca("Vela", "Iridium", "NGK", 60.00m, Guid.Empty, DateTime.UtcNow);
             context.Pecas.Add(peca);
             await context.SaveChangesAsync();
             pecaId = peca.Id;
@@ -112,7 +111,7 @@ public class PecaTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
         {
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-            var peca = new Domain.Entities.Peca("Filtro", "Ar", "Fram", 45.00m, Guid.Empty, DateTime.UtcNow);
+            var peca = new Peca("Filtro", "Ar", "Fram", 45.00m, Guid.Empty, DateTime.UtcNow);
             context.Pecas.Add(peca);
 
             context.Estoques.Add(new Domain.Aggregates.EstoqueAggregates.Estoque(null, peca.Id ,0, Guid.Empty, DateTime.UtcNow));
@@ -169,7 +168,7 @@ public class PecaTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
         {
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-            var peca = new Domain.Entities.Peca("Peca Travada", "Desc", "Marca", 50, Guid.Empty, DateTime.UtcNow);
+            var peca = new Peca("Peca Travada", "Desc", "Marca", 50, Guid.Empty, DateTime.UtcNow);
             context.Pecas.Add(peca);
 
             context.Estoques.Add(new Domain.Aggregates.EstoqueAggregates.Estoque(null, peca.Id, 10, Guid.Empty, DateTime.UtcNow));
@@ -246,7 +245,7 @@ public class PecaTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
         using (var scope = _factory.Services.CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            var peca = new Domain.Entities.Peca("Original", "Desc", "Marca", 50, Guid.Empty, DateTime.UtcNow);
+            var peca = new Peca("Original", "Desc", "Marca", 50, Guid.Empty, DateTime.UtcNow);
             context.Pecas.Add(peca);
             await context.SaveChangesAsync();
             pecaId = peca.Id;

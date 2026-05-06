@@ -1,6 +1,5 @@
 ﻿using Application.Clientes.DTOs.Requests;
 using Application.Clientes.DTOs.Shared;
-using Azure;
 using Bogus;
 using Bogus.Extensions.Brazil;
 using Domain.Aggregates.ClienteAggregates;

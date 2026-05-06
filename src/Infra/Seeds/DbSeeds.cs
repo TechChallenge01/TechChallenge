@@ -4,9 +4,11 @@ using Domain.Entities;
 using Domain.Enums;
 using Domain.ValueObjects;
 using Infra.Context;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Infra.Seeds
 {
+    [ExcludeFromCodeCoverage]
     public static class DbSeeds
     {
         public static async Task Seed(AppDbContext _appDbContext)

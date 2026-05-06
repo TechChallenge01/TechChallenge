@@ -20,12 +20,6 @@ namespace Infra.Repositories
             await _appDbContext.SaveChangesAsync(ct);
         }
 
-        public async Task Delete(Veiculo veiculo, CancellationToken ct)
-        {
-            _appDbContext.Veiculos.Remove(veiculo);
-            await _appDbContext.SaveChangesAsync(ct);
-        }
-
         public async Task<Veiculo?> GetById(Guid id, CancellationToken ct)
         {
             return await _appDbContext.Veiculos

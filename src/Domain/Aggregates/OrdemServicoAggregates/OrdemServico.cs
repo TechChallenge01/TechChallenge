@@ -3,7 +3,6 @@ using Domain.BaseEntity;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.ValueObjects;
-using System.Collections;
 
 namespace Domain.Aggregates.OrdemServicoAggregates;
 public class OrdemServico : Base

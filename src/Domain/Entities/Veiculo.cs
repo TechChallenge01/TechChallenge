@@ -2,7 +2,6 @@
 using Domain.Aggregates.OrdemServicoAggregates;
 using Domain.BaseEntity;
 using Domain.ValueObjects;
-using System.Xml.Schema;
 
 namespace Domain.Entities
 {
