@@ -31,6 +31,18 @@ namespace Domain.Aggregates.ClienteAggregates
         protected Cliente()
         { }
 
+        public Cliente(Guid id, string nome, Cpf? cpf, Cnpj? cnpj, Email email, Telefone telefone, Endereco endereco, ICollection<Veiculo>? veiculos)
+        {
+            Id = id;
+            Nome = nome;
+            Cpf = cpf;
+            Cnpj = cnpj;
+            Email = email;
+            Telefone = telefone;
+            Endereco = endereco;
+            Veiculos = veiculos;
+        }
+
         public Guid Id { get; private set; }
         public string Nome { get; private set; }
         public Cpf? Cpf { get; private set; }

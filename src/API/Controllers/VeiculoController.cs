@@ -1,6 +1,5 @@
 ﻿using API.Extensions;
 using Application.Veiculos.DTOs.Requests;
-using Application.Veiculos.DTOs.Response;
 using Application.Veiculos.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

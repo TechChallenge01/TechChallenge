@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Application.Estoques.DTOs.Responses
+﻿namespace Application.Estoques.DTOs.Responses
 {
     public record EstoqueByIdResponseDTO
     {

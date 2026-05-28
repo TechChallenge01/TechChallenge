@@ -6,7 +6,6 @@ using Domain.Aggregates.EstoqueAggregates;
 using Domain.Aggregates.EstoqueAggregates.Repositories;
 using Domain.Entities.Repositories;
 using Domain.Enums;
-using Microsoft.Extensions.DependencyInjection;
 using Shared.DTOs;
 using Shared.Result;
 using System.Net;

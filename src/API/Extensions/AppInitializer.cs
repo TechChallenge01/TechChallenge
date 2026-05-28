@@ -1,4 +1,5 @@
-﻿using Infra.Context;
+﻿using API.EndPoints;
+using Infra.Context;
 using Infra.Seeds;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
@@ -51,6 +52,19 @@ namespace API.Extensions
                 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
                 await DbSeeds.Seed(context);
+            }
+
+            return app;
+        }
+        public static IApplicationBuilder MapEndpoints(this WebApplication app, RouteGroupBuilder? routeGroupBuilder = null)
+        {
+            IEnumerable<IEndpoint> endpoints = app.Services.GetRequiredService<IEnumerable<IEndpoint>>();
+
+            IEndpointRouteBuilder builder = routeGroupBuilder is null ? app : routeGroupBuilder;
+
+            foreach (IEndpoint endpoint in endpoints)
+            {
+                endpoint.MapEndpoint(builder);
             }
 
             return app;

@@ -53,6 +53,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapEndpoints();
 
 app.MapGet("/", () => Results.Ok("TechChallenge API - Running"));
 

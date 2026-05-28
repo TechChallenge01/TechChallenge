@@ -29,6 +29,10 @@ namespace Domain.Entities
             Ativo = true;
         }
 
+        public Veiculo(Guid id)
+        {
+            Id = id;
+        }
         protected Veiculo() { }
 
         public Guid Id { get; private set; }
