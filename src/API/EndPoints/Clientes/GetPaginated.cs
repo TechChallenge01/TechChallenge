@@ -1,7 +1,10 @@
-﻿using Application.Interfaces;
+﻿using API.Controllers;
+using Application.Controllers.Clientes;
+using Application.Interfaces;
 using Infra.Context;
 using Infra.DataSources;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Result;
 
 namespace API.EndPoints.Clientes
 {
@@ -12,7 +15,10 @@ namespace API.EndPoints.Clientes
             app.MapGet("/api/clientes", async (AppDbContext appDbContext,[FromQuery] int page, [FromQuery] int pageSize, CancellationToken ct) =>
             {
                 IClienteDataSource dataSource = new ClienteDataSource(appDbContext);
-                return;
+                var controller = new ClienteController(dataSource);
+                var response = await controller.GetPaginated(page, pageSize, ct);
+
+                return response.ToResult();
             });
         }
     }

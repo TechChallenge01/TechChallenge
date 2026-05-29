@@ -3,9 +3,6 @@ using Domain.Aggregates.ClienteAggregates;
 using Infra.Context;
 using Microsoft.EntityFrameworkCore;
 using Shared.DTOs.Cliente.Input;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Application.Interfaces;
 
 namespace Infra.DataSources

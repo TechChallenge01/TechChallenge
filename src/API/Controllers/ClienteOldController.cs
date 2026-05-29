@@ -12,10 +12,10 @@ namespace API.Controllers
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
-    public class ClienteController : ControllerBase
+    public class ClienteOldController : ControllerBase
     {
         private readonly IClienteService _clienteService;
-        public ClienteController(IClienteService clienteService)
+        public ClienteOldController(IClienteService clienteService)
         {
             _clienteService = clienteService;
         }
