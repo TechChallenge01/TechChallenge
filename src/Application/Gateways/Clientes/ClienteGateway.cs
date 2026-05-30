@@ -29,7 +29,20 @@ namespace Application.Gateways.Clientes
                                                    c.Veiculos.Select(v => new Veiculo(v)).ToList())).ToList();
 
             return (clientes, response.total);
+        }
+        public async Task<Cliente?> GetById(Guid id, CancellationToken ct)
+        {
+            var response = await _dataSource.GetById(id, ct);
 
+            if (response == null)
+                return null;
+
+            var cliente = new Cliente(response.Id, response.Nome, new Cpf(response.Cpf), new Cnpj(response.Cnpj), new Email(response.Email), 
+                                      new Telefone(response.Telefone.DDD, response.Telefone.DDI, response.Telefone.Numero), 
+                                      new Endereco(response.Endereco.Logradouro, response.Endereco.Numero, response.Endereco.Complemento, response.Endereco.Bairro, response.Endereco.Cep, response.Endereco.Cidade, response.Endereco.Uf), 
+                                      response.Veiculos.Select(v => new Veiculo(v)).ToList());
+
+            return cliente;
         }
     }
 }

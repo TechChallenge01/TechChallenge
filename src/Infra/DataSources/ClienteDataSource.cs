@@ -16,6 +16,44 @@ namespace Infra.DataSources
             _appDbContext = appDbContext;
         }
 
+        public async Task<ClienteInputDTO?> GetById(Guid id, CancellationToken ct)
+        {
+            var cliente = await _appDbContext.Clientes
+                .Include(c => c.Veiculos.Where(v => v.Ativo))
+                .FirstOrDefaultAsync(c => c.Id == id && c.Ativo, ct);
+            
+            if (cliente == null)
+                return null;
+
+            var clienteResponse = new ClienteInputDTO
+            {
+                Id = cliente.Id,
+                Nome = cliente.Nome,
+                Cpf = cliente.Cpf.Valor,
+                Cnpj = cliente.Cnpj.Valor,
+                Email = cliente.Email.EnderecoEmail,
+                Telefone = new TelefoneDTO
+                {
+                    DDD = cliente.Telefone.DDD,
+                    DDI = cliente.Telefone.DDI,
+                    Numero = cliente.Telefone.Numero
+                },
+                Endereco = new EnderecoDTO
+                {
+                    Logradouro = cliente.Endereco.Logradouro,
+                    Numero = cliente.Endereco.Numero,
+                    Complemento = cliente.Endereco.Complemento,
+                    Bairro = cliente.Endereco.Bairro,
+                    Cep = cliente.Endereco.Cep,
+                    Cidade = cliente.Endereco.Cidade,
+                    Uf = cliente.Endereco.Uf
+                },
+                Veiculos = cliente.Veiculos.Select(v => v.Id).ToList()
+            };
+
+            return clienteResponse;
+        }
+
         public async Task<(List<ClienteInputDTO> clientes, int total)> GetPaginated(int page, int pageSize, CancellationToken ct)
         {
             IQueryable<Cliente> query = _appDbContext.Clientes.Where(c => c.Ativo);

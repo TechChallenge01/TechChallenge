@@ -71,5 +71,9 @@ namespace Application.Presenters.Clientes
         {
             return new CommandResult<T> { Message = message , StatusCode = HttpStatusCode.BadRequest };
         }
+        public ICommandResult<T> NotFound<T>(string message)
+        {
+            return new CommandResult<T> { Message = message , StatusCode = HttpStatusCode.NotFound};
+        }
     }
 }
