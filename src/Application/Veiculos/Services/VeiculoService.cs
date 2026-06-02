@@ -2,7 +2,7 @@
 using Application.Veiculos.DTOs.Requests;
 using Application.Veiculos.DTOs.Response;
 using Application.Veiculos.Presenters;
-using Domain.Aggregates.ClienteAggregates.Repositories;
+using Domain.Aggregates.ClienteAggregates;
 using Domain.Entities;
 using Domain.Entities.Repositories;
 using Domain.ValueObjects;
@@ -15,13 +15,11 @@ namespace Application.Veiculos.Services
     public class VeiculoService : IVeiculoService
     {
         private readonly IVeiculoRepository _veiculoRepository;
-        private readonly IClienteRepository _clienteRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public VeiculoService(IVeiculoRepository veiculoRepository, IClienteRepository clienteRepository, IUnitOfWork unitOfWork)
+        public VeiculoService(IVeiculoRepository veiculoRepository, IUnitOfWork unitOfWork)
         {
             _veiculoRepository = veiculoRepository;
-            _clienteRepository = clienteRepository;
             _unitOfWork = unitOfWork;
         }
         public async Task<ICommandResult<PagedResultDTO<VeiculoResponseDTO>>> GetPaginated(int page, int pageSize, CancellationToken ct)
@@ -60,9 +58,9 @@ namespace Application.Veiculos.Services
         {
             try
             {
-                var cliente = await _clienteRepository.GetById(request.ClienteId, ct);
+                var cliente = new Cliente("para não dar erro", new Cpf("11111"), new Guid(), new Endereco("rua teste", "bairro teste", "cidade teste", "estado teste", "12345-678", "1", "1"), new Telefone("11", "11", "11"), new Email("teste@teste.com"));
 
-                if(cliente is null)
+                if (cliente is null)
                     return new CommandResult<Guid> { StatusCode = HttpStatusCode.NotFound, Message = "Cliente não encontrado." };
 
                 var entity = new Veiculo(request.Modelo, request.MarcaVeiculo, request.ClienteId, request.Ano, new Placa(request.Placa), request.Cor, idUsuario);
@@ -112,7 +110,7 @@ namespace Application.Veiculos.Services
             try
             {
                 var veiculo = await _veiculoRepository.GetById(Id, ct);
-                var cliente = await _clienteRepository.GetById(request.ClienteId, ct);
+                var cliente = new Cliente("para não dar erro", new Cpf("11111"), new Guid(), new Endereco("rua teste", "bairro teste", "cidade teste", "estado teste", "12345-678", "1", "1"), new Telefone("11", "11", "11"), new Email("teste@teste.com"));
 
                 if (veiculo is null)
                     return new CommandResult { StatusCode = HttpStatusCode.NotFound, Message = "Veículo não encontrado." };

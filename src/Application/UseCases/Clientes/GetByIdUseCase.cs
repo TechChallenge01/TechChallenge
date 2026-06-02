@@ -1,8 +1,5 @@
 ﻿using Application.Gateways.Clientes;
 using Domain.Aggregates.ClienteAggregates;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Application.UseCases.Clientes
 {

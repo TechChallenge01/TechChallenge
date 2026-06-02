@@ -2,6 +2,8 @@
 using Domain.Aggregates.ClienteAggregates;
 using Domain.Entities;
 using Domain.ValueObjects;
+using Shared.DTOs.Cliente.Input;
+using Shared.DTOs.Cliente.Shared;
 
 namespace Application.Gateways.Clientes
 {
@@ -43,6 +45,65 @@ namespace Application.Gateways.Clientes
                                       response.Veiculos.Select(v => new Veiculo(v)).ToList());
 
             return cliente;
+        }
+        public async Task<Cliente?> GetByCpf(Cpf cpf, CancellationToken ct)
+        {
+            var response = await _dataSource.GetByCpf(cpf.Valor, ct);
+
+            if (response == null)
+                return null;
+
+            var cliente = new Cliente(response.Id, response.Nome, new Cpf(response.Cpf), new Cnpj(response.Cnpj), new Email(response.Email), 
+                                      new Telefone(response.Telefone.DDD, response.Telefone.DDI, response.Telefone.Numero), 
+                                      new Endereco(response.Endereco.Logradouro, response.Endereco.Numero, response.Endereco.Complemento, response.Endereco.Bairro, response.Endereco.Cep, response.Endereco.Cidade, response.Endereco.Uf), 
+                                      response.Veiculos.Select(v => new Veiculo(v)).ToList());
+
+            return cliente;
+        }
+        public async Task<Cliente?> GetByCnpj(Cnpj cnpj, CancellationToken ct)
+        {
+            var response = await _dataSource.GetByCnpj(cnpj.Valor, ct);
+
+            if (response == null)
+                return null;
+
+            var cliente = new Cliente(response.Id, response.Nome, new Cpf(response.Cpf), new Cnpj(response.Cnpj), new Email(response.Email), 
+                                      new Telefone(response.Telefone.DDD, response.Telefone.DDI, response.Telefone.Numero), 
+                                      new Endereco(response.Endereco.Logradouro, response.Endereco.Numero, response.Endereco.Complemento, response.Endereco.Bairro, response.Endereco.Cep, response.Endereco.Cidade, response.Endereco.Uf), 
+                                      response.Veiculos.Select(v => new Veiculo(v)).ToList());
+
+            return cliente;
+        }
+
+        public async Task Create(Cliente cliente, CancellationToken ct)
+        {
+            var clienteDTO = new ClienteInputDTO
+            {
+                Id = cliente.Id,
+                Nome = cliente.Nome,
+                Cpf = cliente.Cpf?.Valor,
+                Cnpj = cliente.Cnpj?.Valor,
+                Email = cliente.Email.EnderecoEmail,
+                Telefone = new TelefoneDTO
+                {
+                    DDD = cliente.Telefone.DDD,
+                    DDI = cliente.Telefone.DDI,
+                    Numero = cliente.Telefone.Numero
+                },
+                Endereco = new EnderecoDTO
+                {
+                    Logradouro = cliente.Endereco.Logradouro,
+                    Numero = cliente.Endereco.Numero,
+                    Complemento = cliente.Endereco.Complemento,
+                    Bairro = cliente.Endereco.Bairro,
+                    Cep = cliente.Endereco.Cep,
+                    Cidade = cliente.Endereco.Cidade,
+                    Uf = cliente.Endereco.Uf
+                },
+                Veiculos = cliente.Veiculos?.Select(v => v.Id).ToList()
+            };
+
+            await _dataSource.Create(clienteDTO, ct);
         }
     }
 }

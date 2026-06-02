@@ -1,12 +1,8 @@
-using Application.Clientes.DTOs.Requests;
-using Application.Clientes.Services;
 using Domain.Aggregates.ClienteAggregates;
-using Domain.Aggregates.ClienteAggregates.Repositories;
 using Domain.ValueObjects;
 using Moq;
 using System.Net;
 using Application.UnitOfWork;
-using Application.Clientes.DTOs.Shared;
 
 namespace Application.test.Tests
 {
@@ -27,7 +23,7 @@ namespace Application.test.Tests
         public async Task Create_ComCpfValido_DeveRetornarCreated()
         {
             // Arrange
-            var request = new ClienteRequestDTO
+            var request = new ClienteRequestOldDTO
             {
                 Nome = "João Silva",
                 Cpf = "50872558843",
@@ -74,7 +70,7 @@ namespace Application.test.Tests
             // Arrange
             var clienteId = Guid.NewGuid();
             var usuarioId = Guid.NewGuid();
-            var request = new ClienteRequestDTO
+            var request = new ClienteRequestOldDTO
             {
                 Nome = "João Silva Atualizado",
                 Cpf = "50872558843",

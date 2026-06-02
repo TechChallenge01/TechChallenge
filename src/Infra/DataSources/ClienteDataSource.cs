@@ -1,9 +1,9 @@
 ﻿using Shared.DTOs.Cliente.Shared;
-using Domain.Aggregates.ClienteAggregates;
 using Infra.Context;
 using Microsoft.EntityFrameworkCore;
 using Shared.DTOs.Cliente.Input;
 using Application.Interfaces;
+using Infra.DataModel;
 
 namespace Infra.DataSources
 {
@@ -14,6 +14,53 @@ namespace Infra.DataSources
         public ClienteDataSource(AppDbContext appDbContext)
         {
             _appDbContext = appDbContext;
+        }
+
+        public async Task Create(ClienteInputDTO cliente, CancellationToken ct)
+        {
+            var clienteDbModel = new ClienteDbModel(cliente.Id, cliente.Nome, cliente.Cpf ?? null, cliente.Cnpj ?? null, cliente.Email, cliente.Telefone.DDD, cliente.Telefone.DDI, cliente.Telefone.Numero,
+                cliente.Endereco.Logradouro, cliente.Endereco.Numero, cliente.Endereco.Complemento, cliente.Endereco.Bairro,
+                cliente.Endereco.Cep, cliente.Endereco.Cidade, cliente.Endereco.Uf, cliente.IdUsuarioCriacao, cliente.DataCriacao, cliente.IdUsuarioAtualizacao, cliente.DataAtualizacao);
+
+            await _appDbContext.Clientes.AddAsync(clienteDbModel, ct);
+            await _appDbContext.SaveChangesAsync(ct);
+        }
+
+        public async Task<ClienteInputDTO?> GetByCnpj(string cnpj, CancellationToken ct)
+        {
+            return await _appDbContext.Clientes
+                .Where(c => c.Cnpj == cnpj && c.Ativo)
+                .Select(c => new ClienteInputDTO
+                {
+                    Id = c.Id,
+                    Nome = c.Nome,
+                    Cpf = c.Cpf,
+                    Cnpj = c.Cnpj,
+                    Email = c.Email,
+                    Telefone = new TelefoneDTO
+                    {
+                        DDD = c.DDD,
+                        DDI = c.DDI,
+                        Numero = c.NumeroTelefone
+                    },
+                    Endereco = new EnderecoDTO
+                    {
+                        Logradouro = c.Logradouro,
+                        Numero = c.Numero,
+                        Complemento = c.Complemento,
+                        Bairro = c.Bairro,
+                        Cep = c.Cep,
+                        Cidade = c.Cidade,
+                        Uf = c.Uf
+                    },
+                    Veiculos = _appDbContext.Veiculos.Where(v => v.ClienteId == c.Id && v.Ativo).Select(v => v.Id).ToList()
+                })
+                .FirstOrDefaultAsync(ct);
+        }
+
+        public Task<ClienteInputDTO?> GetByCpf(string cpf, CancellationToken ct)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<ClienteInputDTO?> GetById(Guid id, CancellationToken ct)
@@ -29,24 +76,24 @@ namespace Infra.DataSources
             {
                 Id = cliente.Id,
                 Nome = cliente.Nome,
-                Cpf = cliente.Cpf.Valor,
-                Cnpj = cliente.Cnpj.Valor,
-                Email = cliente.Email.EnderecoEmail,
+                Cpf = cliente.Cpf,
+                Cnpj = cliente.Cnpj,
+                Email = cliente.Email,
                 Telefone = new TelefoneDTO
                 {
-                    DDD = cliente.Telefone.DDD,
-                    DDI = cliente.Telefone.DDI,
-                    Numero = cliente.Telefone.Numero
+                    DDD = cliente.DDD,
+                    DDI = cliente.DDI,
+                    Numero = cliente.Numero
                 },
                 Endereco = new EnderecoDTO
                 {
-                    Logradouro = cliente.Endereco.Logradouro,
-                    Numero = cliente.Endereco.Numero,
-                    Complemento = cliente.Endereco.Complemento,
-                    Bairro = cliente.Endereco.Bairro,
-                    Cep = cliente.Endereco.Cep,
-                    Cidade = cliente.Endereco.Cidade,
-                    Uf = cliente.Endereco.Uf
+                    Logradouro = cliente.Logradouro,
+                    Numero = cliente.Numero,
+                    Complemento = cliente.Complemento,
+                    Bairro = cliente.Bairro,
+                    Cep = cliente.Cep,
+                    Cidade = cliente.Cidade,
+                    Uf = cliente.Uf
                 },
                 Veiculos = cliente.Veiculos.Select(v => v.Id).ToList()
             };
@@ -56,7 +103,7 @@ namespace Infra.DataSources
 
         public async Task<(List<ClienteInputDTO> clientes, int total)> GetPaginated(int page, int pageSize, CancellationToken ct)
         {
-            IQueryable<Cliente> query = _appDbContext.Clientes.Where(c => c.Ativo);
+            IQueryable<ClienteDbModel> query = _appDbContext.Clientes.Where(c => c.Ativo);
 
             var clientes = await query.Skip((page - 1) * pageSize)
                                       .Take(pageSize)
@@ -68,24 +115,24 @@ namespace Infra.DataSources
             {
                 Id = c.Id,
                 Nome = c.Nome,
-                Cpf = c.Cpf.Valor,
-                Cnpj = c.Cnpj.Valor,
-                Email = c.Email.EnderecoEmail,
+                Cpf = c.Cpf,
+                Cnpj = c.Cnpj,
+                Email = c.Email,
                 Telefone = new TelefoneDTO
                 {
-                    DDD = c.Telefone.DDD,
-                    DDI = c.Telefone.DDI,
-                    Numero = c.Telefone.Numero
+                    DDD = c.DDD,
+                    DDI = c.DDI,
+                    Numero = c.Numero
                 },
                 Endereco = new EnderecoDTO
                 {
-                    Logradouro = c.Endereco.Logradouro,
-                    Numero = c.Endereco.Numero,
-                    Complemento = c.Endereco.Complemento,
-                    Bairro = c.Endereco.Bairro,
-                    Cep = c.Endereco.Cep,
-                    Cidade = c.Endereco.Cidade,
-                    Uf = c.Endereco.Uf
+                    Logradouro = c.Logradouro,
+                    Numero = c.Numero,
+                    Complemento = c.Complemento,
+                    Bairro = c.Bairro,
+                    Cep = c.Cep,
+                    Cidade = c.Cidade,
+                    Uf = c.Uf
                 },
                 Veiculos = c.Veiculos.Select(v => v.Id).ToList()
             }).ToList();

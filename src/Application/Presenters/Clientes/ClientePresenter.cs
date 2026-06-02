@@ -63,6 +63,10 @@ namespace Application.Presenters.Clientes
                 Veiculos = cliente.Veiculos?.Select(x => x.Id).ToList() ?? new List<Guid>()
             };
         }
+        public ICommandResult<T> Created<T>(T data)
+        {
+            return new CommandResult<T> { Message = _message, StatusCode = HttpStatusCode.Created, Data =  data};
+        }
         public ICommandResult<T> InternalError<T>(string message)
         {
             return new CommandResult<T> { Message = message , StatusCode = HttpStatusCode.InternalServerError };

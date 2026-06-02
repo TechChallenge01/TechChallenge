@@ -1,7 +1,6 @@
 ﻿using Application.Auth.Services;
 using Application.EmailServices;
 using Application.UnitOfWork;
-using Domain.Aggregates.ClienteAggregates.Repositories;
 using Domain.Aggregates.EstoqueAggregates.Repositories;
 using Domain.Aggregates.OrdemServicoAggregates.Repositories;
 using Domain.Entities.Repositories;
@@ -19,7 +18,6 @@ namespace Infra
     {
         public static IServiceCollection AddInfraServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped<IClienteRepository, ClienteRepository>();
             services.AddScoped<IEstoqueRepository, EstoqueRepository>();
             services.AddScoped<IOrdemServicoRepository, OrdemServicoRepository>();
             services.AddScoped<IEmailService, EmailService>();

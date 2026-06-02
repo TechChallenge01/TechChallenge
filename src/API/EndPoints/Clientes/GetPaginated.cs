@@ -1,5 +1,4 @@
-﻿using API.Controllers;
-using Application.Controllers.Clientes;
+﻿using Application.Controllers.Clientes;
 using Application.Interfaces;
 using Infra.Context;
 using Infra.DataSources;

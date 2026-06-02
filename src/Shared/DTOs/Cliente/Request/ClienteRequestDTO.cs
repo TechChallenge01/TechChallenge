@@ -1,7 +1,7 @@
-﻿using Application.Clientes.DTOs.Shared;
+﻿using Shared.DTOs.Cliente.Shared;
 using System.ComponentModel.DataAnnotations;
 
-namespace Application.Clientes.DTOs.Requests
+namespace Shared.DTOs.Cliente.Request
 {
     public record ClienteRequestDTO
     {
@@ -14,5 +14,6 @@ namespace Application.Clientes.DTOs.Requests
         [Required]
         public TelefoneDTO Telefone { get; init; }
         public EnderecoDTO Endereco { get; init; }
+        public ICollection<Guid> Veiculos { get; init; }
     }
 }

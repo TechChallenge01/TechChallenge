@@ -1,5 +1,4 @@
 ﻿using Application.Auth.Services;
-using Application.Clientes.Services;
 using Application.Estoques.Services;
 using Application.Insumos.Services;
 using Application.OrdemServicos.Services;
@@ -14,7 +13,6 @@ namespace Application
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            services.AddScoped<IClienteService, ClienteService>();
             services.AddScoped<IVeiculoService, VeiculoService>();
             services.AddScoped<IInsumoService, InsumoService>();
             services.AddScoped<IOrdemServicoService, OrdemServicoService>();

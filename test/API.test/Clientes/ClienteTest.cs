@@ -1,6 +1,4 @@
-﻿using Application.Clientes.DTOs.Requests;
-using Application.Clientes.DTOs.Shared;
-using Bogus;
+﻿using Bogus;
 using Bogus.Extensions.Brazil;
 using Domain.Aggregates.ClienteAggregates;
 using Domain.ValueObjects;
@@ -61,7 +59,7 @@ namespace API.test.Clientes
 
             // CPF válido aleatório (só números)
             var cpf = faker.Person.Cpf(includeFormatSymbols: false); // "13247904077"
-            var cliente = new ClienteRequestDTO
+            var cliente = new ClienteRequestOldDTO
             {
                 Nome = "Test test",
                 Cpf = cpf,
@@ -98,7 +96,7 @@ namespace API.test.Clientes
             var faker = new Faker("pt_BR");
             var cnpj = faker.Company.Cnpj(includeFormatSymbols: false);
 
-            var cliente = new ClienteRequestDTO
+            var cliente = new ClienteRequestOldDTO
             {
                 Nome = "Test test",
                 Cpf = "",
@@ -134,7 +132,7 @@ namespace API.test.Clientes
             //arrange
             var app = new ApiWebApplicationFactory();            
 
-            var cliente = new ClienteRequestDTO
+            var cliente = new ClienteRequestOldDTO
             {
                 Nome = "Test test",
                 Cpf = "45073010094",
@@ -170,7 +168,7 @@ namespace API.test.Clientes
         public async Task Cliente_Post_Create_CPF_invalido_BadRequest()
         {
             //arrange
-            var cliente = new ClienteRequestDTO
+            var cliente = new ClienteRequestOldDTO
             {
                 Nome = "Test test",
                 Cpf = "111111111111", //valida cpf
@@ -204,7 +202,7 @@ namespace API.test.Clientes
         public async Task Cliente_Post_Create_cnpj_invalido_BadRequest()
         {
             //arrange
-            var cliente = new ClienteRequestDTO
+            var cliente = new ClienteRequestOldDTO
             {
                 Nome = "Test test",
                 Cpf = "", //valida cpf
@@ -293,7 +291,7 @@ namespace API.test.Clientes
 
                 clienteId = cliente.Id;
             }
-            var clienteDTO = new ClienteRequestDTO
+            var clienteDTO = new ClienteRequestOldDTO
             {
                 Nome = "Test test",
                 Cpf = "52998224725", 
@@ -363,7 +361,7 @@ namespace API.test.Clientes
         {
             // arrange
             var cpf = "79171883029";
-            var clienteOriginal = new ClienteRequestDTO
+            var clienteOriginal = new ClienteRequestOldDTO
             {
                 Nome = "Primeiro Cadastro",
                 Cpf = cpf,
@@ -418,7 +416,7 @@ namespace API.test.Clientes
         {
             // arrange
             var faker = new Faker("pt_BR");
-            var cliente = new ClienteRequestDTO
+            var cliente = new ClienteRequestOldDTO
             {
                 Nome = "Erro Teste",
                 Cpf = faker.Person.Cpf(includeFormatSymbols: false),
@@ -439,7 +437,7 @@ namespace API.test.Clientes
         public async Task Cliente_Post_Create_SemCpfESemCnpj_BadRequest()
         {
             // arrange
-            var cliente = new ClienteRequestDTO
+            var cliente = new ClienteRequestOldDTO
             {
                 Nome = "Erro Teste",
                 Cpf = "", 

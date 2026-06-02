@@ -2,9 +2,9 @@
 using Application.Interfaces;
 using Application.Presenters.Clientes;
 using Application.UseCases.Clientes;
-using Domain.Aggregates.ClienteAggregates;
 using Shared.DTOs;
 using Shared.DTOs.Cliente.Output;
+using Shared.DTOs.Cliente.Request;
 using Shared.Result;
 
 namespace Application.Controllers.Clientes
@@ -63,7 +63,25 @@ namespace Application.Controllers.Clientes
                 return presenter.InternalError<ClienteOutputDTO>(ex.Message);
             }
         }
-
-
+        public async Task<ICommandResult<Guid>> Create(ClienteRequestDTO request, Guid idUsuario, CancellationToken ct)
+        {
+            var presenter = new ClientePresenter("Cliente criado com sucesso!");
+            try
+            {
+                var clienteGateway = ClienteGateway.Create(_dataSource);
+                var useCase = CreateUseCase.Create(clienteGateway);
+                var idCliente = await useCase.Run(request, idUsuario, ct);
+                return presenter.Created(idCliente);
+            }
+            catch (ArgumentException ex)
+            {
+                return presenter.BadRequest<Guid>(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return presenter.InternalError<Guid>(ex.Message);
+            }
+            ;
+        }
     }
 }

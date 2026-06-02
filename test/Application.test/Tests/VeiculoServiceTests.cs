@@ -1,7 +1,6 @@
 using Application.Veiculos.DTOs.Requests;
 using Application.Veiculos.Services;
 using Domain.Aggregates.ClienteAggregates;
-using Domain.Aggregates.ClienteAggregates.Repositories;
 using Domain.Entities;
 using Domain.Entities.Repositories;
 using Domain.ValueObjects;
@@ -14,7 +13,6 @@ namespace Application.test.Tests
     public class VeiculoServiceTests
     {
         private readonly Mock<IVeiculoRepository> _veiculoRepositoryMock;
-        private readonly Mock<IClienteRepository> _clienteRepositoryMock;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
         private readonly VeiculoService _veiculoService;
 

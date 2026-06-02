@@ -1,7 +1,7 @@
-﻿using Domain.Aggregates.ClienteAggregates;
-using Domain.Aggregates.EstoqueAggregates;
+﻿using Domain.Aggregates.EstoqueAggregates;
 using Domain.Aggregates.OrdemServicoAggregates;
 using Domain.Entities;
+using Infra.DataModel;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infra.Context
@@ -11,7 +11,7 @@ namespace Infra.Context
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options){ }
 
         public DbSet<Usuario> Usuarios { get; set; }
-        public DbSet<Cliente> Clientes { get; set; }
+        public DbSet<ClienteDbModel> Clientes { get; set; }
         public DbSet<Peca> Pecas { get; set; }
         public DbSet<Servico> Servicos { get; set; }
         public DbSet<Veiculo> Veiculos { get; set; }
