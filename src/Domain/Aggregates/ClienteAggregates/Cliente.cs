@@ -28,11 +28,10 @@ namespace Domain.Aggregates.ClienteAggregates
             Cnpj = cnpj ?? throw new ArgumentException("cnpj não pode ser nulo!");
         }
 
-        protected Cliente()
-        { }
-
         public Cliente(Guid id, string nome, Cpf? cpf, Cnpj? cnpj, Email email, Telefone telefone, Endereco endereco, ICollection<Veiculo>? veiculos)
         {
+            ValidarNome(nome);
+
             Id = id;
             Nome = nome;
             Cpf = cpf;

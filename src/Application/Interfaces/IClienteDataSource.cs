@@ -9,5 +9,6 @@ namespace Application.Interfaces
         Task Create(ClienteInputDTO cliente, CancellationToken ct);
         Task<ClienteInputDTO?> GetByCpf(string cpf, CancellationToken ct);
         Task<ClienteInputDTO?> GetByCnpj(string cnpj, CancellationToken ct);
+        Task Update(ClienteInputDTO cliente, CancellationToken ct);
     }
 }

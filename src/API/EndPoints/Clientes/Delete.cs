@@ -1,4 +1,5 @@
-﻿using Application.Controllers.Clientes;
+﻿using API.Extensions;
+using Application.Controllers.Clientes;
 using Application.Interfaces;
 using Infra.Context;
 using Infra.DataSources;
@@ -11,11 +12,13 @@ namespace API.EndPoints.Clientes
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapDelete("/clientes/{id}", async (AppDbContext appDbContext,[FromRoute] int id, CancellationToken ct) =>
+            app.MapDelete("/clientes/{id}", async (AppDbContext appDbContext, HttpContext httpContext, [FromRoute] Guid id, CancellationToken ct) =>
             {
+                var idUsuario = httpContext.User.ObterIdUsuario();
                 IClienteDataSource dataSource = new ClienteDataSource(appDbContext);
                 var controller = new ClienteController(dataSource);
-                var response = await controller.Delete(id, ct);
+                var response = await controller.Delete(idUsuario, id, ct);
+
                 return response.ToResult();
             });
         }

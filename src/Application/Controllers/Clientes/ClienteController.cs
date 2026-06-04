@@ -30,7 +30,7 @@ namespace Application.Controllers.Clientes
 
                 return presenter.TransformPaged(clientes.Clientes, page, clientes.total);
             }
-            catch(ArgumentException ex)
+            catch (ArgumentException ex)
             {
                 return presenter.BadRequest<PagedResultDTO<ClienteOutputDTO>>(ex.Message);
             }
@@ -49,12 +49,12 @@ namespace Application.Controllers.Clientes
 
                 var cliente = await useCase.Run(Id, ct);
 
-                if(cliente is null)
+                if (cliente is null)
                     return presenter.NotFound<ClienteOutputDTO>("Cliente não encontrado!");
 
                 return presenter.TransformObject(cliente);
             }
-            catch(ArgumentException ex)
+            catch (ArgumentException ex)
             {
                 return presenter.BadRequest<ClienteOutputDTO>(ex.Message);
             }
@@ -83,19 +83,20 @@ namespace Application.Controllers.Clientes
             }
             ;
         }
-        public async Task<ICommandResult> Delete(int id, CancellationToken ct)
+        public async Task<ICommandResult> Delete(Guid idUsuario, Guid id, CancellationToken ct)
         {
             var presenter = new ClientePresenter("Cliente deletado com sucesso!");
             try
             {
                 var clienteGateway = ClienteGateway.Create(_dataSource);
                 var useCase = DeleteUseCase.Create(clienteGateway);
-                var result = await useCase.Run(id, ct);
-
-                if (!result)
-                    return presenter.NotFound("Cliente não encontrado!");
+                await useCase.Run(idUsuario, id, ct);
 
                 return presenter.NoContent("Cliente deletado com sucesso!");
+            }
+            catch (ArgumentNullException ex)
+            {
+                return presenter.NotFound(ex.Message);
             }
             catch (ArgumentException ex)
             {
@@ -106,4 +107,29 @@ namespace Application.Controllers.Clientes
                 return presenter.InternalError(ex.Message);
             }
         }
+        public async Task<ICommandResult> Update(Guid id, ClienteRequestDTO request, Guid idUsuario, CancellationToken ct)
+        {
+            var presenter = new ClientePresenter("Cliente atualizado com sucesso!");
+            try
+            {
+                var clienteGateway = ClienteGateway.Create(_dataSource);
+                var useCase = UpdateUseCase.Create(clienteGateway);
+                await useCase.Run(idUsuario, id, request, ct);
+
+                return presenter.NoContent("Cliente atualizado com sucesso!");
+            }
+            catch (ArgumentNullException ex)
+            {
+                return presenter.NotFound(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                return presenter.BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return presenter.InternalError(ex.Message);
+            }
+        }
+    }
 }

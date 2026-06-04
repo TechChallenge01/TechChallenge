@@ -141,5 +141,31 @@ namespace Infra.DataSources
 
             return (clientesResponse, total);
         }
+
+        public async Task Update(ClienteInputDTO cliente, CancellationToken ct)
+        {
+            var dbModel = _appDbContext.Clientes.FirstOrDefault(c => c.Id == cliente.Id && c.Ativo);
+
+            if (dbModel is null)
+                throw new ArgumentNullException("Cliente não encontrado!");
+
+            dbModel.Nome = cliente.Nome;
+            dbModel.Email = cliente.Email;
+            dbModel.DDD = cliente.Telefone.DDD;
+            dbModel.DDI = cliente.Telefone.DDI;
+            dbModel.Numero = cliente.Telefone.Numero;
+            dbModel.Logradouro = cliente.Endereco.Logradouro;
+            dbModel.Numero = cliente.Endereco.Numero;
+            dbModel.Complemento = cliente.Endereco.Complemento;
+            dbModel.Bairro = cliente.Endereco.Bairro;
+            dbModel.Cep = cliente.Endereco.Cep;
+            dbModel.Cidade = cliente.Endereco.Cidade;
+            dbModel.Uf = cliente.Endereco.Uf;
+            dbModel.Ativo = cliente.Ativo;
+            dbModel.IdUsuarioAtualizacao = cliente.IdUsuarioAtualizacao;
+            dbModel.DataAtualizacao = cliente.DataAtualizacao;
+
+            await _appDbContext.SaveChangesAsync(ct);
+        }
     }
 }

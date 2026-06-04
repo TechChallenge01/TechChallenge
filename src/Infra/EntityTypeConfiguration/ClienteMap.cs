@@ -85,11 +85,10 @@ namespace Infra.EntityTypeConfiguration
             builder.Property(e => e.DataAtualizacao)
                    .IsRequired(false);
 
-
-            //builder.HasMany(c => c.Veiculos)
-            //    .WithOne(v => v.Cliente)
-            //    .HasForeignKey(v => v.ClienteId)
-            //    .OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(c => c.Veiculos)
+                .WithOne(v => v.Cliente)
+                .HasForeignKey(v => v.ClienteId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

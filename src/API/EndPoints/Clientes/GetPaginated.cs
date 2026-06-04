@@ -11,7 +11,7 @@ namespace API.EndPoints.Clientes
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapGet("/api/clientes", async (AppDbContext appDbContext,[FromQuery] int page, [FromQuery] int pageSize, CancellationToken ct) =>
+            app.MapGet("/api/clientes", async (AppDbContext appDbContext,[FromQuery] int page  = 1, [FromQuery] int pageSize = 10, CancellationToken ct = default) =>
             {
                 IClienteDataSource dataSource = new ClienteDataSource(appDbContext);
                 var controller = new ClienteController(dataSource);

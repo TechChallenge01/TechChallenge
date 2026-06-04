@@ -16,5 +16,6 @@ namespace Shared.DTOs.Cliente.Input
         public DateTime DataCriacao { get; set; }
         public Guid? IdUsuarioAtualizacao { get; set; }
         public DateTime? DataAtualizacao { get; set; }
+        public bool Ativo { get; set; } = true;
     }
 }

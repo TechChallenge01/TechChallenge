@@ -1,7 +1,4 @@
 ﻿using Application.Gateways.Clientes;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Application.UseCases.Clientes
 {
@@ -19,14 +16,17 @@ namespace Application.UseCases.Clientes
             return new DeleteUseCase(clienteGateway);
         }
 
-        public async Task Run(Guid id, CancellationToken ct)
+        public async Task Run(Guid idUsuario, Guid id, CancellationToken ct)
         {
             var cliente = await _clienteGateway.GetById(id, ct);
 
             if (cliente is null)
-                throw new ArgumentException("Cliente não encontrado!");
+                throw new ArgumentNullException("Cliente não encontrado!");
 
-            await _clienteGateway.Delete(id, ct);
+            cliente.Inativar();
+            cliente.RastrearAlteracao(idUsuario, DateTime.UtcNow);
+
+            await _clienteGateway.Update(cliente, ct);
         }
     }
 }

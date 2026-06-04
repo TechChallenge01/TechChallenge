@@ -1,13 +1,12 @@
-﻿using Domain.Entities;
-using Infra.BaseMap;
+﻿using Infra.DbModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infra.EntityTypeConfiguration
 {
-    public class VeiculoMap : IEntityTypeConfiguration<Veiculo>
+    public class VeiculoMap : IEntityTypeConfiguration<VeiculoDbModel>
     {
-        public void Configure(EntityTypeBuilder<Veiculo> builder)
+        public void Configure(EntityTypeBuilder<VeiculoDbModel> builder)
         {
             builder.ToTable("Veiculos");
 
@@ -32,7 +31,17 @@ namespace Infra.EntityTypeConfiguration
                 .IsRequired()
                 .HasMaxLength(100);
 
-            builder.ConfigurarAuditoria();
+            builder.Property(e => e.IdUsuarioCriacao)
+                   .IsRequired();
+
+            builder.Property(e => e.DataCriacao)
+                   .IsRequired();
+
+            builder.Property(e => e.IdUsuarioAtualizacao)
+                   .IsRequired(false);
+
+            builder.Property(e => e.DataAtualizacao)
+                   .IsRequired(false);
 
             builder.HasOne(x => x.Cliente)
                    .WithMany(c => c.Veiculos)

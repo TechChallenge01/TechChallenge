@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+﻿using Infra.DbModel;
 
 namespace Infra.DataModel
 {
@@ -35,17 +35,17 @@ namespace Infra.DataModel
         public string? Cpf { get; set; }
         public string? Cnpj { get; set; }
         public string Email { get; set; }
-        public string DDD { get; private set; }
-        public string DDI { get; private set; }
-        public string NumeroTelefone { get; private set; }
-        public string Logradouro { get; private set; }
-        public string Numero { get; private set; }
-        public string? Complemento { get; private set; }
-        public string Bairro { get; private set; }
-        public string Cep { get; private set; }
-        public string Cidade { get; private set; }
-        public string Uf { get; private set; }
-        public ICollection<Veiculo>? Veiculos { get; set; } = new List<Veiculo>();
+        public string DDD { get; set; }
+        public string DDI { get; set; }
+        public string NumeroTelefone { get; set; }
+        public string Logradouro { get; set; }
+        public string Numero { get; set; }
+        public string? Complemento { get; set; }
+        public string Bairro { get; set; }
+        public string Cep { get; set; }
+        public string Cidade { get; set; }
+        public string Uf { get; set; }
+        public ICollection<VeiculoDbModel>? Veiculos { get; set; } = new List<VeiculoDbModel>();
         public Guid IdUsuarioCriacao { get; set; }
         public DateTime DataCriacao { get; set; }
         public Guid? IdUsuarioAtualizacao { get; set; }

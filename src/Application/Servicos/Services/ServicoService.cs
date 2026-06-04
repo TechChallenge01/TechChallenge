@@ -55,7 +55,7 @@ public class ServicoService : IServicoService
     }
     public async Task<ICommandResult<ServicoResponseDTO>> GetById(Guid Id, CancellationToken ct)
     {
-        try 
+        try
         {
             var servico = await _servico.GetById(Id, ct);
 
@@ -101,7 +101,7 @@ public class ServicoService : IServicoService
         {
             return new CommandResult<PagedResultDTO<ServicoResponseDTO>> { StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
         }
-        catch (Exception ex) 
+        catch (Exception ex)
         {
             return new CommandResult<PagedResultDTO<ServicoResponseDTO>> { StatusCode = HttpStatusCode.InternalServerError, Message = $"Erro interno no servidor. Detalhes: {ex.Message}" };
         }

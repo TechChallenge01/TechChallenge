@@ -74,7 +74,6 @@ namespace Application.Gateways.Clientes
 
             return cliente;
         }
-
         public async Task Create(Cliente cliente, CancellationToken ct)
         {
             var clienteDTO = new ClienteInputDTO
@@ -100,10 +99,44 @@ namespace Application.Gateways.Clientes
                     Cidade = cliente.Endereco.Cidade,
                     Uf = cliente.Endereco.Uf
                 },
-                Veiculos = cliente.Veiculos?.Select(v => v.Id).ToList()
+                Veiculos = cliente.Veiculos?.Select(v => v.Id).ToList(),
+                DataCriacao = cliente.DataCriacao,
+                IdUsuarioCriacao = cliente.IdUsuarioCriacao
             };
 
             await _dataSource.Create(clienteDTO, ct);
+        }
+        public async Task Update (Cliente cliente, CancellationToken ct)
+        {
+            var clienteDTO = new ClienteInputDTO
+            {
+                Id = cliente.Id,
+                Nome = cliente.Nome,
+                Cpf = cliente.Cpf?.Valor,
+                Cnpj = cliente.Cnpj?.Valor,
+                Email = cliente.Email.EnderecoEmail,
+                Telefone = new TelefoneDTO
+                {
+                    DDD = cliente.Telefone.DDD,
+                    DDI = cliente.Telefone.DDI,
+                    Numero = cliente.Telefone.Numero
+                },
+                Endereco = new EnderecoDTO
+                {
+                    Logradouro = cliente.Endereco.Logradouro,
+                    Numero = cliente.Endereco.Numero,
+                    Complemento = cliente.Endereco.Complemento,
+                    Bairro = cliente.Endereco.Bairro,
+                    Cep = cliente.Endereco.Cep,
+                    Cidade = cliente.Endereco.Cidade,
+                    Uf = cliente.Endereco.Uf
+                },
+                Veiculos = cliente.Veiculos?.Select(v => v.Id).ToList(),
+                DataAtualizacao = cliente.DataAtualizacao,
+                Ativo = cliente.Ativo
+            };
+
+            await _dataSource.Update(clienteDTO, ct);
         }
     }
 }

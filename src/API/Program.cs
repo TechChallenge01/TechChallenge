@@ -3,6 +3,7 @@ using Application;
 using Infra;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,6 +33,8 @@ builder.Services
             ClockSkew = TimeSpan.Zero // token expira no tempo exato
         };
     });
+
+builder.Services.AddEndpoints(Assembly.GetExecutingAssembly());
 
 builder.Services.AddAuthorization();
 

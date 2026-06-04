@@ -1,7 +1,9 @@
 ﻿using API.EndPoints;
 using Infra.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Scalar.AspNetCore;
+using System.Reflection;
 
 namespace API.Extensions
 {
@@ -67,6 +69,20 @@ namespace API.Extensions
             }
 
             return app;
+        }
+
+        public static IServiceCollection AddEndpoints(this IServiceCollection services, Assembly assembly)
+        {
+            ServiceDescriptor[] serviceDescriptors = assembly
+                .DefinedTypes
+                .Where(type => type is { IsAbstract: false, IsInterface: false } &&
+                               type.IsAssignableTo(typeof(IEndpoint)))
+                .Select(type => ServiceDescriptor.Transient(typeof(IEndpoint), type))
+                .ToArray();
+
+            services.TryAddEnumerable(serviceDescriptors);
+
+            return services;
         }
     }
 }

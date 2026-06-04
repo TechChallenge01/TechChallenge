@@ -71,6 +71,18 @@ namespace Application.Presenters.Clientes
         {
             return new CommandResult { Message = message, StatusCode = HttpStatusCode.NoContent };
         }
+        public ICommandResult InternalError(string message)
+        {
+            return new CommandResult{ Message = message, StatusCode = HttpStatusCode.InternalServerError };
+        }
+        public ICommandResult BadRequest(string message)
+        {
+            return new CommandResult { Message = message, StatusCode = HttpStatusCode.BadRequest };
+        }
+        public ICommandResult NotFound(string message)
+        {
+            return new CommandResult { Message = message, StatusCode = HttpStatusCode.NotFound };
+        }
         public ICommandResult<T> InternalError<T>(string message)
         {
             return new CommandResult<T> { Message = message , StatusCode = HttpStatusCode.InternalServerError };
