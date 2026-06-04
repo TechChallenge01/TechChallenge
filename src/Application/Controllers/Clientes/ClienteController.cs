@@ -83,5 +83,27 @@ namespace Application.Controllers.Clientes
             }
             ;
         }
-    }
+        public async Task<ICommandResult> Delete(int id, CancellationToken ct)
+        {
+            var presenter = new ClientePresenter("Cliente deletado com sucesso!");
+            try
+            {
+                var clienteGateway = ClienteGateway.Create(_dataSource);
+                var useCase = DeleteUseCase.Create(clienteGateway);
+                var result = await useCase.Run(id, ct);
+
+                if (!result)
+                    return presenter.NotFound("Cliente não encontrado!");
+
+                return presenter.NoContent("Cliente deletado com sucesso!");
+            }
+            catch (ArgumentException ex)
+            {
+                return presenter.BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return presenter.InternalError(ex.Message);
+            }
+        }
 }
