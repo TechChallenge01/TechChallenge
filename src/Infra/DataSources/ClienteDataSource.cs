@@ -1,9 +1,9 @@
-﻿using Shared.DTOs.Cliente.Shared;
+﻿using Application.Interfaces;
 using Infra.Context;
-using Microsoft.EntityFrameworkCore;
-using Shared.DTOs.Cliente.Input;
-using Application.Interfaces;
 using Infra.DataModel;
+using Microsoft.EntityFrameworkCore;
+using Shared.DTOs.Clientes.Input;
+using Shared.DTOs.Clientes.Shared;
 
 namespace Infra.DataSources
 {
@@ -58,9 +58,36 @@ namespace Infra.DataSources
                 .FirstOrDefaultAsync(ct);
         }
 
-        public Task<ClienteInputDTO?> GetByCpf(string cpf, CancellationToken ct)
+        public async Task<ClienteInputDTO?> GetByCpf(string cpf, CancellationToken ct)
         {
-            throw new NotImplementedException();
+            return await _appDbContext.Clientes
+               .Where(c => c.Cpf == cpf && c.Ativo)
+               .Select(c => new ClienteInputDTO
+               {
+                   Id = c.Id,
+                   Nome = c.Nome,
+                   Cpf = c.Cpf,
+                   Cnpj = c.Cnpj,
+                   Email = c.Email,
+                   Telefone = new TelefoneDTO
+                   {
+                       DDD = c.DDD,
+                       DDI = c.DDI,
+                       Numero = c.NumeroTelefone
+                   },
+                   Endereco = new EnderecoDTO
+                   {
+                       Logradouro = c.Logradouro,
+                       Numero = c.Numero,
+                       Complemento = c.Complemento,
+                       Bairro = c.Bairro,
+                       Cep = c.Cep,
+                       Cidade = c.Cidade,
+                       Uf = c.Uf
+                   },
+                   Veiculos = _appDbContext.Veiculos.Where(v => v.ClienteId == c.Id && v.Ativo).Select(v => v.Id).ToList()
+               })
+               .FirstOrDefaultAsync(ct);
         }
 
         public async Task<ClienteInputDTO?> GetById(Guid id, CancellationToken ct)

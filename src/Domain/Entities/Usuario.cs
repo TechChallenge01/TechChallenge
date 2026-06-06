@@ -13,7 +13,7 @@ namespace Domain.Entities
             ValidarSenha(senha);
 
             Id = Guid.NewGuid();
-            IdUsuarioCriacao = idUsuarioCriacao;
+            UsuarioCriacaoId = idUsuarioCriacao;
             Nome = name;
             Email = email;
             SenhaHash = senha;

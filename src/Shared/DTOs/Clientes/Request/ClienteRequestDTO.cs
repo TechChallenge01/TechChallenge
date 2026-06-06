@@ -1,7 +1,7 @@
-﻿using Shared.DTOs.Cliente.Shared;
+﻿using Shared.DTOs.Clientes.Shared;
 using System.ComponentModel.DataAnnotations;
 
-namespace Shared.DTOs.Cliente.Request
+namespace Shared.DTOs.Clientes.Request
 {
     public record ClienteRequestDTO
     {

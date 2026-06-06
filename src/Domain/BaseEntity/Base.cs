@@ -7,13 +7,13 @@
 
         protected Base(Guid idUsuarioCriacao, DateTime dataCriacao, Guid? idUsuarioAtualizacao, DateTime? dataAtualizacao)
         {
-            IdUsuarioCriacao = idUsuarioCriacao;
+            UsuarioCriacaoId = idUsuarioCriacao;
             DataCriacao = dataCriacao;
             IdUsuarioAtualizacao = idUsuarioAtualizacao;
             DataAtualizacao = dataAtualizacao;
         }
 
-        public Guid IdUsuarioCriacao { get; protected set; }
+        public Guid UsuarioCriacaoId { get; protected set; }
         public DateTime DataCriacao { get; protected set; }
 
         public Guid? IdUsuarioAtualizacao { get; protected set; }

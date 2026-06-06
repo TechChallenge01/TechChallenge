@@ -3,7 +3,7 @@ using Application.Controllers.Clientes;
 using Infra.Context;
 using Infra.DataSources;
 using Microsoft.AspNetCore.Mvc;
-using Shared.DTOs.Cliente.Request;
+using Shared.DTOs.Clientes.Request;
 using Shared.Result;
 
 namespace API.EndPoints.Clientes

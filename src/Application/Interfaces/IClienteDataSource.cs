@@ -1,4 +1,4 @@
-﻿using Shared.DTOs.Cliente.Input;
+﻿using Shared.DTOs.Clientes.Input;
 
 namespace Application.Interfaces
 {

@@ -1,4 +1,4 @@
-﻿namespace Shared.DTOs.Cliente.Shared
+﻿namespace Shared.DTOs.Clientes.Shared
 {
     public record TelefoneDTO
     {

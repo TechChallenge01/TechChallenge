@@ -1,11 +1,11 @@
 ﻿using Infra.Context;
 using Microsoft.AspNetCore.Mvc;
 using API.Extensions;
-using Shared.DTOs.Cliente.Request;
 using Shared.Result;
 using Application.Interfaces;
 using Infra.DataSources;
 using Application.Controllers.Clientes;
+using Shared.DTOs.Clientes.Request;
 
 
 namespace API.EndPoints.Clientes
