@@ -20,6 +20,34 @@ namespace Domain.Entities
             Descricao = descricao;
         }
 
+        public Peca(Guid id, string nome, string descricao, string marcaPeca, decimal valorUnitario)
+        {
+            ValidarNome(nome);
+            ValidaDescricao(descricao);
+            ValidarMarcaPeca(marcaPeca);
+            ValidarPrecoVenda(valorUnitario);
+
+            Id = id;
+            Nome = nome;
+            Descricao = descricao;
+            MarcaPeca = marcaPeca;
+            ValorUnitario = valorUnitario;
+        }
+
+        public Peca(Guid id, string nome, string descricao, string marcaPeca, decimal valorUnitario, Guid idUsuarioCriacao, DateTime dataCriacao) : base(idUsuarioCriacao, dataCriacao, null, null)
+        {
+            ValidarNome(nome);
+            ValidaDescricao(descricao);
+            ValidarMarcaPeca(marcaPeca);
+            ValidarPrecoVenda(valorUnitario);
+
+            Id = id;
+            Nome = nome;
+            Descricao = descricao;
+            MarcaPeca = marcaPeca;
+            ValorUnitario = valorUnitario;
+        }
+
         protected Peca() { }
 
         public Guid Id { get; private set; }
