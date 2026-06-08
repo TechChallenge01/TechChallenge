@@ -83,7 +83,7 @@ namespace Application.Insumos.Services
             {
                 var insumo = await _insumoRepository.GetById(id, cancellationToken);
 
-                if(insumo is null) 
+                if(insumo is null)
                     return new CommandResult<InsumoResponseDTO> { StatusCode = HttpStatusCode.NotFound, Message = "Insumo não encontrado!" };
 
                 var response = insumo.ToDto();

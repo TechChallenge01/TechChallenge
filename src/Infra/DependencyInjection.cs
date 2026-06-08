@@ -1,10 +1,12 @@
 ﻿using Application.Auth.Services;
 using Application.EmailServices;
+using Application.Interfaces;
 using Application.UnitOfWork;
 using Domain.Aggregates.EstoqueAggregates.Repositories;
 using Domain.Aggregates.OrdemServicoAggregates.Repositories;
 using Domain.Entities.Repositories;
 using Infra.Context;
+using Infra.DataSources;
 using Infra.Persistencia;
 using Infra.Repositories;
 using Infra.Services;
@@ -27,6 +29,7 @@ namespace Infra
             services.AddScoped<IVeiculoRepository, VeiculoRepository>();
             services.AddScoped<IServicoRepository, ServicoRepository>();
             services.AddScoped<IInsumoRepository, InsumoRepository>();
+            services.AddScoped<IInsumoDataSource, InsumoDataSource>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), sqlOptions =>
