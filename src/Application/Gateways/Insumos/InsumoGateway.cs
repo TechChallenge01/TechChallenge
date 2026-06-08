@@ -1,10 +1,5 @@
 ﻿using Application.Interfaces;
-using Domain.Aggregates.ClienteAggregates;
-using Domain.Entities.Repositories;
 using Shared.DTOs.Insumo.Input;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Application.Gateways.Insumos;
 
@@ -28,7 +23,9 @@ public class InsumoGateway
             Id = insumo.Id,
             Nome = insumo.Nome,
             Descricao = insumo.Descricao,
-            CustoUnitario = insumo.CustoUnitario
+            CustoUnitario = insumo.CustoUnitario,
+            IdUsuarioCriacao = insumo.UsuarioCriacaoId,
+            DataCriacao = insumo.DataCriacao
         };
 
         await _dataSource.Create(insumoDTO, ct);
@@ -41,7 +38,10 @@ public class InsumoGateway
             Id = insumo.Id,
             Nome = insumo.Nome,
             Descricao = insumo.Descricao,
-            CustoUnitario = insumo.CustoUnitario
+            CustoUnitario = insumo.CustoUnitario,
+            IdUsuarioAtualizacao = insumo.IdUsuarioAtualizacao,
+            DataAtualizacao = insumo.DataAtualizacao,
+            Ativo = insumo.Ativo
         };
 
         await _dataSource.Update(insumoDTO, ct);

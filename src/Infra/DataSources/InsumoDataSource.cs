@@ -16,7 +16,7 @@ public class InsumoDataSource : IInsumoDataSource
 
     public async Task Create(InsumoInputDTO insumo, CancellationToken ct)
     {
-        var entity = new Insumo(insumo.Nome, insumo.Descricao, insumo.CustoUnitario,
+        var entity = new Insumo(insumo.Id, insumo.Nome, insumo.Descricao, insumo.CustoUnitario,
             insumo.IdUsuarioCriacao, insumo.DataCriacao);
 
         await _appDbContext.Insumos.AddAsync(entity, ct);
@@ -58,6 +58,8 @@ public class InsumoDataSource : IInsumoDataSource
     {
         IQueryable<Insumo> query = _appDbContext.Insumos.Where(i => i.Ativo);
 
+        var total = await query.CountAsync(ct);
+
         var insumos = await query
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
@@ -72,8 +74,6 @@ public class InsumoDataSource : IInsumoDataSource
             CustoUnitario = i.CustoUnitario
         }).ToList();
 
-        var total = await query.CountAsync(ct);
-
         return (insumosResponse, total);
     }
 
@@ -84,6 +84,9 @@ public class InsumoDataSource : IInsumoDataSource
 
         if (entity == null)
             throw new Exception("Insumo não encontrado");
+
+        if (!request.Ativo)
+            entity.Inativar();
 
         entity.AtualizarNome(request.Nome);
         entity.AtualizarDescricao(request.Descricao);

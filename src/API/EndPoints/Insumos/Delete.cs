@@ -17,7 +17,7 @@ public class Delete : IEndpoint
             var idUsuario = httpContext.User.ObterIdUsuario();
             IInsumoDataSource dataSource = new InsumoDataSource(appDbContext);
             var controller = new InsumoController(dataSource);
-            var response = await controller.Delete(idUsuario, id, ct);
+            var response = await controller.Delete(id, idUsuario, ct);
             return response.ToResult();
         });
     }
