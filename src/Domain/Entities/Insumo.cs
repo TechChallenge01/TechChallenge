@@ -15,6 +15,18 @@ public class Insumo : Base
         CustoUnitario = custoUnitario;
     }
 
+    public Insumo(Guid id, string nome, string descricao, decimal custoUnitario)
+    {
+        ValidarNome(nome);
+        ValidarDescricao(descricao);
+        ValidarCusto(custoUnitario);
+
+        Id = id;
+        Nome = nome;
+        Descricao = descricao;
+        CustoUnitario = custoUnitario;
+    }
+
     protected Insumo() { }
 
     public Guid Id { get; private set; }

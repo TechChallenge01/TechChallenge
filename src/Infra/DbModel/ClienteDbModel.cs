@@ -1,6 +1,4 @@
-﻿using Infra.DbModel;
-
-namespace Infra.DataModel
+﻿namespace Infra.DbModel
 {
     public class ClienteDbModel
     {

@@ -1,4 +1,4 @@
-﻿using Infra.DataModel;
+﻿using Infra.DbModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

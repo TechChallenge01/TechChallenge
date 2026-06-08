@@ -3,7 +3,7 @@ using Infra.Context;
 using Microsoft.EntityFrameworkCore;
 using Shared.DTOs.Cliente.Input;
 using Application.Interfaces;
-using Infra.DataModel;
+using Infra.DbModel;
 
 namespace Infra.DataSources
 {

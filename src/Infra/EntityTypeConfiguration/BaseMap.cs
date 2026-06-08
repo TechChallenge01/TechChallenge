@@ -1,7 +1,7 @@
 ﻿using Domain.BaseEntity;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infra.BaseMap
+namespace Infra.EntityTypeConfiguration
 {
     public static class BaseMap
     {

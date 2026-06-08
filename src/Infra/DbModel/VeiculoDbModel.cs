@@ -1,6 +1,4 @@
-﻿using Infra.DataModel;
-
-namespace Infra.DbModel
+﻿namespace Infra.DbModel
 {
     public class VeiculoDbModel
     {

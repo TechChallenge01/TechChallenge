@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Infra.BaseMap;
 
 namespace Infra.EntityTypeConfiguration
 {

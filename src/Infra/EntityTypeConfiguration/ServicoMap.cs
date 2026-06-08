@@ -1,5 +1,4 @@
 ﻿using Domain.Entities;
-using Infra.BaseMap;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
