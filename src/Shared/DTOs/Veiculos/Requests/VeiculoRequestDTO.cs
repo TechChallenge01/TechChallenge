@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Application.Veiculos.DTOs.Requests
+namespace Shared.DTOs.Veiculos.Requests
 {
     public class VeiculoRequestDTO
     {

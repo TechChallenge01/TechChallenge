@@ -18,15 +18,30 @@ namespace Application.UseCases.Clientes
 
         public async Task Run(Guid idUsuario, Guid id, CancellationToken ct)
         {
-            var cliente = await _clienteGateway.GetById(id, ct);
+            try
+            {
+                var cliente = await _clienteGateway.GetById(id, ct);
 
-            if (cliente is null)
-                throw new ArgumentNullException("Cliente não encontrado!");
+                if (cliente is null)
+                    throw new KeyNotFoundException("Cliente não encontrado!");
 
-            cliente.Inativar();
-            cliente.RastrearAlteracao(idUsuario, DateTime.UtcNow);
+                cliente.Inativar();
+                cliente.RastrearAlteracao(idUsuario, DateTime.UtcNow);
 
-            await _clienteGateway.Update(cliente, ct);
+                await _clienteGateway.Update(cliente, ct);
+            }
+            catch (ArgumentException ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

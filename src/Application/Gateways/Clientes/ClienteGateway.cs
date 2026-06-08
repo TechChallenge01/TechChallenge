@@ -2,8 +2,8 @@
 using Domain.Aggregates.ClienteAggregates;
 using Domain.Entities;
 using Domain.ValueObjects;
-using Shared.DTOs.Cliente.Input;
-using Shared.DTOs.Cliente.Shared;
+using Shared.DTOs.Clientes.Input;
+using Shared.DTOs.Clientes.Shared;
 
 namespace Application.Gateways.Clientes
 {
@@ -101,7 +101,7 @@ namespace Application.Gateways.Clientes
                 },
                 Veiculos = cliente.Veiculos?.Select(v => v.Id).ToList(),
                 DataCriacao = cliente.DataCriacao,
-                IdUsuarioCriacao = cliente.IdUsuarioCriacao
+                IdUsuarioCriacao = cliente.UsuarioCriacaoId
             };
 
             await _dataSource.Create(clienteDTO, ct);

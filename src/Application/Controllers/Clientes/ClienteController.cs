@@ -3,8 +3,8 @@ using Application.Interfaces;
 using Application.Presenters.Clientes;
 using Application.UseCases.Clientes;
 using Shared.DTOs;
-using Shared.DTOs.Cliente.Output;
-using Shared.DTOs.Cliente.Request;
+using Shared.DTOs.Clientes.Output;
+using Shared.DTOs.Clientes.Request;
 using Shared.Result;
 
 namespace Application.Controllers.Clientes
@@ -92,9 +92,9 @@ namespace Application.Controllers.Clientes
                 var useCase = DeleteUseCase.Create(clienteGateway);
                 await useCase.Run(idUsuario, id, ct);
 
-                return presenter.NoContent("Cliente deletado com sucesso!");
+                return presenter.NoContent();
             }
-            catch (ArgumentNullException ex)
+            catch (KeyNotFoundException ex)
             {
                 return presenter.NotFound(ex.Message);
             }
@@ -116,9 +116,9 @@ namespace Application.Controllers.Clientes
                 var useCase = UpdateUseCase.Create(clienteGateway);
                 await useCase.Run(idUsuario, id, request, ct);
 
-                return presenter.NoContent("Cliente atualizado com sucesso!");
+                return presenter.NoContent();
             }
-            catch (ArgumentNullException ex)
+            catch (KeyNotFoundException ex)
             {
                 return presenter.NotFound(ex.Message);
             }

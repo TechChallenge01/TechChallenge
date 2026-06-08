@@ -39,7 +39,7 @@ public class OrdemServico : Base
         StatusOS = EStatusOS.Recebida.ToString();
         ValorDesconto = 0;
         ValorTotal = 0;
-        IdUsuarioCriacao = idUsuarioCriacao;
+        UsuarioCriacaoId = idUsuarioCriacao;
         DataCriacao = DataCriacao;
     }
 

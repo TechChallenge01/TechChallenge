@@ -1,7 +1,7 @@
 ﻿using Domain.Aggregates.ClienteAggregates;
 using Shared.DTOs;
-using Shared.DTOs.Cliente.Output;
-using Shared.DTOs.Cliente.Shared;
+using Shared.DTOs.Clientes.Output;
+using Shared.DTOs.Clientes.Shared;
 using Shared.Result;
 using System.Net;
 
@@ -67,9 +67,9 @@ namespace Application.Presenters.Clientes
         {
             return new CommandResult<T> { Message = _message, StatusCode = HttpStatusCode.Created, Data =  data};
         }
-        public ICommandResult NoContent(string message)
+        public ICommandResult NoContent()
         {
-            return new CommandResult { Message = message, StatusCode = HttpStatusCode.NoContent };
+            return new CommandResult { Message = _message, StatusCode = HttpStatusCode.NoContent };
         }
         public ICommandResult InternalError(string message)
         {

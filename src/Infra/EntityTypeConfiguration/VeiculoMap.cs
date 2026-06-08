@@ -31,7 +31,7 @@ namespace Infra.EntityTypeConfiguration
                 .IsRequired()
                 .HasMaxLength(100);
 
-            builder.Property(e => e.IdUsuarioCriacao)
+            builder.Property(e => e.UsuarioCriacaoId)
                    .IsRequired();
 
             builder.Property(e => e.DataCriacao)

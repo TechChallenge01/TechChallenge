@@ -1,6 +1,6 @@
-﻿using Shared.DTOs.Cliente.Shared;
+﻿using Shared.DTOs.Clientes.Shared;
 
-namespace Shared.DTOs.Cliente.Output
+namespace Shared.DTOs.Clientes.Output
 {
     public record ClienteOutputDTO
     {

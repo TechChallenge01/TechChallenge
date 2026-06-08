@@ -26,7 +26,6 @@ namespace Infra
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
             services.AddScoped<IPecaRepository, PecaRepository>();
-            services.AddScoped<IVeiculoRepository, VeiculoRepository>();
             services.AddScoped<IServicoRepository, ServicoRepository>();
             services.AddScoped<IInsumoRepository, InsumoRepository>();
             services.AddScoped<IInsumoDataSource, InsumoDataSource>();
