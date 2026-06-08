@@ -50,9 +50,7 @@ public class InsumoDataSource : IInsumoDataSource
             Id = insumo.Id,
             Nome = insumo.Nome,
             Descricao = insumo.Descricao,
-            CustoUnitario = insumo.CustoUnitario,
-            IdUsuarioCriacao = insumo.IdUsuarioCriacao,
-            DataCriacao = insumo.DataCriacao
+            CustoUnitario = insumo.CustoUnitario
         };
     }
 
@@ -71,9 +69,7 @@ public class InsumoDataSource : IInsumoDataSource
             Id = i.Id,
             Nome = i.Nome,
             Descricao = i.Descricao,
-            CustoUnitario = i.CustoUnitario,
-            IdUsuarioCriacao = i.IdUsuarioCriacao,
-            DataCriacao = i.DataCriacao
+            CustoUnitario = i.CustoUnitario
         }).ToList();
 
         var total = await query.CountAsync(ct);
