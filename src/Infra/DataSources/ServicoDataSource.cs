@@ -1,0 +1,63 @@
+﻿using Application.Interfaces;
+using Domain.Entities;
+using Infra.Context;
+using Infra.DbModel;
+using Microsoft.EntityFrameworkCore;
+using Shared.DTOs.Servicos.Input;
+
+namespace Infra.DataSources
+{
+    public class ServicoDataSource : IServicoDataSource
+    {
+        private readonly AppDbContext _appDbContext;
+
+        public ServicoDataSource(AppDbContext appDbContext)
+        {
+            _appDbContext = appDbContext;
+        }
+
+        public async Task<ServicoInputDTO>? GetById(Guid id, CancellationToken ct)
+        {
+            IQueryable<ServicoDbModel> query = _appDbContext.Servicos.Where(s => s.Ativo);
+
+            var servico = await _appDbContext.Servicos.SingleOrDefaultAsync(s => s.Id == id);
+
+            if (servico is null)
+                return null;
+
+            var servicoResponse = new ServicoInputDTO
+            {
+                Id = servico.Id,
+                Descricao = servico.Descricao,
+                Nome = servico.Nome,
+                TempoMedioExecucao = servico.TempoMedioExecucao,
+                ValorUnitario = servico.ValorUnitario
+            };
+
+            return servicoResponse;
+        }
+
+        public async Task<(List<ServicoInputDTO> servicos, int total)> GetPaginated(int page, int pageSize, CancellationToken ct)
+        {
+            IQueryable<ServicoDbModel> query = _appDbContext.Servicos.Where(s => s.Ativo);
+
+            var servicos = await query.Skip((page - 1) * pageSize)
+                                      .Take(pageSize)
+                                      .AsNoTracking()
+                                      .ToListAsync(ct);
+
+            var total = await query.CountAsync(ct);
+
+            var servicoResponse = servicos.Select(s => new ServicoInputDTO
+            {
+                Id = s.Id,
+                Descricao = s.Descricao,
+                Nome = s.Nome,
+                TempoMedioExecucao = s.TempoMedioExecucao,
+                ValorUnitario = s.ValorUnitario
+            }).ToList();
+
+            return (servicoResponse, total);
+        }
+    }
+}

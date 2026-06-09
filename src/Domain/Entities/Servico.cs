@@ -5,8 +5,6 @@ namespace Domain.Entities
 {
     public class Servico : Base
     {
-        public Servico() { }
-
         public Servico(string nome, string descricao, decimal precoVenda, Guid idUsuarioCriacao, DateTime dataCriacao) : base(idUsuarioCriacao, dataCriacao, null, null)
         {
 
@@ -21,6 +19,15 @@ namespace Domain.Entities
             ValorUnitario = precoVenda;
             UsuarioCriacaoId = idUsuarioCriacao;
             DataCriacao = dataCriacao;
+        }
+
+        public Servico(Guid id, string nome, string descricao, decimal valorUnitario, TimeSpan? tempoMedioExecucao)
+        {
+            Id = id;
+            Nome = nome;
+            Descricao = descricao;
+            ValorUnitario = valorUnitario;
+            TempoMedioExecucao = tempoMedioExecucao;
         }
 
         public Guid Id { get; private set; }

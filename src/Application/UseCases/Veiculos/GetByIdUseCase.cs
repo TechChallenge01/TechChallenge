@@ -24,9 +24,13 @@ namespace Application.UseCases.Veiculos
                 var veiculo = await _veiculoGateway.GetById(id, ct);
                 return veiculo;
             }
+            catch (ArgumentException ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
             catch (Exception ex)
             {
-                throw new Exception($"Error: {ex.Message}");
+                throw new Exception(ex.Message);
             }
         }
     }

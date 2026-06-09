@@ -25,9 +25,13 @@ namespace Application.UseCases.Clientes
 
                 return response;
             }
-            catch(Exception ex)
+            catch (ArgumentException ex)
             {
-                throw new Exception($"Error: {ex.Message}");
+                throw new ArgumentException(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
     }
