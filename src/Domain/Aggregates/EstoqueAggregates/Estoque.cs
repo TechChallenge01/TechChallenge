@@ -5,7 +5,7 @@ using Domain.Enums;
 namespace Domain.Aggregates.EstoqueAggregates;
 public class Estoque : Base
 {
-    public Estoque(Guid? insumoId, Guid? pecaId, int quantidadeDisponivel, Guid UsuarioCriacaoId, DateTime dataCriacao) : base(UsuarioCriacaoId, dataCriacao, null, null)
+    public Estoque(Guid? insumoId, Guid? pecaId, int quantidadeDisponivel, Guid usuarioCriacaoId, DateTime dataCriacao) : base(usuarioCriacaoId, dataCriacao, null, null)
     {
         if (insumoId is null && pecaId is null)
             throw new ArgumentException("É obrigatório o uso de uma peca ou um Insumo");
@@ -26,6 +26,16 @@ public class Estoque : Base
         InsumoId = insumoId;
         QuantidadeDisponivel = quantidadeDisponivel;
         QuantidadeReservada = 0;
+    }
+
+    public Estoque(Guid id, Guid? insumoId, Guid? pecaId, int quantidadeDisponivel, int quantidadeReservada,
+           Guid idUsuarioCriacao, DateTime dataCriacao) : base(idUsuarioCriacao, dataCriacao, null, null)
+    {
+        Id = id;
+        InsumoId = insumoId;
+        PecaId = pecaId;
+        QuantidadeDisponivel = quantidadeDisponivel;
+        QuantidadeReservada = quantidadeReservada;
     }
 
     protected Estoque() { }
