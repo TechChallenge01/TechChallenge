@@ -1,6 +1,6 @@
 ﻿using Application.Gateways.Insumos;
 using Application.Insumos.DTOs.Requests;
-using Shared.DTOs.Insumo.Input;
+using Shared.DTOs.Insumos.Input;
 using System;
 using System.Collections.Generic;
 using System.Text;

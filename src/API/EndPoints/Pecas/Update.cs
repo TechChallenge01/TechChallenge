@@ -21,6 +21,6 @@ public class Update : IEndpoint
             var response = await controller.Update(id, request, idUsuario, ct);
 
             return response.ToResult();
-        });
+        }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Almoxarifado"));
     }
 }

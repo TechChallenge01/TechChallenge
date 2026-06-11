@@ -17,6 +17,6 @@ public class GetPaginated : IEndpoint
             var controller = new EstoqueController(dataSource);
             var response = await controller.GetPaginated(page, pageSize, ct);
             return response.ToResult();
-        });
+        }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Funcionario", "Mecanico", "Almoxarifado"));
     }
 }

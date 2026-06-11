@@ -5,7 +5,7 @@ using Shared.Result;
 using Application.Interfaces;
 using Infra.DataSources;
 using Application.Insumos.DTOs.Requests;
-using Application.Controllers.Insumo;
+using Application.Controllers.Insumos;
 
 namespace API.EndPoints.Insumos;
 public class Delete : IEndpoint
@@ -19,6 +19,6 @@ public class Delete : IEndpoint
             var controller = new InsumoController(dataSource);
             var response = await controller.Delete(id, idUsuario, ct);
             return response.ToResult();
-        });
+        }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Almoxarifado"));
     }
 }

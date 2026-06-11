@@ -5,7 +5,7 @@ using Shared.Result;
 using Application.Interfaces;
 using Infra.DataSources;
 using Application.Insumos.DTOs.Requests;
-using Application.Controllers.Insumo;
+using Application.Controllers.Insumos;
 
 namespace API.EndPoints.Insumos;
 
@@ -21,6 +21,6 @@ public class Create : IEndpoint
             var response = await controller.Create(request, idUsuario, ct);
 
             return response.ToResult();
-        });
+        }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Almoxarifado"));
     }
 }

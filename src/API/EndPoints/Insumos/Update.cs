@@ -5,8 +5,8 @@ using Shared.Result;
 using Application.Interfaces;
 using Infra.DataSources;
 using Application.Insumos.DTOs.Requests;
-using Application.Controllers.Insumo;
-using Shared.DTOs.Insumo.Input;
+using Application.Controllers.Insumos;
+using Shared.DTOs.Insumos.Input;
 
 namespace API.EndPoints.Insumos;
 
@@ -22,6 +22,6 @@ public class Update : IEndpoint
             var result = await controller.Update(id, insumoRequest, idUsuario, ct);
 
             return result.ToResult();
-        });
+        }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Almoxarifado"));
     }
 }

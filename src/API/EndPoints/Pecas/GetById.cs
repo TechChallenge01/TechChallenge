@@ -18,6 +18,6 @@ public class GetById : IEndpoint
             var response = await controller.GetById(id, ct);
             
             return response.ToResult();
-        });
+        }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Funcionario", "Mecanico", "Almoxarifado"));
     }
 }

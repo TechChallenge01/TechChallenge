@@ -21,6 +21,6 @@ public class Create : IEndpoint
             var response = await controller.Create(request, idUsuario, ct);
 
             return response.ToResult();
-        });
+        }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Almoxarifado"));
     }
 }

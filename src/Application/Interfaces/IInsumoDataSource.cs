@@ -1,11 +1,4 @@
-﻿using Application.Insumos.DTOs.Requests;
-using Application.Insumos.DTOs.Responses;
-using Shared.DTOs;
-using Shared.DTOs.Insumo.Input;
-using Shared.Result;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Shared.DTOs.Insumos.Input;
 
 namespace Application.Interfaces;
 

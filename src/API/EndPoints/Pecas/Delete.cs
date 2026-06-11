@@ -20,6 +20,6 @@ public class Delete : IEndpoint
             var response = await controller.Delete(id, idUsuario, ct);
 
             return response.ToResult();
-        });
+        }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Almoxarifado"));
     }
 }

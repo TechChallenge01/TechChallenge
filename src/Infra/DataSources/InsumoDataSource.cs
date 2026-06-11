@@ -1,7 +1,7 @@
 ﻿using Application.Interfaces;
 using Infra.Context;
 using Microsoft.EntityFrameworkCore;
-using Shared.DTOs.Insumo.Input;
+using Shared.DTOs.Insumos.Input;
 
 namespace Infra.DataSources;
 

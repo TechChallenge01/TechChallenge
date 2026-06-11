@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Shared.DTOs.Insumo.Input;
+namespace Shared.DTOs.Insumos.Input;
 
 public record InsumoInputDTO
 {

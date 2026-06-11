@@ -20,6 +20,6 @@ public class Movimentar : IEndpoint
             var controller = new EstoqueController(dataSource);
             var response = await controller.Movimentar(request, idUsuario, ct);
             return response.ToResult();
-        });
+        }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Funcionario", "Almoxarifado"));
     }
 }

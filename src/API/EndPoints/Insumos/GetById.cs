@@ -5,7 +5,7 @@ using Shared.Result;
 using Application.Interfaces;
 using Infra.DataSources;
 using Application.Insumos.DTOs.Requests;
-using Application.Controllers.Insumo;
+using Application.Controllers.Insumos;
 using Microsoft.Identity.Client;
 
 namespace API.EndPoints.Insumos;
@@ -20,6 +20,6 @@ public class GetById : IEndpoint
             var response = await controller.GetById(id, ct);
 
             return response.ToResult();
-        });
+        }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Funcionario", "Mecanico", "Almoxarifado"));
     }
 }

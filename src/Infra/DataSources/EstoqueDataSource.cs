@@ -110,6 +110,9 @@ public class EstoqueDataSource : IEstoqueDataSource
         if (entity == null)
             throw new Exception("Estoque não encontrado");
 
+        _appDbContext.Entry(entity).Property(e => e.QuantidadeDisponivel).CurrentValue = request.QuantidadeDisponivel;
+        _appDbContext.Entry(entity).Property(e => e.QuantidadeReservada).CurrentValue = request.QuantidadeReservada;
+
         foreach (var historico in request.Historicos)
         {
             var novoHistorico = new EstoqueHistorico(

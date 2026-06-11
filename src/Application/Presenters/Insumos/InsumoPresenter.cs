@@ -1,4 +1,4 @@
-﻿using Shared.DTOs.Insumo.Output;
+﻿using Shared.DTOs.Insumos.Output;
 using Shared.Result;
 using System.Net;
 using Shared.DTOs;

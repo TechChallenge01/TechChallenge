@@ -4,10 +4,10 @@ using Application.Interfaces;
 using Application.Presenters.Insumos;
 using Application.UseCases.Insumos;
 using Shared.DTOs;
-using Shared.DTOs.Insumo.Output;
+using Shared.DTOs.Insumos.Output;
 using Shared.Result;
 
-namespace Application.Controllers.Insumo;
+namespace Application.Controllers.Insumos;
 
 public class InsumoController
 {

@@ -1,5 +1,5 @@
 ﻿using Application.Interfaces;
-using Shared.DTOs.Insumo.Input;
+using Shared.DTOs.Insumos.Input;
 
 namespace Application.Gateways.Insumos;
 
