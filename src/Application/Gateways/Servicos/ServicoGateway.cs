@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Domain.Entities;
+using Shared.DTOs.Servicos.Input;
 
 namespace Application.Gateways.Servicos
 {
@@ -35,6 +36,44 @@ namespace Application.Gateways.Servicos
             var servicoEntity = new Servico(servico.Id, servico.Nome, servico.Descricao, servico.ValorUnitario, servico.TempoMedioExecucao);
 
             return servicoEntity;
+        }
+
+        public async Task Create(Servico servico, CancellationToken ct)
+        {
+            var servicoInputDto = new ServicoInputDTO
+            {
+                Id = servico.Id,
+                Ativo = servico.Ativo,
+                DataAtualizacao = servico.DataAtualizacao,
+                DataCriacao = servico.DataCriacao,
+                Descricao = servico.Descricao,
+                IdUsuarioAtualizacao = servico.IdUsuarioAtualizacao,
+                IdUsuarioCriacao = servico.IdUsuarioCriacao,
+                Nome = servico.Nome,
+                TempoMedioExecucao = servico.TempoMedioExecucao,
+                ValorUnitario = servico.ValorUnitario
+            };
+
+            await _servicoDataSource.Create(servicoInputDto, ct);
+        }
+
+        public async Task Update(Servico servico, CancellationToken ct)
+        {
+            var servicoInputDto = new ServicoInputDTO
+            {
+                Id = servico.Id,
+                Ativo = servico.Ativo,
+                DataAtualizacao = servico.DataAtualizacao,
+                DataCriacao = servico.DataCriacao,
+                Descricao = servico.Descricao,
+                IdUsuarioAtualizacao = servico.IdUsuarioAtualizacao,
+                IdUsuarioCriacao = servico.IdUsuarioCriacao,
+                Nome = servico.Nome,
+                TempoMedioExecucao = servico.TempoMedioExecucao,
+                ValorUnitario = servico.ValorUnitario
+            };
+
+            await _servicoDataSource.Update(servicoInputDto, ct);
         }
     }
 }

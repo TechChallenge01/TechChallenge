@@ -8,7 +8,7 @@ namespace Infra.BaseMap
         public static void ConfigurarAuditoria<T>(this EntityTypeBuilder<T> builder)
             where T : Base
         {
-            builder.Property(e => e.UsuarioCriacaoId)
+            builder.Property(e => e.IdUsuarioCriacao)
                 .IsRequired();
 
             builder.Property(e => e.DataCriacao)

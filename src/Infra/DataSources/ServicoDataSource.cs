@@ -1,5 +1,4 @@
 ﻿using Application.Interfaces;
-using Domain.Entities;
 using Infra.Context;
 using Infra.DbModel;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +13,14 @@ namespace Infra.DataSources
         public ServicoDataSource(AppDbContext appDbContext)
         {
             _appDbContext = appDbContext;
+        }
+
+        public async Task Create(ServicoInputDTO servico, CancellationToken ct)
+        {
+            var servicoDbModel = new ServicoDbModel(servico.Id, servico.Nome, servico.Descricao, servico.ValorUnitario, servico.TempoMedioExecucao, servico.IdUsuarioCriacao, servico.DataCriacao, servico.IdUsuarioAtualizacao, servico.DataAtualizacao, servico.Ativo);
+
+            await _appDbContext.Servicos.AddAsync(servicoDbModel, ct);
+            await _appDbContext.SaveChangesAsync(ct);
         }
 
         public async Task<ServicoInputDTO>? GetById(Guid id, CancellationToken ct)
@@ -58,6 +65,25 @@ namespace Infra.DataSources
             }).ToList();
 
             return (servicoResponse, total);
+        }
+
+        public async Task Update(ServicoInputDTO servico, CancellationToken ct)
+        {
+            var servicoDbModel = await _appDbContext.Servicos.FirstOrDefaultAsync(s => s.Id == servico.Id, ct);
+
+            if (servicoDbModel is null)
+                throw new KeyNotFoundException("Serviço não encontrado");
+
+            servicoDbModel.Id = servico.Id;
+            servicoDbModel.Ativo = servico.Ativo;
+            servicoDbModel.Descricao = servico.Descricao;
+            servicoDbModel.DataAtualizacao = servico.DataAtualizacao;
+            servicoDbModel.Nome = servico.Nome;
+            servicoDbModel.ValorUnitario = servico.ValorUnitario;
+            servicoDbModel.TempoMedioExecucao = servico.TempoMedioExecucao;
+            servicoDbModel.IdUsuarioAtualizacao = servico.IdUsuarioAtualizacao;
+
+            await _appDbContext.SaveChangesAsync(ct);
         }
     }
 }

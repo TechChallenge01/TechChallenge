@@ -1,20 +1,4 @@
-﻿using Application.EmailServices;
-using Application.OrdemServicos.DTOs.Requests;
-using Application.OrdemServicos.DTOs.Responses;
-using Application.OrdemServicos.Presenters;
-using Application.UnitOfWork;
-using Domain.Aggregates.ClienteAggregates;
-using Domain.Aggregates.EstoqueAggregates;
-using Domain.Aggregates.EstoqueAggregates.Repositories;
-using Domain.Aggregates.OrdemServicoAggregates;
-using Domain.Aggregates.OrdemServicoAggregates.Repositories;
-using Domain.Entities.Repositories;
-using Domain.ValueObjects;
-using Shared.DTOs;
-using Shared.Result;
-using System.Net;
-
-namespace Application.OrdemServicos.Services;
+﻿namespace Application.OrdemServicos.Services;
 
 public class OrdemServicoService : IOrdemServicoService
 {

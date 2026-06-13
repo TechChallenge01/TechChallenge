@@ -17,7 +17,7 @@ namespace Domain.Entities
             Nome = nome;
             Descricao = descricao;
             ValorUnitario = precoVenda;
-            UsuarioCriacaoId = idUsuarioCriacao;
+            IdUsuarioCriacao = idUsuarioCriacao;
             DataCriacao = dataCriacao;
         }
 

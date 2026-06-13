@@ -1,9 +1,4 @@
-﻿using API.Extensions;
-using Application.OrdemServicos.DTOs.Requests;
-using Application.OrdemServicos.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Shared.Result;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 

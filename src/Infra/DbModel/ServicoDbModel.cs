@@ -4,13 +4,12 @@ namespace Infra.DbModel
 {
     public class ServicoDbModel
     {
-        public ServicoDbModel(Guid id, string nome, string descricao, decimal valorUnitario, ICollection<OrdemServicoServico> ordemServicoServicos, TimeSpan? tempoMedioExecucao, Guid idUsuarioCriacao, DateTime dataCriacao, Guid? idUsuarioAtualizacao, DateTime? dataAtualizacao, bool ativo)
+        public ServicoDbModel(Guid id, string nome, string descricao, decimal valorUnitario, TimeSpan? tempoMedioExecucao, Guid idUsuarioCriacao, DateTime dataCriacao, Guid? idUsuarioAtualizacao, DateTime? dataAtualizacao, bool ativo)
         {
             Id = id;
             Nome = nome;
             Descricao = descricao;
             ValorUnitario = valorUnitario;
-            OrdemServicoServicos = ordemServicoServicos;
             TempoMedioExecucao = tempoMedioExecucao;
             IdUsuarioCriacao = idUsuarioCriacao;
             DataCriacao = dataCriacao;

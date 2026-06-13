@@ -12,11 +12,11 @@ namespace API.EndPoints.Servicos
         {
             app.MapGet("/api/Servicos/{id}", async (AppDbContext appDbContext, Guid id, CancellationToken ct) =>
             {
-            IServicoDataSource dataSource = new ServicoDataSource(appDbContext);
-            var controller = new ServicoController(dataSource);
-            var response = await controller.GetById(id, ct);
+                IServicoDataSource dataSource = new ServicoDataSource(appDbContext);
+                var controller = new ServicoController(dataSource);
+                var response = await controller.GetById(id, ct);
 
-            return response.ToResult();
+                return response.ToResult();
             });
         }
     }

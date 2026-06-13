@@ -1,9 +1,4 @@
-﻿using Application.OrdemServicos.DTOs.Requests;
-using Application.OrdemServicos.DTOs.Responses;
-using Shared.DTOs;
-using Shared.Result;
-
-namespace Application.OrdemServicos.Services;
+﻿namespace Application.OrdemServicos.Services;
 
 public interface IOrdemServicoService
 {

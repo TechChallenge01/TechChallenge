@@ -1,9 +1,5 @@
 ﻿using Application.Gateways.Servicos;
 using Domain.Entities;
-using Org.BouncyCastle.Asn1.IsisMtt.X509;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Application.UseCases.Servicos
 {

@@ -2,9 +2,9 @@
 using Application.Interfaces;
 using Application.Presenters.Servicos;
 using Application.UseCases.Servicos;
-using Microsoft.Extensions.Caching.Memory;
 using Shared.DTOs;
 using Shared.DTOs.Servicos.Output;
+using Shared.DTOs.Servicos.Requests;
 using Shared.Result;
 
 namespace Application.Controllers.Servicos
@@ -59,6 +59,78 @@ namespace Application.Controllers.Servicos
             catch (Exception ex)
             {
                 return presenter.InternalError<ServicoOutputDTO>(ex.Message);
+            }
+        }
+
+        public async Task<ICommandResult<Guid>> Create(ServicoRequestDTO request, Guid idUsuario, CancellationToken ct)
+        {
+            var presenter = new ServicoPresenter("Servico criado com sucesso!");
+            try
+            {
+                var servicoGateway = ServicoGateway.Create(_dataSource);
+                var useCase = CreateUseCase.Create(servicoGateway);
+                var response = await useCase.Run(request, idUsuario, ct);
+
+                return presenter.Created<Guid>(response);
+            }
+            catch (ArgumentException ex)
+            {
+                return presenter.BadRequest<Guid>(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return presenter.InternalError<Guid>(ex.Message);
+            }
+
+        }
+
+        public async Task<ICommandResult> Update(Guid id, ServicoRequestDTO request, Guid idUsuario, CancellationToken ct)
+        {
+            var presenter = new ServicoPresenter("Serviço atualizado com sucesso!");
+            try
+            {
+                var servicoGateway = ServicoGateway.Create(_dataSource);
+                var useCase = UpdateUseCase.Create(servicoGateway);
+                await useCase.Run(idUsuario, id, request, ct);
+
+                return presenter.NoContent();
+            }
+            catch (ArgumentException ex)
+            {
+                return presenter.BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return presenter.NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return presenter.InternalError(ex.Message);
+            }
+        }
+
+        public async Task<ICommandResult> Delete(Guid idUsuario, Guid id, CancellationToken ct)
+        {
+            var presenter = new ServicoPresenter("Serviço deletado com sucesso!");
+            try
+            {
+                var servicoGateway = ServicoGateway.Create(_dataSource);
+                var useCase = DeleteUseCase.Create(servicoGateway);
+                await useCase.Run(idUsuario, id, ct);
+
+                return presenter.NoContent();
+            }
+            catch (ArgumentException ex)
+            {
+                return presenter.BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return presenter.NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return presenter.InternalError(ex.Message);
             }
         }
     }

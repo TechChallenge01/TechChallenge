@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Application.Servicos.DTOs.Requests;
+namespace Shared.DTOs.Servicos.Requests;
 
 public class ServicoRequestDTO
 {

@@ -101,7 +101,7 @@ namespace Application.Gateways.Clientes
                 },
                 Veiculos = cliente.Veiculos?.Select(v => v.Id).ToList(),
                 DataCriacao = cliente.DataCriacao,
-                IdUsuarioCriacao = cliente.UsuarioCriacaoId
+                IdUsuarioCriacao = cliente.IdUsuarioCriacao
             };
 
             await _dataSource.Create(clienteDTO, ct);
