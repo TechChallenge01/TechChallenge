@@ -27,7 +27,7 @@ public class PecaGateway
             Descricao = peca.Descricao,
             MarcaPeca = peca.MarcaPeca,
             ValorUnitario = peca.ValorUnitario,
-            IdUsuarioCriacao = peca.UsuarioCriacaoId,
+            IdUsuarioCriacao = peca.IdUsuarioCriacao,
             DataCriacao = peca.DataCriacao
         };
 

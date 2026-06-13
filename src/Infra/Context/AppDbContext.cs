@@ -13,7 +13,7 @@ namespace Infra.Context
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<ClienteDbModel> Clientes { get; set; }
         public DbSet<Peca> Pecas { get; set; }
-        public DbSet<Servico> Servicos { get; set; }
+        public DbSet<ServicoDbModel> Servicos { get; set; }
         public DbSet<VeiculoDbModel> Veiculos { get; set; }
         public DbSet<OrdemServico> OrdensServico { get; set; }
         public DbSet<Estoque> Estoques { get; set; }

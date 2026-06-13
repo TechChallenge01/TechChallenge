@@ -12,10 +12,10 @@ namespace Shared.DTOs.Clientes.Input
         public TelefoneDTO Telefone { get; init; }
         public EnderecoDTO Endereco { get; init; }
         public ICollection<Guid> Veiculos { get; init; }
-        public Guid IdUsuarioCriacao { get; set; }
-        public DateTime DataCriacao { get; set; }
-        public Guid? IdUsuarioAtualizacao { get; set; }
-        public DateTime? DataAtualizacao { get; set; }
+        public Guid IdUsuarioCriacao { get; init; }
+        public DateTime DataCriacao { get; init; }
+        public Guid? IdUsuarioAtualizacao { get; init; }
+        public DateTime? DataAtualizacao { get; init; }
         public bool Ativo { get; set; } = true;
     }
 }

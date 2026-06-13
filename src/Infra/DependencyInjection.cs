@@ -27,7 +27,6 @@ namespace Infra
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
             services.AddScoped<IPecaRepository, PecaRepository>();
             services.AddScoped<IPecaDataSource, PecaDataSource>();
-            services.AddScoped<IServicoRepository, ServicoRepository>();
             services.AddScoped<IInsumoRepository, InsumoRepository>();
             services.AddScoped<IInsumoDataSource, InsumoDataSource>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();

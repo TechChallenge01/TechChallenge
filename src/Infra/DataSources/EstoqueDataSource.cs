@@ -34,7 +34,7 @@ public class EstoqueDataSource : IEstoqueDataSource
             InsumoId = e.InsumoId,
             QuantidadeDisponivel = e.QuantidadeDisponivel,
             QuantidadeReservada = e.QuantidadeReservada,
-            IdUsuarioCriacao = e.UsuarioCriacaoId,
+            IdUsuarioCriacao = e.IdUsuarioCriacao,
             DataCriacao = e.DataCriacao
         }).ToList();
 
@@ -56,7 +56,7 @@ public class EstoqueDataSource : IEstoqueDataSource
             InsumoId = estoque.InsumoId,
             QuantidadeDisponivel = estoque.QuantidadeDisponivel,
             QuantidadeReservada = estoque.QuantidadeReservada,
-            IdUsuarioCriacao = estoque.UsuarioCriacaoId,
+            IdUsuarioCriacao = estoque.IdUsuarioCriacao,
             DataCriacao = estoque.DataCriacao
         };
     }
@@ -76,7 +76,7 @@ public class EstoqueDataSource : IEstoqueDataSource
             InsumoId = estoque.InsumoId,
             QuantidadeDisponivel = estoque.QuantidadeDisponivel,
             QuantidadeReservada = estoque.QuantidadeReservada,
-            IdUsuarioCriacao = estoque.UsuarioCriacaoId,
+            IdUsuarioCriacao = estoque.IdUsuarioCriacao,
             DataCriacao = estoque.DataCriacao
         };
     }
@@ -96,7 +96,7 @@ public class EstoqueDataSource : IEstoqueDataSource
             InsumoId = estoque.InsumoId,
             QuantidadeDisponivel = estoque.QuantidadeDisponivel,
             QuantidadeReservada = estoque.QuantidadeReservada,
-            IdUsuarioCriacao = estoque.UsuarioCriacaoId,
+            IdUsuarioCriacao = estoque.IdUsuarioCriacao,
             DataCriacao = estoque.DataCriacao
         };
     }

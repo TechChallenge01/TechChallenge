@@ -41,7 +41,7 @@ public class EstoqueGateway
                 Observacao = h.Observacao,
                 TipoMovimentacao = h.TipoMovimentacao,
                 EstoqueId = h.EstoqueId,
-                IdUsuarioCriacao = h.UsuarioCriacaoId,
+                IdUsuarioCriacao = h.IdUsuarioCriacao,
                 DataCriacao = h.DataCriacao
             }).ToList()
         };

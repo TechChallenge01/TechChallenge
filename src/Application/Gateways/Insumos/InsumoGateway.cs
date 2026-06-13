@@ -24,7 +24,7 @@ public class InsumoGateway
             Nome = insumo.Nome,
             Descricao = insumo.Descricao,
             CustoUnitario = insumo.CustoUnitario,
-            IdUsuarioCriacao = insumo.UsuarioCriacaoId,
+            IdUsuarioCriacao = insumo.IdUsuarioCriacao,
             DataCriacao = insumo.DataCriacao
         };
 

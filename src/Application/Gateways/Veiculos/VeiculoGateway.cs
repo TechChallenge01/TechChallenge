@@ -49,7 +49,7 @@ namespace Application.Gateways.Veiculos
                 ClienteId = veiculo.ClienteId,
                 Cor = veiculo.Cor,
                 DataCriacao = veiculo.DataCriacao,
-                UsuarioCriacaoId = veiculo.UsuarioCriacaoId,
+                UsuarioCriacaoId = veiculo.IdUsuarioCriacao,
                 MarcaVeiculo = veiculo.MarcaVeiculo,
                 Modelo = veiculo.Modelo,
                 Placa = veiculo.Placa
@@ -66,7 +66,7 @@ namespace Application.Gateways.Veiculos
                 ClienteId = veiculo.ClienteId,
                 Cor = veiculo.Cor,
                 DataCriacao = veiculo.DataCriacao,
-                UsuarioCriacaoId = veiculo.UsuarioCriacaoId,
+                UsuarioCriacaoId = veiculo.IdUsuarioCriacao,
                 MarcaVeiculo = veiculo.MarcaVeiculo,
                 Modelo = veiculo.Modelo,
                 Placa = veiculo.Placa
