@@ -22,6 +22,7 @@ namespace Infra
         {
             services.AddScoped<IEstoqueRepository, EstoqueRepository>();
             services.AddScoped<IOrdemServicoRepository, OrdemServicoRepository>();
+            services.AddScoped<IOrdemServicoDataSource, OrdemServicoDataSource>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
