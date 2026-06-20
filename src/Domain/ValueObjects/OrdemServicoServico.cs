@@ -1,6 +1,4 @@
-﻿using Domain.Aggregates.OrdemServicoAggregates;
-using Domain.Entities;
-using Domain.Enums;
+﻿using Domain.Enums;
 
 namespace Domain.ValueObjects;
 
@@ -14,8 +12,6 @@ public class OrdemServicoServico
     public DateTime? DataTerminoExecucao { get; private set; }
     public int Quantidade { get; private set; }
     public decimal ValorTotal => ValorUnitario * Quantidade;
-    public virtual Servico Servico { get; private set; }
-    public virtual OrdemServico OrdemServico { get; private set; }
 
     public OrdemServicoServico(Guid osId, Guid servicoId, int quantidade, decimal valorUnitario)
     {

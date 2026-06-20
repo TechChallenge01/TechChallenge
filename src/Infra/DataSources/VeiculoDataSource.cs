@@ -3,7 +3,6 @@ using Infra.Context;
 using Infra.DbModel;
 using Microsoft.EntityFrameworkCore;
 using Shared.DTOs.Veiculos.Input;
-using Shared.DTOs.Veiculos.Output;
 
 namespace Infra.DataSources
 {
@@ -17,7 +16,7 @@ namespace Infra.DataSources
         }
 
 
-        public async Task<VeiculoOutputDTO>? GetById(Guid id, CancellationToken ct)
+        public async Task<VeiculoInputDTO>? GetById(Guid id, CancellationToken ct)
         {
             IQueryable<VeiculoDbModel> query = _appDbContext.Veiculos.Where(v => v.Ativo);
 
@@ -26,7 +25,7 @@ namespace Infra.DataSources
             if (veiculo is null)
                 return null;
 
-            var response = new VeiculoOutputDTO
+            var response = new VeiculoInputDTO
             {
                 Id = veiculo.Id,
                 Ano = veiculo.Ano,
@@ -34,13 +33,18 @@ namespace Infra.DataSources
                 Cor = veiculo.Cor,
                 MarcaVeiculo = veiculo.MarcaVeiculo,
                 Modelo = veiculo.Modelo,
-                Placa = veiculo.Placa
+                Placa = veiculo.Placa,
+                Ativo = veiculo.Ativo,
+                DataAlteracao = veiculo.DataAtualizacao,
+                DataCriacao = veiculo.DataCriacao,
+                UsuarioCriacaoId = veiculo.UsuarioCriacaoId,
+                UsuarioAlteracaoId = veiculo.IdUsuarioAtualizacao
             };
 
             return response;
         }
 
-        public async Task<(List<VeiculoOutputDTO> veiculos, int total)> GetPaginated(int page, int pageSize, CancellationToken ct)
+        public async Task<(List<VeiculoInputDTO> veiculos, int total)> GetPaginated(int page, int pageSize, CancellationToken ct)
         {
             IQueryable<VeiculoDbModel> query = _appDbContext.Veiculos.Where(v => v.Ativo);
 
@@ -50,7 +54,7 @@ namespace Infra.DataSources
                                       .Include(v => v.Cliente)
                                       .ToListAsync(ct);
 
-            var veiculoResponse = veiculos.Select(v => new VeiculoOutputDTO
+            var veiculoResponse = veiculos.Select(v => new VeiculoInputDTO
             {
                 Id = v.Id,
                 Ano = v.Ano,
@@ -89,6 +93,33 @@ namespace Infra.DataSources
             veiculoDbModel.IdUsuarioAtualizacao = veiculo.UsuarioAlteracaoId;
 
             await _appDbContext.SaveChangesAsync(ct);
+        }
+
+        public async Task<VeiculoInputDTO>? GetByPlaca(string placa, CancellationToken ct)
+        {
+            IQueryable<VeiculoDbModel> query = _appDbContext.Veiculos.Where(v => v.Ativo);
+
+            var veiculo = await query.FirstOrDefaultAsync(v => v.Placa == placa, ct);
+
+            if (veiculo is null)
+                return null;
+
+
+            return new VeiculoInputDTO
+            {
+                Ano = veiculo.Ano,
+                Ativo = veiculo.Ativo,
+                ClienteId = veiculo.ClienteId,
+                Cor = veiculo.Cor,
+                DataAlteracao = veiculo.DataAtualizacao,
+                DataCriacao = veiculo.DataCriacao,
+                Id = veiculo.Id,
+                MarcaVeiculo = veiculo.MarcaVeiculo,
+                Modelo = veiculo.Modelo,
+                Placa = veiculo.Placa,
+                UsuarioAlteracaoId = veiculo.IdUsuarioAtualizacao,
+                UsuarioCriacaoId = veiculo.UsuarioCriacaoId
+            };
         }
     }
 }

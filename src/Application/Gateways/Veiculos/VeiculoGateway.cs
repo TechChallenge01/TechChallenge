@@ -13,7 +13,6 @@ namespace Application.Gateways.Veiculos
         {
             _dataSource = dataSource;
         }
-
         public static VeiculoGateway Create(IVeiculoDataSource dataSource)
         {
             return new VeiculoGateway(dataSource);
@@ -27,7 +26,6 @@ namespace Application.Gateways.Veiculos
 
             return (response, veiculos.total);
         }
-
         public async Task<Veiculo>? GetById(Guid id, CancellationToken ct)
         {
             var veiculo = await _dataSource.GetById(id, ct);
@@ -39,7 +37,6 @@ namespace Application.Gateways.Veiculos
 
             return response;
         }
-
         public async Task Create(Veiculo veiculo, CancellationToken ct)
         {
             var veiculoInput = new VeiculoInputDTO
@@ -73,6 +70,15 @@ namespace Application.Gateways.Veiculos
             };
 
             await _dataSource.Update(veiculoInput, ct);
+        }
+        public async Task<Veiculo>? GetByPlaca(Placa placa, CancellationToken ct)
+        {
+            var veiculo = await _dataSource.GetByPlaca(placa.Valor, ct);
+
+            if (veiculo is null)
+                return null;
+
+            return new Veiculo(veiculo.Id, veiculo.Modelo, veiculo.MarcaVeiculo, veiculo.ClienteId, veiculo.Ano, new Placa(veiculo.Placa), veiculo.Cor, veiculo.UsuarioCriacaoId);
         }
     }
 }

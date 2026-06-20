@@ -12,7 +12,7 @@
         public Guid UsuarioCriacaoId { get; init; }
         public DateTime DataCriacao { get; init; }
         public Guid? UsuarioAlteracaoId { get; init; }
-        public DateTime DataAlteracao { get; init; }
+        public DateTime? DataAlteracao { get; init; }
         public bool Ativo { get; init; }
     }
 }

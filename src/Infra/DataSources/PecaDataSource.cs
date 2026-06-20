@@ -56,6 +56,23 @@ public class PecaDataSource : IPecaDataSource
         };
     }
 
+    public async Task<List<PecaInputDTO>?> GetByIds(List<Guid> ids, CancellationToken ct)
+    {
+        var pecas = await _appDbContext.Pecas.Where(p => ids.Contains(p.Id)).ToListAsync(ct);
+
+        if (pecas == null)
+            return null;
+
+        return pecas.Select(p => new PecaInputDTO
+        {
+            Id = p.Id,
+            Nome = p.Nome,
+            Descricao = p.Descricao,
+            MarcaPeca = p.MarcaPeca,
+            ValorUnitario = p.ValorUnitario
+        }).ToList();
+    }
+
     public async Task<(List<PecaInputDTO> pecas, int total)> GetPaginated(int page, int pageSize, CancellationToken ct)
     {
         IQueryable<Peca> query = _appDbContext.Pecas.Where(p => p.Ativo);

@@ -1,6 +1,4 @@
-﻿using Domain.ValueObjects;
-
-namespace Infra.DbModel
+﻿namespace Infra.DbModel
 {
     public class ServicoDbModel
     {
@@ -22,7 +20,7 @@ namespace Infra.DbModel
         public string Nome { get; set; }
         public string Descricao { get; set; }
         public decimal ValorUnitario { get; set; }
-        public ICollection<OrdemServicoServico> OrdemServicoServicos { get; set; } = new List<OrdemServicoServico>();
+        public ICollection<OrdemServicoServicoDbModel> OrdemServicoServicos { get; set; } = new List<OrdemServicoServicoDbModel>();
         public TimeSpan? TempoMedioExecucao { get; set; }
         public Guid IdUsuarioCriacao { get; set; }
         public DateTime DataCriacao { get; set; }

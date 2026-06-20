@@ -44,6 +44,27 @@ namespace Infra.DataSources
             return servicoResponse;
         }
 
+        public async Task<List<ServicoInputDTO>>? GetByIds(List<Guid> ids, CancellationToken ct)
+        {
+            IQueryable<ServicoDbModel> query = _appDbContext.Servicos.Where(s => s.Ativo);
+
+            var servicos = await _appDbContext.Servicos.Where(s => ids.Contains(s.Id)).ToListAsync(ct);
+
+            if (servicos is null)
+                return null;
+
+            var servicoResponse = servicos.Select(s => new ServicoInputDTO
+            {
+                Id = s.Id,
+                Descricao = s.Descricao,
+                Nome = s.Nome,
+                TempoMedioExecucao = s.TempoMedioExecucao,
+                ValorUnitario = s.ValorUnitario
+            }).ToList();
+
+            return servicoResponse;
+        }
+
         public async Task<(List<ServicoInputDTO> servicos, int total)> GetPaginated(int page, int pageSize, CancellationToken ct)
         {
             IQueryable<ServicoDbModel> query = _appDbContext.Servicos.Where(s => s.Ativo);

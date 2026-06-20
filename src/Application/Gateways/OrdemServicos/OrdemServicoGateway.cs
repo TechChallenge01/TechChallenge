@@ -1,6 +1,8 @@
 using Application.Interfaces;
 using Domain.Aggregates.OrdemServicoAggregates;
+using Domain.ValueObjects;
 using Shared.DTOs.OrdemServicos.Input;
+using Shared.DTOs.OrdemServicos.Shared;
 
 namespace Application.Gateways.OrdemServicos
 {
@@ -22,7 +24,10 @@ namespace Application.Gateways.OrdemServicos
         {
             var result = await _dataSource.GetPaginated(page, pageSize, ct);
 
-            var ordensServico = result.ordensServico.Select(dto => new OrdemServico(dto.ClienteId, dto.VeiculoId, dto.IdUsuarioCriacao)).ToList();
+            var ordensServico = result.ordensServico.Select(dto => new OrdemServico(dto.Id, dto.ClienteId, dto.VeiculoId, dto.StatusOS, dto.Observacao, dto.ValorTotal, dto.ValorDesconto, dto.InicioExecucao, dto.TerminoExecucao, 
+                dto.Servicos.Select(oss => new OrdemServicoServico(dto.Id, oss.ServicoId, oss.Quantidade, oss.ValorUnitario)).ToList(),
+                dto.Pecas.Select(osp => new OrdemServicoPeca(dto.Id, osp.PecaId, osp.Quantidade, osp.ValorUnitario)).ToList(),
+                dto.Insumos.Select(osi => new OrdemServicoInsumo(dto.Id, osi.InsumoId, osi.Quantidade, osi.CustoUnitario)).ToList())).ToList();
 
             return (ordensServico, result.total);
         }
@@ -34,7 +39,11 @@ namespace Application.Gateways.OrdemServicos
             if (dto is null)
                 return null;
 
-            var ordemServico = new OrdemServico(dto.ClienteId, dto.VeiculoId, dto.IdUsuarioCriacao);
+            var ordemServico = new OrdemServico(dto.Id, dto.ClienteId, dto.VeiculoId, dto.StatusOS, dto.Observacao, dto.ValorTotal, dto.ValorDesconto, dto.InicioExecucao, dto.TerminoExecucao,
+                                                dto.Servicos.Select(oss => new OrdemServicoServico(dto.Id, oss.ServicoId, oss.Quantidade, oss.ValorUnitario)).ToList(),
+                                                dto.Pecas.Select(osp => new OrdemServicoPeca(dto.Id, osp.PecaId, osp.Quantidade, osp.ValorUnitario)).ToList(),
+                                                dto.Insumos.Select(osi => new OrdemServicoInsumo(dto.Id, osi.InsumoId, osi.Quantidade, osi.CustoUnitario)).ToList());
+
             return ordemServico;
         }
 
@@ -55,7 +64,27 @@ namespace Application.Gateways.OrdemServicos
                 DataCriacao = ordemServico.DataCriacao,
                 IdUsuarioAtualizacao = ordemServico.IdUsuarioAtualizacao,
                 DataAtualizacao = ordemServico.DataAtualizacao,
-                Ativo = ordemServico.Ativo
+                Insumos = ordemServico.Insumos.Select(i => new OrdemServicoInsumoDTO
+                {
+                    CustoUnitario = i.CustoUnitario,
+                    InsumoId = i.InsumoId,
+                    Quantidade = i.Quantidade
+                }).ToList(),
+                Pecas = ordemServico.Pecas.Select(p => new OrdemServicoPecaDTO
+                {
+                    PecaId = p.PecaId,
+                    Quantidade = p.Quantidade,
+                    ValorUnitario = p.ValorUnitario
+                }).ToList(),
+                Servicos = ordemServico.Servicos.Select(s => new OrdemServicoServicoDTO
+                {
+                    DataInicioExecucao = s.DataInicioExecucao,
+                    DataTerminoExecucao = s.DataTerminoExecucao,
+                    Quantidade = s.Quantidade,
+                    ServicoId = s.ServicoId,
+                    Status = s.Status,
+                    ValorUnitario = s.ValorUnitario
+                }).ToList()
             };
 
             await _dataSource.Create(dto, ct);
@@ -82,11 +111,6 @@ namespace Application.Gateways.OrdemServicos
             };
 
             await _dataSource.Update(dto, ct);
-        }
-
-        public async Task Delete(Guid id, CancellationToken ct)
-        {
-            await _dataSource.Delete(id, ct);
         }
 
         public async Task<List<OrdemServico>> GetByClienteId(Guid clienteId, CancellationToken ct)

@@ -2,11 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using API.Extensions;
 using Shared.Result;
-using Application.Interfaces;
 using Infra.DataSources;
 using Application.Insumos.DTOs.Requests;
 using Application.Controllers.Insumos;
-using Shared.DTOs.Insumos.Input;
 
 namespace API.EndPoints.Insumos;
 

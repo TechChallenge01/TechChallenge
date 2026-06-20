@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Shared.DTOs.Insumos.Output;
+﻿namespace Shared.DTOs.Insumos.Output;
 
 public record InsumoOutputDTO
 {

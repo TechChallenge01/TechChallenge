@@ -3,6 +3,7 @@ using Infra.Context;
 using Infra.DbModel;
 using Microsoft.EntityFrameworkCore;
 using Shared.DTOs.OrdemServicos.Input;
+using Shared.DTOs.OrdemServicos.Shared;
 
 namespace Infra.DataSources
 {
@@ -32,38 +33,72 @@ namespace Infra.DataSources
                 ordemServico.IdUsuarioAtualizacao,
                 ordemServico.DataAtualizacao);
 
+            if(ordemServico.Pecas.Any())
+                ordemServicoDbModel.Pecas = ordemServico.Pecas.Select(p => new OrdemServicoPecaDbModel(ordemServico.Id, p.PecaId, p.Quantidade, p.ValorUnitario)).ToList();
+
+            if (ordemServico.Insumos.Any())
+                ordemServicoDbModel.Insumos = ordemServico.Insumos.Select(i => new OrdemServicoInsumoDbModel(i.InsumoId, ordemServico.Id, i.Quantidade, i.CustoUnitario)).ToList();
+
+            if (ordemServico.Servicos.Any())
+                ordemServicoDbModel.Servicos = ordemServico.Servicos.Select(s => new OrdemServicoServicoDbModel(ordemServico.Id, s.ServicoId, s.ValorUnitario, s.Status, s.DataInicioExecucao, s.DataTerminoExecucao, s.Quantidade)).ToList();
+
             await _appDbContext.OrdensServico.AddAsync(ordemServicoDbModel, ct);
-            await _appDbContext.SaveChangesAsync(ct);
-        }
-
-        public async Task Delete(Guid id, CancellationToken ct)
-        {
-            var ordemServico = await _appDbContext.OrdensServico
-                .FirstOrDefaultAsync(os => os.Id == id && os.Ativo, ct);
-
-            if (ordemServico is null)
-                throw new KeyNotFoundException("Ordem de Serviço não encontrada");
-
-            ordemServico.Inativar();
-
-            _appDbContext.OrdensServico.Update(ordemServico);
             await _appDbContext.SaveChangesAsync(ct);
         }
 
         public async Task<OrdemServicoInputDTO?> GetById(Guid id, CancellationToken ct)
         {
             var ordemServico = await _appDbContext.OrdensServico
+                .Include(os => os.Insumos)
+                .Include(os => os.Pecas)
+                .Include(os => os.Servicos)
                 .FirstOrDefaultAsync(os => os.Id == id && os.Ativo, ct);
 
             if (ordemServico is null)
                 return null;
 
-            return MapToDTO(ordemServico);
+            return new OrdemServicoInputDTO
+            {
+                Id = ordemServico.Id,
+                ClienteId = ordemServico.ClienteId,
+                VeiculoId = ordemServico.VeiculoId,
+                StatusOS = ordemServico.StatusOS,
+                Observacao = ordemServico.Observacao,
+                ValorTotal = ordemServico.ValorTotal,
+                ValorDesconto = ordemServico.ValorDesconto,
+                InicioExecucao = ordemServico.InicioExecucao,
+                TerminoExecucao = ordemServico.TerminoExecucao,
+                IdUsuarioCriacao = ordemServico.IdUsuarioCriacao,
+                DataCriacao = ordemServico.DataCriacao,
+                IdUsuarioAtualizacao = ordemServico.IdUsuarioAtualizacao,
+                DataAtualizacao = ordemServico.DataAtualizacao,
+                Insumos = ordemServico.Insumos.Select(i => new OrdemServicoInsumoDTO
+                {
+                    CustoUnitario = i.CustoUnitario,
+                    InsumoId = i.InsumoId,
+                    Quantidade = i.Quantidade
+                }).ToList(),
+                Pecas = ordemServico.Pecas.Select(p => new OrdemServicoPecaDTO
+                {
+                    PecaId = p.PecaId,
+                    Quantidade = p.Quantidade,
+                    ValorUnitario = p.ValorUnitario
+                }).ToList(),
+                Servicos = ordemServico.Servicos.Select(s => new OrdemServicoServicoDTO
+                {
+                    DataInicioExecucao = s.DataInicioExecucao,
+                    DataTerminoExecucao = s.DataTerminoExecucao,
+                    Quantidade = s.Quantidade,
+                    ServicoId = s.ServicoId,
+                    Status = s.Status,
+                    ValorUnitario = s.ValorUnitario
+                }).ToList()
+            };
         }
 
         public async Task<(List<OrdemServicoInputDTO> ordensServico, int total)> GetPaginated(int page, int pageSize, CancellationToken ct)
         {
-            IQueryable<OrdemServicoDbModel> query = _appDbContext.OrdensServico.Where(os => os.Ativo);
+            IQueryable<OrdemServicoDbModel> query = _appDbContext.OrdensServico.Where(os => os.Ativo).Include(os => os.Insumos).Include(os => os.Pecas).Include(os => os.Servicos);
 
             var total = await query.CountAsync(ct);
 
@@ -73,7 +108,43 @@ namespace Infra.DataSources
                 .AsNoTracking()
                 .ToListAsync(ct);
 
-            var ordensServicoResponse = ordensServico.Select(os => MapToDTO(os)).ToList();
+            var ordensServicoResponse = ordensServico.Select(os => new OrdemServicoInputDTO
+            {
+                Id = os.Id,
+                ClienteId = os.ClienteId,
+                VeiculoId = os.VeiculoId,
+                StatusOS = os.StatusOS,
+                Observacao = os.Observacao,
+                ValorTotal = os.ValorTotal,
+                ValorDesconto = os.ValorDesconto,
+                InicioExecucao = os.InicioExecucao,
+                TerminoExecucao = os.TerminoExecucao,
+                IdUsuarioCriacao = os.IdUsuarioCriacao,
+                DataCriacao = os.DataCriacao,
+                IdUsuarioAtualizacao = os.IdUsuarioAtualizacao,
+                DataAtualizacao = os.DataAtualizacao,
+                Insumos = os.Insumos.Select(i => new OrdemServicoInsumoDTO
+                {
+                    CustoUnitario = i.CustoUnitario,
+                    InsumoId = i.InsumoId,
+                    Quantidade = i.Quantidade
+                }).ToList(),
+                Pecas = os.Pecas.Select(p => new OrdemServicoPecaDTO
+                {
+                    PecaId = p.PecaId,
+                    Quantidade = p.Quantidade,
+                    ValorUnitario = p.ValorUnitario
+                }).ToList(),
+                Servicos = os.Servicos.Select(s => new OrdemServicoServicoDTO
+                {
+                    DataInicioExecucao = s.DataInicioExecucao,
+                    DataTerminoExecucao = s.DataTerminoExecucao,
+                    Quantidade = s.Quantidade,
+                    ServicoId = s.ServicoId,
+                    Status = s.Status,
+                    ValorUnitario = s.ValorUnitario
+                }).ToList()
+            }).ToList();
 
             return (ordensServicoResponse, total);
         }
@@ -83,19 +154,16 @@ namespace Infra.DataSources
             var ordemServicoDbModel = await _appDbContext.OrdensServico
                 .FirstOrDefaultAsync(os => os.Id == ordemServico.Id, ct);
 
-            if (ordemServicoDbModel is null)
-                throw new KeyNotFoundException("Ordem de Serviço não encontrada");
+            ordemServicoDbModel.Servicos = ordemServico.Servicos.Select(s => new OrdemServicoServicoDbModel(ordemServico.Id, s.ServicoId, s.ValorUnitario, s.Status, s.DataInicioExecucao, s.DataTerminoExecucao, s.Quantidade)).ToList();
+            ordemServicoDbModel.Insumos = ordemServico.Insumos.Select(i => new OrdemServicoInsumoDbModel(i.InsumoId,ordemServico.Id, i.Quantidade, i.CustoUnitario)).ToList();
+            ordemServicoDbModel.Pecas = ordemServico.Pecas.Select(p => new OrdemServicoPecaDbModel(ordemServico.Id, p.PecaId, p.Quantidade, p.ValorUnitario)).ToList();
+            ordemServicoDbModel.ValorDesconto = ordemServico.ValorDesconto;
+            ordemServicoDbModel.StatusOS = ordemServico.StatusOS;
+            ordemServicoDbModel.Observacao = ordemServico.Observacao;
+            ordemServicoDbModel.InicioExecucao = ordemServico.InicioExecucao;
+            ordemServicoDbModel.TerminoExecucao = ordemServico.TerminoExecucao;
 
-            ordemServicoDbModel.AlterarStatus(ordemServico.StatusOS);
-            ordemServicoDbModel.AlterarObservacao(ordemServico.Observacao);
-            ordemServicoDbModel.AlterarValores(
-                ordemServico.ValorTotal,
-                ordemServico.ValorDesconto,
-                ordemServico.InicioExecucao,
-                ordemServico.TerminoExecucao);
-            ordemServicoDbModel.RastrearAlteracao(ordemServico.IdUsuarioAtualizacao!.Value, ordemServico.DataAtualizacao!.Value);
 
-            _appDbContext.OrdensServico.Update(ordemServicoDbModel);
             await _appDbContext.SaveChangesAsync(ct);
         }
 
@@ -103,41 +171,95 @@ namespace Infra.DataSources
         {
             var ordensServico = await _appDbContext.OrdensServico
                 .Where(os => os.ClienteId == clienteId && os.Ativo)
+                .Include(os => os.Insumos).Include(os => os.Pecas).Include(os => os.Servicos)
                 .AsNoTracking()
                 .ToListAsync(ct);
 
-            return ordensServico.Select(os => MapToDTO(os)).ToList();
+            return ordensServico.Select(os => new OrdemServicoInputDTO
+            {
+                Id = os.Id,
+                ClienteId = os.ClienteId,
+                VeiculoId = os.VeiculoId,
+                StatusOS = os.StatusOS,
+                Observacao = os.Observacao,
+                ValorTotal = os.ValorTotal,
+                ValorDesconto = os.ValorDesconto,
+                InicioExecucao = os.InicioExecucao,
+                TerminoExecucao = os.TerminoExecucao,
+                IdUsuarioCriacao = os.IdUsuarioCriacao,
+                DataCriacao = os.DataCriacao,
+                IdUsuarioAtualizacao = os.IdUsuarioAtualizacao,
+                DataAtualizacao = os.DataAtualizacao,
+                Insumos = os.Insumos.Select(i => new OrdemServicoInsumoDTO
+                {
+                    CustoUnitario = i.CustoUnitario,
+                    InsumoId = i.InsumoId,
+                    Quantidade = i.Quantidade
+                }).ToList(),
+                Pecas = os.Pecas.Select(p => new OrdemServicoPecaDTO
+                {
+                    PecaId = p.PecaId,
+                    Quantidade = p.Quantidade,
+                    ValorUnitario = p.ValorUnitario
+                }).ToList(),
+                Servicos = os.Servicos.Select(s => new OrdemServicoServicoDTO
+                {
+                    DataInicioExecucao = s.DataInicioExecucao,
+                    DataTerminoExecucao = s.DataTerminoExecucao,
+                    Quantidade = s.Quantidade,
+                    ServicoId = s.ServicoId,
+                    Status = s.Status,
+                    ValorUnitario = s.ValorUnitario
+                }).ToList()
+            }).ToList();
         }
 
         public async Task<List<OrdemServicoInputDTO>> GetByStatus(string status, CancellationToken ct)
         {
             var ordensServico = await _appDbContext.OrdensServico
                 .Where(os => os.StatusOS == status && os.Ativo)
+                .Include(os => os.Insumos).Include(os => os.Pecas).Include(os => os.Servicos)
                 .AsNoTracking()
                 .ToListAsync(ct);
 
-            return ordensServico.Select(os => MapToDTO(os)).ToList();
-        }
-
-        private static OrdemServicoInputDTO MapToDTO(OrdemServicoDbModel dbModel)
-        {
-            return new OrdemServicoInputDTO
+            
+            return ordensServico.Select(os => new OrdemServicoInputDTO
             {
-                Id = dbModel.Id,
-                ClienteId = dbModel.ClienteId,
-                VeiculoId = dbModel.VeiculoId,
-                StatusOS = dbModel.StatusOS,
-                Observacao = dbModel.Observacao,
-                ValorTotal = dbModel.ValorTotal,
-                ValorDesconto = dbModel.ValorDesconto,
-                InicioExecucao = dbModel.InicioExecucao,
-                TerminoExecucao = dbModel.TerminoExecucao,
-                IdUsuarioCriacao = dbModel.IdUsuarioCriacao,
-                DataCriacao = dbModel.DataCriacao,
-                IdUsuarioAtualizacao = dbModel.IdUsuarioAtualizacao,
-                DataAtualizacao = dbModel.DataAtualizacao,
-                Ativo = dbModel.Ativo
-            };
+                Id = os.Id,
+                ClienteId = os.ClienteId,
+                VeiculoId = os.VeiculoId,
+                StatusOS = os.StatusOS,
+                Observacao = os.Observacao,
+                ValorTotal = os.ValorTotal,
+                ValorDesconto = os.ValorDesconto,
+                InicioExecucao = os.InicioExecucao,
+                TerminoExecucao = os.TerminoExecucao,
+                IdUsuarioCriacao = os.IdUsuarioCriacao,
+                DataCriacao = os.DataCriacao,
+                IdUsuarioAtualizacao = os.IdUsuarioAtualizacao,
+                DataAtualizacao = os.DataAtualizacao,
+                Insumos = os.Insumos.Select(i => new OrdemServicoInsumoDTO
+                {
+                    CustoUnitario = i.CustoUnitario,
+                    InsumoId = i.InsumoId,
+                    Quantidade = i.Quantidade
+                }).ToList(),
+                Pecas = os.Pecas.Select(p => new OrdemServicoPecaDTO
+                {
+                    PecaId = p.PecaId,
+                    Quantidade = p.Quantidade,
+                    ValorUnitario = p.ValorUnitario
+                }).ToList(),
+                Servicos = os.Servicos.Select(s => new OrdemServicoServicoDTO
+                {
+                    DataInicioExecucao = s.DataInicioExecucao,
+                    DataTerminoExecucao = s.DataTerminoExecucao,
+                    Quantidade = s.Quantidade,
+                    ServicoId = s.ServicoId,
+                    Status = s.Status,
+                    ValorUnitario = s.ValorUnitario
+                }).ToList()
+            }).ToList();
         }
     }
 }

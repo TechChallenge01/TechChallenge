@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Shared.DTOs.Estoques.Input;
+﻿namespace Shared.DTOs.Estoques.Input;
 
 public class EstoqueHistoricoInputDTO
 {

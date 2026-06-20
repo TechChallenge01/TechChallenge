@@ -1,11 +1,6 @@
 ﻿using Application.Interfaces;
 using Domain.Aggregates.EstoqueAggregates;
-using Org.BouncyCastle.Crypto.Operators;
-using Org.BouncyCastle.Tsp;
 using Shared.DTOs.Estoques.Input;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Application.Gateways.Estoques;
 public class EstoqueGateway
@@ -48,7 +43,32 @@ public class EstoqueGateway
 
         await _dataSource.Update(estoqueDTO, ct);
     }
+    public async Task UpdateEstoques(List<Estoque> estoques, CancellationToken ct)
+    {
+        var estoqueDTO = estoques.Select(e => new EstoqueInputDTO
+        {
+            Id = e.Id,
+            PecaId = e.PecaId,
+            InsumoId = e.InsumoId,
+            QuantidadeDisponivel = e.QuantidadeDisponivel,
+            QuantidadeReservada = e.QuantidadeReservada,
+            IdUsuarioAtualizacao = e.IdUsuarioAtualizacao,
+            DataAtualizacao = e.DataAtualizacao,
+            Ativo = e.Ativo,
+            Historicos = e.Historicos.Select(h => new EstoqueHistoricoInputDTO
+            {
+                Id = h.Id,
+                Quantidade = h.Quantidade,
+                Observacao = h.Observacao,
+                TipoMovimentacao = h.TipoMovimentacao,
+                EstoqueId = h.EstoqueId,
+                IdUsuarioCriacao = h.IdUsuarioCriacao,
+                DataCriacao = h.DataCriacao
+            }).ToList()
+        }).ToList();
 
+        await _dataSource.UpdateEstoques(estoqueDTO, ct);
+    }
     public async Task<Estoque?> GetById(Guid id, CancellationToken ct)
     {
         var response = await _dataSource.GetById(id, ct);
@@ -58,7 +78,6 @@ public class EstoqueGateway
 
         return new Estoque(response.Id, response.InsumoId, response.PecaId, response.QuantidadeDisponivel, response.QuantidadeReservada, response.IdUsuarioCriacao, response.DataCriacao);
     }
-
     public async Task<(List<Estoque> Estoques, int total)> GetPaginated(int page, int pageSize, CancellationToken ct)
     {
         var response = await _dataSource.GetPaginated(page, pageSize, ct);
@@ -69,7 +88,6 @@ public class EstoqueGateway
 
         return (estoques, response.total);
     }
-
     public async Task<Estoque?> GetByInsumoId(Guid insumoId, CancellationToken ct)
     {
         var response = await _dataSource.GetByInsumoId(insumoId, ct);
@@ -79,7 +97,6 @@ public class EstoqueGateway
 
         return new Estoque(response.Id, response.InsumoId, response.PecaId, response.QuantidadeDisponivel, response.QuantidadeReservada, response.IdUsuarioCriacao, response.DataCriacao);
     }
-
     public async Task<Estoque?> GetByPecaId(Guid pecaId, CancellationToken ct)
     {
         var response = await _dataSource.GetByPecaId(pecaId, ct);
@@ -88,6 +105,24 @@ public class EstoqueGateway
             return null;
 
         return new Estoque(response.Id, response.InsumoId, response.PecaId, response.QuantidadeDisponivel, response.QuantidadeReservada, response.IdUsuarioCriacao, response.DataCriacao);
+    }
+    public async Task<List<Estoque>?> GetByPecasIds(ICollection<Guid> ids, CancellationToken ct)
+    {
+        var response = await _dataSource.GetByPecasIds(ids, ct);
+
+        if (response is null)
+            return null;
+
+        return response.Select(e => new Estoque(null, e.PecaId, e.QuantidadeDisponivel, e.IdUsuarioCriacao, e.DataCriacao)).ToList();
+    }
+    public async Task<List<Estoque>?> GetByInsumosIds(List<Guid> ids, CancellationToken ct)
+    {
+        var response = await _dataSource.GetByInsumosIds(ids, ct);
+
+        if (response is null)
+            return null;
+
+        return response.Select(e => new Estoque(e.InsumoId, null, e.QuantidadeDisponivel, e.IdUsuarioCriacao, e.DataCriacao)).ToList();
     }
 
 }

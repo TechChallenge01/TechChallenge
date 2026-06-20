@@ -1,5 +1,4 @@
 ﻿using Domain.BaseEntity;
-using Domain.ValueObjects;
 
 namespace Domain.Entities
 {
@@ -48,14 +47,11 @@ namespace Domain.Entities
             ValorUnitario = valorUnitario;
         }
 
-        protected Peca() { }
-
         public Guid Id { get; private set; }
         public string Nome { get; private set; }
         public string Descricao { get; private set; }
         public string MarcaPeca { get; private set; }
         public decimal ValorUnitario { get; private set; }
-        public ICollection<OrdemServicoPeca> OrdemServicoPecas { get; private set; } = new List<OrdemServicoPeca>();
 
         private void ValidarNome(string name)
         {

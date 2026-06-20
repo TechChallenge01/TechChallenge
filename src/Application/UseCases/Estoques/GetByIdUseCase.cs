@@ -1,8 +1,5 @@
 ﻿using Application.Gateways.Estoques;
 using Domain.Aggregates.EstoqueAggregates;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Application.UseCases.Estoques;
 public class GetByIdUseCase

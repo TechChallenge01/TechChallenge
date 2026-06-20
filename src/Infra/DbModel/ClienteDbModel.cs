@@ -44,6 +44,7 @@
         public string Cidade { get; set; }
         public string Uf { get; set; }
         public ICollection<VeiculoDbModel>? Veiculos { get; set; } = new List<VeiculoDbModel>();
+        public ICollection<OrdemServicoDbModel>? OrdemServicos { get; set; } = new List<OrdemServicoDbModel>();
         public Guid IdUsuarioCriacao { get; set; }
         public DateTime DataCriacao { get; set; }
         public Guid? IdUsuarioAtualizacao { get; set; }

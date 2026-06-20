@@ -2,11 +2,7 @@
 using Shared.DTOs;
 using Shared.DTOs.Estoques.Output;
 using Shared.Result;
-using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Text;
-using System.Windows.Input;
 
 namespace Application.Presenters.Estoques;
 public class EstoquePresenter

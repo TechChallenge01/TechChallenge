@@ -130,4 +130,47 @@ public class EstoqueDataSource : IEstoqueDataSource
 
         await _appDbContext.SaveChangesAsync(ct);
     }
+
+    public async Task<List<EstoqueInputDTO>?> GetByPecasIds(ICollection<Guid> ids, CancellationToken ct)
+    {
+        var estoque = await _appDbContext.Estoques.Where(e => ids.Contains((Guid)e.PecaId) && e.Ativo).ToListAsync(ct);
+
+        if (estoque == null)
+            return null;
+
+        return estoque.Select(e => new EstoqueInputDTO
+        {
+            Id = e.Id,
+            PecaId = e.PecaId,
+            InsumoId = e.InsumoId,
+            QuantidadeDisponivel = e.QuantidadeDisponivel,
+            QuantidadeReservada = e.QuantidadeReservada,
+            IdUsuarioCriacao = e.IdUsuarioCriacao,
+            DataCriacao = e.DataCriacao
+        }).ToList();
+    }
+
+    public async Task<List<EstoqueInputDTO>?> GetByInsumosIds(ICollection<Guid> ids, CancellationToken ct)
+    {
+        var estoque = await _appDbContext.Estoques.Where(e => ids.Contains((Guid)e.InsumoId) && e.Ativo).ToListAsync(ct);
+
+        if (estoque == null)
+            return null;
+
+        return estoque.Select(e => new EstoqueInputDTO
+        {
+            Id = e.Id,
+            PecaId = e.PecaId,
+            InsumoId = e.InsumoId,
+            QuantidadeDisponivel = e.QuantidadeDisponivel,
+            QuantidadeReservada = e.QuantidadeReservada,
+            IdUsuarioCriacao = e.IdUsuarioCriacao,
+            DataCriacao = e.DataCriacao
+        }).ToList();
+    }
+
+    public async Task UpdateEstoques(ICollection<EstoqueInputDTO> estoque, CancellationToken ct)
+    {
+        throw new NotImplementedException();
+    }
 }

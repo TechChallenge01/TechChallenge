@@ -115,6 +115,7 @@ public class Estoque : Base
        
         QuantidadeReservada -= quantidade;
         QuantidadeDisponivel += quantidade;
+        RastrearAlteracao(usuarioCriacaoId, DateTime.UtcNow);
     }
 
     private void AdicionarMovimentacao(int quantidade, string observacao, ETipoMovimentacao tipoMovimentacao, Guid UsuarioCriacaoId, DateTime dataCriacao)

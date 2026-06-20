@@ -54,6 +54,22 @@ public class InsumoDataSource : IInsumoDataSource
         };
     }
 
+    public async Task<List<InsumoInputDTO>> GetByIds(List<Guid> ids, CancellationToken cancellationToken)
+    {
+        var insumos = await _appDbContext.Insumos.Where(i => ids.Contains(i.Id) && i.Ativo).ToListAsync(cancellationToken);
+
+        if (insumos == null)
+            return null;
+
+        return insumos.Select(i => new InsumoInputDTO
+        {
+            Id = i.Id,
+            Nome = i.Nome,
+            Descricao = i.Descricao,
+            CustoUnitario = i.CustoUnitario
+        }).ToList();
+    }
+
     public async Task<(List<InsumoInputDTO> insumos, int total)> GetPaginated(int page, int pageSize, CancellationToken ct)
     {
         IQueryable<Insumo> query = _appDbContext.Insumos.Where(i => i.Ativo);

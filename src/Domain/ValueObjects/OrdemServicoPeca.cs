@@ -23,5 +23,4 @@ public class OrdemServicoPeca
         Quantidade = quantidade;
         ValorUnitario = valorUnitario;
     }
-    protected OrdemServicoPeca() { }
 }

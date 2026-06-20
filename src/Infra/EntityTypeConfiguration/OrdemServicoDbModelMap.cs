@@ -53,6 +53,21 @@ namespace Infra.EntityTypeConfiguration
 
             builder.Property(os => os.Ativo)
                 .HasDefaultValue(true);
+
+            builder.HasMany(os => os.Servicos)
+                   .WithOne(oss => oss.OrdemServico)
+                   .HasForeignKey(oss => oss.OrdemServicoId)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(os => os.Pecas)
+                   .WithOne(osp => osp.OrdemServico)
+                   .HasForeignKey(osp => osp.OrdemServicoId)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(os => os.Insumos)
+                   .WithOne(osi => osi.OrdemServico)
+                   .HasForeignKey(osi => osi.OrdemServicoId)
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -61,6 +61,16 @@ public class PecaGateway
         return new Peca(response.Id, response.Nome, response.Descricao, response.MarcaPeca, response.ValorUnitario);
     }
 
+    public async Task<List<Peca>?> GetByIds(List<Guid> ids, CancellationToken ct)
+    {
+        var response = await _dataSource.GetByIds(ids, ct);
+
+        if (response == null)
+            return null;
+
+        return response.Select(p =>  new Peca(p.Id, p.Nome, p.Descricao, p.MarcaPeca, p.ValorUnitario)).ToList();
+    }
+
     public async Task<(List<Peca> Pecas, int total)> GetPaginated(int page, int pageSize, CancellationToken ct)
     {
         var response = await _dataSource.GetPaginated(page, pageSize, ct);

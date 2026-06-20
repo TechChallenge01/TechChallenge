@@ -33,5 +33,6 @@
         public Guid? IdUsuarioAtualizacao { get; set; }
         public DateTime? DataAtualizacao { get; set; }
         public bool Ativo { get; set; }
+        public ICollection<OrdemServicoDbModel>? OrdemServicos { get; set; } = new List<OrdemServicoDbModel>();
     }
 }

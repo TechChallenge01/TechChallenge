@@ -60,6 +60,19 @@ public class InsumoGateway
 
         return insumo;
     }
+    public async Task<List<Insumo>?> GetByIds(List<Guid> ids, CancellationToken ct)
+    {
+        var response = await _dataSource.GetByIds(ids, ct);
+
+        if(response == null)
+        {
+            return null;
+        }
+
+        var insumo = response.Select(i =>  new Insumo(i.Id, i.Nome, i.Descricao, i.CustoUnitario)).ToList();
+
+        return insumo;
+    }
 
     public async Task<(List<Insumo> Insumos, int total)> GetPaginated(int page, int pageSize, CancellationToken ct)
     {

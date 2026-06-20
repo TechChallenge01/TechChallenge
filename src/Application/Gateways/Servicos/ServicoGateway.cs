@@ -25,7 +25,6 @@ namespace Application.Gateways.Servicos
 
             return (servicosEntity, servicos.total);
         }
-
         public async Task<Servico>? GetById(Guid id, CancellationToken ct)
         {
             var servico = await _servicoDataSource.GetById(id, ct);
@@ -38,6 +37,18 @@ namespace Application.Gateways.Servicos
             return servicoEntity;
         }
 
+        public async Task<List<Servico>>? GetByIds(List<Guid> ids, CancellationToken ct)
+        {
+            var servicos = await _servicoDataSource.GetByIds(ids, ct);
+
+            if (servicos is null)
+                return null;
+
+            var servicoEntity = servicos.Select(s =>  new Servico(s.Id, s.Nome, s.Descricao, s.ValorUnitario, s.TempoMedioExecucao)).ToList();
+
+            return servicoEntity;
+        }
+        
         public async Task Create(Servico servico, CancellationToken ct)
         {
             var servicoInputDto = new ServicoInputDTO
@@ -56,7 +67,6 @@ namespace Application.Gateways.Servicos
 
             await _servicoDataSource.Create(servicoInputDto, ct);
         }
-
         public async Task Update(Servico servico, CancellationToken ct)
         {
             var servicoInputDto = new ServicoInputDTO

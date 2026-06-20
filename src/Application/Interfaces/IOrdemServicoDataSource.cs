@@ -8,7 +8,6 @@ namespace Application.Interfaces
         Task<OrdemServicoInputDTO?> GetById(Guid id, CancellationToken ct);
         Task Create(OrdemServicoInputDTO ordemServico, CancellationToken ct);
         Task Update(OrdemServicoInputDTO ordemServico, CancellationToken ct);
-        Task Delete(Guid id, CancellationToken ct);
         Task<List<OrdemServicoInputDTO>> GetByClienteId(Guid clienteId, CancellationToken ct);
         Task<List<OrdemServicoInputDTO>> GetByStatus(string status, CancellationToken ct);
     }

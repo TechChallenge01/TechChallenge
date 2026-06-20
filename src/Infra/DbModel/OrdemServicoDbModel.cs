@@ -2,20 +2,7 @@ namespace Infra.DbModel
 {
     public class OrdemServicoDbModel
     {
-        public OrdemServicoDbModel(
-            Guid id,
-            Guid clienteId,
-            Guid veiculoId,
-            string statusOS,
-            string? observacao,
-            decimal valorTotal,
-            decimal valorDesconto,
-            DateTime? inicioExecucao,
-            DateTime? terminoExecucao,
-            Guid idUsuarioCriacao,
-            DateTime dataCriacao,
-            Guid? idUsuarioAtualizacao,
-            DateTime? dataAtualizacao)
+        public OrdemServicoDbModel(Guid id, Guid clienteId, Guid veiculoId, string statusOS, string? observacao, decimal valorTotal, decimal valorDesconto, DateTime? inicioExecucao, DateTime? terminoExecucao, Guid idUsuarioCriacao, DateTime dataCriacao, Guid? idUsuarioAtualizacao, DateTime? dataAtualizacao)
         {
             Id = id;
             ClienteId = clienteId;
@@ -30,10 +17,7 @@ namespace Infra.DbModel
             DataCriacao = dataCriacao;
             IdUsuarioAtualizacao = idUsuarioAtualizacao;
             DataAtualizacao = dataAtualizacao;
-            Ativo = true;
         }
-
-        protected OrdemServicoDbModel() { }
 
         public Guid Id { get; set; }
         public Guid ClienteId { get; set; }
@@ -48,35 +32,11 @@ namespace Infra.DbModel
         public DateTime DataCriacao { get; set; }
         public Guid? IdUsuarioAtualizacao { get; set; }
         public DateTime? DataAtualizacao { get; set; }
-        public bool Ativo { get; set; }
-
-        public void Inativar()
-        {
-            Ativo = false;
-        }
-
-        public void RastrearAlteracao(Guid idUsuarioAtualizacao, DateTime dataAtualizacao)
-        {
-            IdUsuarioAtualizacao = idUsuarioAtualizacao;
-            DataAtualizacao = dataAtualizacao;
-        }
-
-        public void AlterarStatus(string novoStatus)
-        {
-            StatusOS = novoStatus;
-        }
-
-        public void AlterarObservacao(string? novaObservacao)
-        {
-            Observacao = novaObservacao;
-        }
-
-        public void AlterarValores(decimal valorTotal, decimal valorDesconto, DateTime? inicioExecucao, DateTime? terminoExecucao)
-        {
-            ValorTotal = valorTotal;
-            ValorDesconto = valorDesconto;
-            InicioExecucao = inicioExecucao;
-            TerminoExecucao = terminoExecucao;
-        }
+        public bool Ativo { get; set; } = true;
+        public ICollection<OrdemServicoServicoDbModel> Servicos { get; set; } = new List<OrdemServicoServicoDbModel>();
+        public ICollection<OrdemServicoPecaDbModel> Pecas { get; set; } = new List<OrdemServicoPecaDbModel>();
+        public ICollection<OrdemServicoInsumoDbModel> Insumos { get; set; } = new List<OrdemServicoInsumoDbModel>();
+        public virtual ClienteDbModel Cliente { get; set; }
+        public virtual VeiculoDbModel Veiculo { get; set; }
     }
 }

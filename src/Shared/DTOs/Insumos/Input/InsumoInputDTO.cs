@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Shared.DTOs.Insumos.Input;
+﻿namespace Shared.DTOs.Insumos.Input;
 
 public record InsumoInputDTO
 {

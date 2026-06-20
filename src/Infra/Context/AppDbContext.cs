@@ -1,5 +1,4 @@
 ﻿using Domain.Aggregates.EstoqueAggregates;
-using Domain.Aggregates.OrdemServicoAggregates;
 using Domain.Entities;
 using Infra.DbModel;
 using Microsoft.EntityFrameworkCore;
