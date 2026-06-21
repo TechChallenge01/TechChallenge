@@ -29,7 +29,7 @@ namespace API.EndPoints.OrdemServicos
                 var response = await controller.RealizarDiagnostico(id, idUsuario, request, pecaDataSource, servicoDataSource, insumoDataSource, estoqueDataSource, clienteDataSource, emailService, ct);
 
                 return response.ToResult();
-            });
+            }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Mecanico"));
         }
     }
 }

@@ -19,7 +19,7 @@ namespace API.EndPoints.Veiculos
                 var response = await controller.Delete(id, idUsuario, ct);
 
                 return response.ToResult();
-            });
+            }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Funcionario"));
         }
     }
 }

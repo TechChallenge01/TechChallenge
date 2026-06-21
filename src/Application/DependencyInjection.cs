@@ -1,4 +1,5 @@
 ﻿using Application.Auth.Services;
+using Application.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application

@@ -19,7 +19,7 @@ namespace API.EndPoints.OrdemServicos
                 var response = await controller.RealizarEntrega(id, idUsuario, ct);
 
                 return response.ToResult();
-            });
+            }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Funcionario"));
         }
     }
 }

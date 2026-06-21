@@ -20,7 +20,7 @@ namespace API.EndPoints.Servicos
                 var result = await controller.Update(id, request, idUsuario, ct);
 
                 return result.ToResult();
-            });
+            }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Funcionario"));
         }
     }
 }

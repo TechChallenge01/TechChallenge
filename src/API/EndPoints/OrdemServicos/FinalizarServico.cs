@@ -23,7 +23,7 @@ namespace API.EndPoints.OrdemServicos
                 var response = await controller.FinalizarServico(id, idUsuario, request, servicoDataSource, ct);
 
                 return response.ToResult();
-            });
+            }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Mecanico"));
         }
     }
 }

@@ -17,7 +17,7 @@ namespace API.EndPoints.Servicos
                 var response = await controller.GetById(id, ct);
 
                 return response.ToResult();
-            });
+            }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Funcionario", "Mecanico"));
         }
     }
 }

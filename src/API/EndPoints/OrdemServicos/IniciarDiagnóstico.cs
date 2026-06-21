@@ -19,7 +19,7 @@ namespace API.EndPoints.OrdemServicos
                 var response = await controller.IniciarDiagnostico(id, idUsuario, ct);
 
                 return response.ToResult();
-            });
+            }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Mecanico"));
         }
     }
 }

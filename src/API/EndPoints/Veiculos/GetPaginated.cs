@@ -18,7 +18,7 @@ namespace API.EndPoints.Veiculos
                 var response = await controller.GetPaginated(page, pageSize, ct);
 
                 return response.ToResult();
-            });
+            }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Funcionario"));
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Domain.Entities;
 
-namespace Application.Auth.Services;
+namespace Application.Interfaces;
 public interface IJwtService
 {
     (string token, DateTime expiracao) GerarToken(Usuario usuario);

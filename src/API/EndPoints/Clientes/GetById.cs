@@ -16,7 +16,7 @@ namespace API.EndPoints.Clientes
                 var controller = new ClienteController(dataSource);
                 var response = await controller.GetById(id, ct);
                 return response.ToResult();
-            });
+            }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Funcionario"));
         }
     }
 }

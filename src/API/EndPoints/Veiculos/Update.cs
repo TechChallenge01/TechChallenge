@@ -21,7 +21,7 @@ namespace API.EndPoints.Veiculos
                 var response = await controller.Update(id, idUsuario, request, ct);
 
                 return response.ToResult();
-            });
+            }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Funcionario"));
         }
     }
 }

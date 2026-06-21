@@ -22,7 +22,7 @@ namespace API.EndPoints.Clientes
                 var response = await controller.Create(request, idUsuario, ct);
 
                 return response.ToResult();
-            });
+            }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Funcionario"));
         }
     }
 }
