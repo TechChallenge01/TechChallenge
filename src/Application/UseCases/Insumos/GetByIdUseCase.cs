@@ -23,9 +23,13 @@ public class GetByIdUseCase
             var response = await _insumoGateway.GetById(id, ct);
             return response;
         }
+        catch (ArgumentException ex)
+        {
+            throw new ArgumentException(ex.Message);
+        }
         catch (Exception ex)
         {
-            throw new Exception($"Error: {ex.Message}");
+            throw new Exception(ex.Message);
         }
     }
 }

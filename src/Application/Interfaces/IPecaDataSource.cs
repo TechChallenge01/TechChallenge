@@ -9,5 +9,4 @@ public interface IPecaDataSource
     Task<List<PecaInputDTO>?> GetByIds(List<Guid> id, CancellationToken ct);
     Task Create(PecaInputDTO request, CancellationToken ct);
     Task Update(PecaInputDTO request, CancellationToken ct);
-    Task Delete(Guid id, CancellationToken ct);
 }

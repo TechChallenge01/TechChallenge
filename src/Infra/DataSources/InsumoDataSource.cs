@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Infra.Context;
+using Infra.DbModel;
 using Microsoft.EntityFrameworkCore;
 using Shared.DTOs.Insumos.Input;
 
@@ -16,24 +17,9 @@ public class InsumoDataSource : IInsumoDataSource
 
     public async Task Create(InsumoInputDTO insumo, CancellationToken ct)
     {
-        var entity = new Insumo(insumo.Id, insumo.Nome, insumo.Descricao, insumo.CustoUnitario,
-            insumo.IdUsuarioCriacao, insumo.DataCriacao);
+        var insumoDbModel = new InsumoDbModel(insumo.Id, insumo.Nome, insumo.Descricao, insumo.CustoUnitario,insumo.IdUsuarioCriacao, insumo.DataCriacao, insumo.IdUsuarioAtualizacao, insumo.DataAtualizacao, ativo);
 
-        await _appDbContext.Insumos.AddAsync(entity, ct);
-        await _appDbContext.SaveChangesAsync(ct);
-    }
-
-    public async Task Delete(Guid id, CancellationToken ct)
-    {
-        var entity = await _appDbContext.Insumos
-            .FirstOrDefaultAsync(i => i.Id == id && i.Ativo, ct);
-
-        if (entity == null)
-            throw new Exception("Insumo não encontrado");
-
-        entity.Inativar();
-        entity.RastrearAlteracao(Guid.Empty, DateTime.UtcNow);
-
+        await _appDbContext.Insumos.AddAsync(insumoDbModel, ct);
         await _appDbContext.SaveChangesAsync(ct);
     }
 
@@ -72,7 +58,7 @@ public class InsumoDataSource : IInsumoDataSource
 
     public async Task<(List<InsumoInputDTO> insumos, int total)> GetPaginated(int page, int pageSize, CancellationToken ct)
     {
-        IQueryable<Insumo> query = _appDbContext.Insumos.Where(i => i.Ativo);
+        IQueryable<InsumoDbModel> query = _appDbContext.Insumos.Where(i => i.Ativo);
 
         var total = await query.CountAsync(ct);
 
@@ -95,19 +81,18 @@ public class InsumoDataSource : IInsumoDataSource
 
     public async Task Update(InsumoInputDTO request, CancellationToken ct)
     {
-        var entity = await _appDbContext.Insumos
-            .FirstOrDefaultAsync(i => i.Id == request.Id && i.Ativo, ct);
+        var insumoDbModel = await _appDbContext.Insumos.FirstOrDefaultAsync(i => i.Id == request.Id && i.Ativo, ct);
 
-        if (entity == null)
+        if (insumoDbModel == null)
             throw new Exception("Insumo não encontrado");
 
-        if (!request.Ativo)
-            entity.Inativar();
 
-        entity.AtualizarNome(request.Nome);
-        entity.AtualizarDescricao(request.Descricao);
-        entity.AtualizarCusto(request.CustoUnitario);
-        entity.RastrearAlteracao(request.IdUsuarioAtualizacao ?? Guid.Empty, DateTime.UtcNow);
+        insumoDbModel.Nome = request.Nome;
+        insumoDbModel.Descricao = request.Descricao;
+        insumoDbModel.CustoUnitario = request.CustoUnitario;
+        insumoDbModel.DataAtualizacao = request.DataAtualizacao;
+        insumoDbModel.IdUsuarioAtualizacao = request.IdUsuarioAtualizacao;
+        insumoDbModel.Ativo = request.Ativo;
 
         await _appDbContext.SaveChangesAsync(ct);
     }

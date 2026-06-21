@@ -19,17 +19,32 @@ public class UpdateUseCase
 
     public async Task Run(Guid idUsuario, Guid idInsumo, InsumoRequestDTO insumoRequest, CancellationToken ct)
     {
-        var insumo = await _insumoGateway.GetById(idInsumo, ct);
+        try
+        {
+            var insumo = await _insumoGateway.GetById(idInsumo, ct);
 
-        if(insumo is null)
-            throw new Exception("Insumo não encontrado.");
-        
-        insumo.AtualizarNome(insumoRequest.Nome);
-        insumo.AtualizarDescricao(insumoRequest.Descricao);
-        insumo.AtualizarCusto(insumoRequest.CustoUnitario);
+            if (insumo is null)
+                throw new KeyNotFoundException("Insumo não encontrado.");
 
-        insumo.RastrearAlteracao(idUsuario, DateTime.UtcNow);
+            insumo.AtualizarNome(insumoRequest.Nome);
+            insumo.AtualizarDescricao(insumoRequest.Descricao);
+            insumo.AtualizarCusto(insumoRequest.CustoUnitario);
 
-        await _insumoGateway.Update(insumo, ct);
+            insumo.RastrearAlteracao(idUsuario, DateTime.UtcNow);
+
+            await _insumoGateway.Update(insumo, ct);
+        }
+        catch (ArgumentException ex)
+        {
+            throw new ArgumentException(ex.Message);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            throw new KeyNotFoundException(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
     }
 }

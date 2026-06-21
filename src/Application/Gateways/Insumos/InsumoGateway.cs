@@ -30,7 +30,6 @@ public class InsumoGateway
 
         await _dataSource.Create(insumoDTO, ct);
     }
-
     public async Task Update(Insumo insumo, CancellationToken ct) 
     {
         var insumoDTO = new InsumoInputDTO
@@ -46,7 +45,6 @@ public class InsumoGateway
 
         await _dataSource.Update(insumoDTO, ct);
     }
-
     public async Task<Insumo?> GetById(Guid id, CancellationToken ct)
     {
         var response = await _dataSource.GetById(id, ct);
@@ -73,7 +71,6 @@ public class InsumoGateway
 
         return insumo;
     }
-
     public async Task<(List<Insumo> Insumos, int total)> GetPaginated(int page, int pageSize, CancellationToken ct)
     {
         var response = await _dataSource.GetPaginated(page, pageSize, ct);
@@ -81,10 +78,5 @@ public class InsumoGateway
         var insumos = response.insumos.Select(i => new Insumo(i.Id, i.Nome, i.Descricao, i.CustoUnitario)).ToList();
 
         return (insumos, response.total);
-    }
-
-    public async Task Delete(Guid id, CancellationToken ct)
-    {
-        await _dataSource.Delete(id, ct);
     }
 }
