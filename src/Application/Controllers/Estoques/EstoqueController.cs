@@ -4,6 +4,7 @@ using Application.Presenters.Estoques;
 using Application.UseCases.Estoques;
 using Shared.DTOs;
 using Shared.DTOs.Estoques.Output;
+using Shared.DTOs.Estoques.Request;
 using Shared.Result;
 
 namespace Application.Controllers.Estoques;

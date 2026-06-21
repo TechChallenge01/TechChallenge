@@ -4,6 +4,7 @@ using Application.Presenters.Pecas;
 using Application.UseCases.Pecas;
 using Shared.DTOs;
 using Shared.DTOs.Pecas.Output;
+using Shared.DTOs.Pecas.Request;
 using Shared.Result;
 
 namespace Application.Controllers.Pecas;

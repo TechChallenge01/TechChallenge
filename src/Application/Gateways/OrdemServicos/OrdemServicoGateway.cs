@@ -126,5 +126,12 @@ namespace Application.Gateways.OrdemServicos
 
             return dtos.Select(dto => new OrdemServico(dto.ClienteId, dto.VeiculoId, dto.IdUsuarioCriacao)).ToList();
         }
+
+        public async Task<ICollection<TimeSpan?>> GetByIdsSTimeSpanDataExecucao(ICollection<Guid> ids, CancellationToken ct)
+        {
+            var response = await _dataSource.GetByIdsSTimeSpanDataExecucao(ids, ct);
+
+            return response;
+        }
     }
 }

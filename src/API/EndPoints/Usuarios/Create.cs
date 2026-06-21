@@ -5,7 +5,6 @@ using Infra.Context;
 using Infra.DataSources;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Result;
-using System.Security.Cryptography;
 
 namespace API.EndPoints.Usuarios
 {

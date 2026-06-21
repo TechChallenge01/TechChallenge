@@ -1,5 +1,4 @@
 using API.Extensions;
-using Application;
 using Infra;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;

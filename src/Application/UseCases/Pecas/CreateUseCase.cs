@@ -1,5 +1,6 @@
 ﻿using Application.Gateways.Pecas;
 using Domain.Entities;
+using Shared.DTOs.Pecas.Request;
 
 namespace Application.UseCases.Pecas;
 

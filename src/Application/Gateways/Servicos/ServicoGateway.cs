@@ -36,8 +36,7 @@ namespace Application.Gateways.Servicos
 
             return servicoEntity;
         }
-
-        public async Task<List<Servico>>? GetByIds(List<Guid> ids, CancellationToken ct)
+        public async Task<ICollection<Servico>>? GetByIds(ICollection<Guid> ids, CancellationToken ct)
         {
             var servicos = await _servicoDataSource.GetByIds(ids, ct);
 
@@ -48,7 +47,6 @@ namespace Application.Gateways.Servicos
 
             return servicoEntity;
         }
-        
         public async Task Create(Servico servico, CancellationToken ct)
         {
             var servicoInputDto = new ServicoInputDTO
@@ -66,6 +64,24 @@ namespace Application.Gateways.Servicos
             };
 
             await _servicoDataSource.Create(servicoInputDto, ct);
+        }
+        public async Task UpdateServicos(ICollection<Servico> servico, CancellationToken ct)
+        {
+            var servicosInputDto = servico.Select(s => new ServicoInputDTO
+            {
+                Id = s.Id,
+                Ativo = s.Ativo,
+                DataAtualizacao = s.DataAtualizacao,
+                DataCriacao = s.DataCriacao,
+                Descricao = s.Descricao,
+                IdUsuarioAtualizacao = s.IdUsuarioAtualizacao,
+                IdUsuarioCriacao = s.IdUsuarioCriacao,
+                Nome = s.Nome,
+                TempoMedioExecucao = s.TempoMedioExecucao,
+                ValorUnitario = s.ValorUnitario
+            }).ToList();
+
+            await _servicoDataSource.UpdateServicos(servicosInputDto, ct);
         }
         public async Task Update(Servico servico, CancellationToken ct)
         {

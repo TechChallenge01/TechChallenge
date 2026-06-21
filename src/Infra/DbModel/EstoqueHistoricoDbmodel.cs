@@ -1,6 +1,4 @@
-﻿using Domain.Aggregates.EstoqueAggregates;
-
-namespace Infra.DbModel
+﻿namespace Infra.DbModel
 {
     public class EstoqueHistoricoDbmodel
     {

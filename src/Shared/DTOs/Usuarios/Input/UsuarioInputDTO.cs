@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Shared.DTOs.Usuarios.Input
+﻿namespace Shared.DTOs.Usuarios.Input
 {
     public record UsuarioInputDTO
     {

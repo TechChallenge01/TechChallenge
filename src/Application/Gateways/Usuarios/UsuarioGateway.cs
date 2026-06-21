@@ -2,12 +2,6 @@
 using Domain.Entities;
 using Domain.Enums;
 using Shared.DTOs.Usuarios.Input;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 
 namespace Application.Gateways.Usuarios
 {

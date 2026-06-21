@@ -4,6 +4,7 @@ using Application.Presenters.Insumos;
 using Application.UseCases.Insumos;
 using Shared.DTOs;
 using Shared.DTOs.Insumos.Output;
+using Shared.DTOs.Insumos.Request;
 using Shared.Result;
 
 namespace Application.Controllers.Insumos;

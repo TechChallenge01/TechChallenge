@@ -3,9 +3,6 @@ using Infra.Context;
 using Infra.DbModel;
 using Microsoft.EntityFrameworkCore;
 using Shared.DTOs.Usuarios.Input;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Infra.DataSources
 {

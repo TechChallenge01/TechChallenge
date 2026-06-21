@@ -1,5 +1,6 @@
 ﻿using Application.Gateways.Estoques;
 using Domain.Enums;
+using Shared.DTOs.Estoques.Request;
 
 namespace Application.UseCases.Estoques;
 public class MovimentarUseCase

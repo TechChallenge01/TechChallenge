@@ -65,7 +65,7 @@ namespace Infra.DataSources
             return servicoResponse;
         }
 
-        public async Task<(List<ServicoInputDTO> servicos, int total)> GetPaginated(int page, int pageSize, CancellationToken ct)
+        public async Task<(ICollection<ServicoInputDTO> servicos, int total)> GetPaginated(int page, int pageSize, CancellationToken ct)
         {
             IQueryable<ServicoDbModel> query = _appDbContext.Servicos.Where(s => s.Ativo);
 

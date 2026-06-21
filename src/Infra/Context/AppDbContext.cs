@@ -1,6 +1,4 @@
-﻿using Domain.Aggregates.EstoqueAggregates;
-using Domain.Entities;
-using Infra.DbModel;
+﻿using Infra.DbModel;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infra.Context
