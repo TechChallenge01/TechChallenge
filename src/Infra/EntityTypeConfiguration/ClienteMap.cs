@@ -89,6 +89,11 @@ namespace Infra.EntityTypeConfiguration
                 .WithOne(v => v.Cliente)
                 .HasForeignKey(v => v.ClienteId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(c => c.OrdemServicos)
+                    .WithOne(os => os.Cliente)
+                    .HasForeignKey(os => os.ClienteId)
+                    .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

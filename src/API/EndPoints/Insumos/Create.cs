@@ -5,6 +5,7 @@ using Shared.Result;
 using Application.Interfaces;
 using Infra.DataSources;
 using Application.Controllers.Insumos;
+using Shared.DTOs.Insumos.Request;
 
 namespace API.EndPoints.Insumos;
 

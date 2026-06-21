@@ -2,6 +2,7 @@
 {
     public class OrdemServicoPecaDbModel
     {
+        public OrdemServicoPecaDbModel() { }
         public OrdemServicoPecaDbModel(Guid ordemServicoId, Guid pecaId, int quantidade, decimal valorUnitario)
         {
             OrdemServicoId = ordemServicoId;

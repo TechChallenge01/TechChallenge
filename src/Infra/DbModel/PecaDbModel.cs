@@ -2,6 +2,7 @@
 {
     public class PecaDbModel
     {
+        protected PecaDbModel() { }
         public PecaDbModel(Guid id, string nome, string descricao, string marcaPeca, decimal valorUnitario, Guid idUsuarioCriacao, DateTime dataCriacao, Guid? idUsuarioAtualizacao, DateTime? dataAtualizacao, bool ativo)
         {
             Id = id;

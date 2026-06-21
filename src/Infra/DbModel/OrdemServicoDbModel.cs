@@ -2,6 +2,7 @@ namespace Infra.DbModel
 {
     public class OrdemServicoDbModel
     {
+        protected OrdemServicoDbModel() { }
         public OrdemServicoDbModel(Guid id, Guid clienteId, Guid veiculoId, string statusOS, string? observacao, decimal valorTotal, decimal valorDesconto, DateTime? inicioExecucao, DateTime? terminoExecucao, Guid idUsuarioCriacao, DateTime dataCriacao, Guid? idUsuarioAtualizacao, DateTime? dataAtualizacao)
         {
             Id = id;

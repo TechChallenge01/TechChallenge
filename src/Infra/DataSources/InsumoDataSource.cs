@@ -17,7 +17,7 @@ public class InsumoDataSource : IInsumoDataSource
 
     public async Task Create(InsumoInputDTO insumo, CancellationToken ct)
     {
-        var insumoDbModel = new InsumoDbModel(insumo.Id, insumo.Nome, insumo.Descricao, insumo.CustoUnitario,insumo.IdUsuarioCriacao, insumo.DataCriacao, insumo.IdUsuarioAtualizacao, insumo.DataAtualizacao, ativo);
+        var insumoDbModel = new InsumoDbModel(insumo.Id, insumo.Nome, insumo.Descricao, insumo.CustoUnitario,insumo.IdUsuarioCriacao, insumo.DataCriacao, insumo.IdUsuarioAtualizacao, insumo.DataAtualizacao, insumo.Ativo);
 
         await _appDbContext.Insumos.AddAsync(insumoDbModel, ct);
         await _appDbContext.SaveChangesAsync(ct);

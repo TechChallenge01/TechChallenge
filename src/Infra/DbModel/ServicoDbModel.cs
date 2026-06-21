@@ -2,6 +2,7 @@
 {
     public class ServicoDbModel
     {
+        protected ServicoDbModel() { }
         public ServicoDbModel(Guid id, string nome, string descricao, decimal valorUnitario, TimeSpan? tempoMedioExecucao, Guid idUsuarioCriacao, DateTime dataCriacao, Guid? idUsuarioAtualizacao, DateTime? dataAtualizacao, bool ativo)
         {
             Id = id;

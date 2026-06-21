@@ -34,11 +34,5 @@ public class EstoqueHistoricoMap : IEntityTypeConfiguration<EstoqueHistoricoDbmo
 
         builder.Property(e => e.DataCriacao)
                .IsRequired();
-
-        builder.Property(e => e.IdUsuarioAtualizacao)
-               .IsRequired(false);
-
-        builder.Property(e => e.DataAtualizacao)
-               .IsRequired(false);
     }
 }

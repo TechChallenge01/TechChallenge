@@ -28,5 +28,8 @@ public class EstoqueMap : IEntityTypeConfiguration<EstoqueDbModel>
         builder.Property(e => e.QuantidadeReservada)
                         .IsRequired()
                         .HasDefaultValue(0);
+
+        builder.Property(e => e.Ativo)
+               .IsRequired();
     }
 }

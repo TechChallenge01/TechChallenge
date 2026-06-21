@@ -81,9 +81,4 @@ public class PecaGateway
 
         return (pecas, response.total);
     }
-
-    public async Task Delete(Guid id, CancellationToken ct)
-    {
-        await _dataSource.Delete(id, ct);
-    }
 }

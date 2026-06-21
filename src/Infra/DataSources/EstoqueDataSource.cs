@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces;
 using Domain.Aggregates.EstoqueAggregates;
 using Infra.Context;
+using Infra.DbModel;
 using Microsoft.EntityFrameworkCore;
 using Shared.DTOs.Estoques.Input;
 
@@ -17,7 +18,7 @@ public class EstoqueDataSource : IEstoqueDataSource
 
     public async Task<(List<EstoqueInputDTO> estoques, int total)> GetPaginated(int page, int pageSize, CancellationToken ct)
     {
-        IQueryable<Estoque> query = _appDbContext.Estoques.Where(e => e.Ativo);
+        IQueryable<EstoqueDbModel> query = _appDbContext.Estoques.Where(e => e.Ativo);
 
         var total = await query.CountAsync(ct);
 
@@ -34,8 +35,16 @@ public class EstoqueDataSource : IEstoqueDataSource
             InsumoId = e.InsumoId,
             QuantidadeDisponivel = e.QuantidadeDisponivel,
             QuantidadeReservada = e.QuantidadeReservada,
-            IdUsuarioCriacao = e.IdUsuarioCriacao,
-            DataCriacao = e.DataCriacao
+            Historicos = e.Historicos.Select(h => new EstoqueHistoricoInputDTO
+            {
+                DataCriacao = h.DataCriacao,
+                EstoqueId = h.EstoqueId,
+                Id = h.Id,
+                IdUsuarioCriacao = h.IdUsuarioCriacao,
+                Observacao = h.Observacao,
+                Quantidade = h.Quantidade,
+                TipoMovimentacao = h.TipoMovimentacao
+            }).ToList()
         }).ToList();
 
         return (estoquesResponse, total);
@@ -56,8 +65,16 @@ public class EstoqueDataSource : IEstoqueDataSource
             InsumoId = estoque.InsumoId,
             QuantidadeDisponivel = estoque.QuantidadeDisponivel,
             QuantidadeReservada = estoque.QuantidadeReservada,
-            IdUsuarioCriacao = estoque.IdUsuarioCriacao,
-            DataCriacao = estoque.DataCriacao
+            Historicos = estoque.Historicos.Select(h => new EstoqueHistoricoInputDTO
+            {
+                DataCriacao = h.DataCriacao,
+                EstoqueId = h.EstoqueId,
+                Id = h.Id,
+                IdUsuarioCriacao = h.IdUsuarioCriacao,
+                Observacao = h.Observacao,
+                Quantidade = h.Quantidade,
+                TipoMovimentacao = h.TipoMovimentacao
+            }).ToList()
         };
     }
 
@@ -76,8 +93,16 @@ public class EstoqueDataSource : IEstoqueDataSource
             InsumoId = estoque.InsumoId,
             QuantidadeDisponivel = estoque.QuantidadeDisponivel,
             QuantidadeReservada = estoque.QuantidadeReservada,
-            IdUsuarioCriacao = estoque.IdUsuarioCriacao,
-            DataCriacao = estoque.DataCriacao
+            Historicos = estoque.Historicos.Select(h => new EstoqueHistoricoInputDTO
+            {
+                DataCriacao = h.DataCriacao,
+                EstoqueId = h.EstoqueId,
+                Id = h.Id,
+                IdUsuarioCriacao = h.IdUsuarioCriacao,
+                Observacao = h.Observacao,
+                Quantidade = h.Quantidade,
+                TipoMovimentacao = h.TipoMovimentacao
+            }).ToList()
         };
     }
 
@@ -96,37 +121,31 @@ public class EstoqueDataSource : IEstoqueDataSource
             InsumoId = estoque.InsumoId,
             QuantidadeDisponivel = estoque.QuantidadeDisponivel,
             QuantidadeReservada = estoque.QuantidadeReservada,
-            IdUsuarioCriacao = estoque.IdUsuarioCriacao,
-            DataCriacao = estoque.DataCriacao
+            Historicos = estoque.Historicos.Select(h => new EstoqueHistoricoInputDTO
+            {
+                DataCriacao = h.DataCriacao,
+                EstoqueId = h.EstoqueId,
+                Id = h.Id,
+                IdUsuarioCriacao = h.IdUsuarioCriacao,
+                Observacao = h.Observacao,
+                Quantidade = h.Quantidade,
+                TipoMovimentacao = h.TipoMovimentacao
+            }).ToList()
         };
     }
 
     public async Task Update(EstoqueInputDTO request, CancellationToken ct)
     {
-        var entity = await _appDbContext.Estoques
+        var estoqueDbModel = await _appDbContext.Estoques
             .Include(e => e.Historicos)
-            .FirstOrDefaultAsync(e => e.Id == request.Id && e.Ativo, ct);
+            .FirstOrDefaultAsync(e => e.Id == request.Id, ct);
 
-        if (entity == null)
+        if (estoqueDbModel == null)
             throw new Exception("Estoque não encontrado");
 
-        _appDbContext.Entry(entity).Property(e => e.QuantidadeDisponivel).CurrentValue = request.QuantidadeDisponivel;
-        _appDbContext.Entry(entity).Property(e => e.QuantidadeReservada).CurrentValue = request.QuantidadeReservada;
-
-        foreach (var historico in request.Historicos)
-        {
-            var novoHistorico = new EstoqueHistorico(
-                historico.Quantidade,
-                historico.Observacao,
-                Enum.Parse<Domain.Enums.ETipoMovimentacao>(historico.TipoMovimentacao),
-                historico.IdUsuarioCriacao,
-                historico.DataCriacao,
-                historico.EstoqueId
-            );
-            entity.Historicos.Add(novoHistorico);
-        }
-
-        entity.RastrearAlteracao(request.IdUsuarioAtualizacao ?? Guid.Empty, DateTime.UtcNow);
+        estoqueDbModel.QuantidadeDisponivel = request.QuantidadeDisponivel;
+        estoqueDbModel.QuantidadeReservada = request.QuantidadeReservada;
+        estoqueDbModel.Historicos = request.Historicos.Select(h => new EstoqueHistoricoDbmodel(h.Id, h.Quantidade, h.Observacao, h.TipoMovimentacao, request.Id, h.IdUsuarioCriacao, h.DataCriacao)).ToList();
 
         await _appDbContext.SaveChangesAsync(ct);
     }
@@ -145,8 +164,16 @@ public class EstoqueDataSource : IEstoqueDataSource
             InsumoId = e.InsumoId,
             QuantidadeDisponivel = e.QuantidadeDisponivel,
             QuantidadeReservada = e.QuantidadeReservada,
-            IdUsuarioCriacao = e.IdUsuarioCriacao,
-            DataCriacao = e.DataCriacao
+            Historicos = e.Historicos.Select(h => new EstoqueHistoricoInputDTO
+            {
+                DataCriacao = h.DataCriacao,
+                EstoqueId = h.EstoqueId,
+                Id = h.Id,
+                IdUsuarioCriacao = h.IdUsuarioCriacao,
+                Observacao = h.Observacao,
+                Quantidade = h.Quantidade,
+                TipoMovimentacao = h.TipoMovimentacao
+            }).ToList()
         }).ToList();
     }
 
@@ -164,13 +191,42 @@ public class EstoqueDataSource : IEstoqueDataSource
             InsumoId = e.InsumoId,
             QuantidadeDisponivel = e.QuantidadeDisponivel,
             QuantidadeReservada = e.QuantidadeReservada,
-            IdUsuarioCriacao = e.IdUsuarioCriacao,
-            DataCriacao = e.DataCriacao
+            Historicos = e.Historicos.Select(h => new EstoqueHistoricoInputDTO
+            {
+                DataCriacao = h.DataCriacao,
+                EstoqueId = h.EstoqueId,
+                Id = h.Id,
+                IdUsuarioCriacao = h.IdUsuarioCriacao,
+                Observacao = h.Observacao,
+                Quantidade = h.Quantidade,
+                TipoMovimentacao = h.TipoMovimentacao
+            }).ToList()
         }).ToList();
     }
 
-    public async Task UpdateEstoques(ICollection<EstoqueInputDTO> estoque, CancellationToken ct)
+    public async Task UpdateEstoques(ICollection<EstoqueInputDTO> estoques, CancellationToken ct)
     {
-        throw new NotImplementedException();
+
+        var ids = estoques.Select(e => e.Id).ToList();
+        var estoquesDbModel = await _appDbContext.Estoques
+            .Include(e => e.Historicos)
+            .Where(e => ids.Contains(e.Id)).ToListAsync(ct);
+
+        if (estoques.Count() != estoquesDbModel.Count())
+            throw new Exception("Um ou mais estoques não encontrados");
+
+        EstoqueInputDTO estoqueRequest;
+
+        foreach(var estoque in estoquesDbModel)
+        {
+            estoqueRequest = estoques.FirstOrDefault(e => e.Id == estoque.Id);
+
+            estoque.QuantidadeDisponivel = estoqueRequest.QuantidadeDisponivel;
+            estoque.QuantidadeReservada = estoqueRequest.QuantidadeReservada;
+            estoque.Historicos = estoqueRequest.Historicos.Select(h => new EstoqueHistoricoDbmodel(h.Id, h.Quantidade, h.Observacao, h.TipoMovimentacao, estoqueRequest.Id, h.IdUsuarioCriacao, h.DataCriacao)).ToList();
+        }
+        
+
+        await _appDbContext.SaveChangesAsync(ct);
     }
 }

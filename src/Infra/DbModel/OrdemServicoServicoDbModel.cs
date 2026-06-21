@@ -2,6 +2,7 @@
 {
     public class OrdemServicoServicoDbModel
     {
+        protected OrdemServicoServicoDbModel() { }
         public OrdemServicoServicoDbModel(Guid ordemServicoId, Guid servicoId, decimal valorUnitario, string status, DateTime? dataInicioExecucao, DateTime? dataTerminoExecucao, int quantidade)
         {
             OrdemServicoId = ordemServicoId;

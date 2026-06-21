@@ -46,6 +46,11 @@ namespace Infra.EntityTypeConfiguration
             builder.HasOne(x => x.Cliente)
                    .WithMany(c => c.Veiculos)
                    .HasForeignKey(x => x.ClienteId);
+
+            builder.HasMany(v => v.OrdemServicos)
+                    .WithOne(os => os.Veiculo)
+                    .HasForeignKey(os => os.VeiculoId)
+                    .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -54,10 +54,21 @@ namespace Infra.EntityTypeConfiguration
             builder.Property(os => os.Ativo)
                 .HasDefaultValue(true);
 
+            builder.HasOne(os => os.Cliente)
+                    .WithMany(c => c.OrdemServicos)
+                    .HasForeignKey(os => os.ClienteId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(os => os.Veiculo)
+                    .WithMany(v => v.OrdemServicos)
+                    .HasForeignKey(os => os.VeiculoId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
             builder.HasMany(os => os.Servicos)
                    .WithOne(oss => oss.OrdemServico)
                    .HasForeignKey(oss => oss.OrdemServicoId)
                    .OnDelete(DeleteBehavior.Cascade);
+            
 
             builder.HasMany(os => os.Pecas)
                    .WithOne(osp => osp.OrdemServico)
