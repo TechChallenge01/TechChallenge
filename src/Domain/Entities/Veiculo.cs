@@ -1,6 +1,4 @@
-﻿using Domain.Aggregates.ClienteAggregates;
-using Domain.Aggregates.OrdemServicoAggregates;
-using Domain.BaseEntity;
+﻿using Domain.BaseEntity;
 using Domain.ValueObjects;
 
 namespace Domain.Entities
@@ -63,8 +61,6 @@ namespace Domain.Entities
         public int Ano { get; private set; }
         public string Placa { get; private set; }
         public string Cor { get; private set; }
-        public ICollection<OrdemServico> OrdemServicos = new List<OrdemServico>();
-        public virtual Cliente Cliente { get; private set; }        
 
         private void ValidaModelo(string modelo) 
         {

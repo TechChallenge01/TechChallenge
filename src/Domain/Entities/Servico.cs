@@ -1,5 +1,4 @@
 ﻿using Domain.BaseEntity;
-using Domain.ValueObjects;
 
 namespace Domain.Entities
 {
@@ -34,7 +33,6 @@ namespace Domain.Entities
         public string Nome { get; private set; }
         public string Descricao { get; private set; }
         public decimal ValorUnitario { get; private set; }
-        public ICollection<OrdemServicoServico> OrdemServicoServicos { get; private set; } = new List<OrdemServicoServico>();
         public TimeSpan? TempoMedioExecucao { get; private set; }
 
 

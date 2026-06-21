@@ -1,7 +1,6 @@
 ﻿using API.Extensions;
 using Application.Controllers.Pecas;
 using Application.Interfaces;
-using Application.Pecas.DTOs.Requests;
 using Infra.Context;
 using Infra.DataSources;
 using Microsoft.AspNetCore.Mvc;

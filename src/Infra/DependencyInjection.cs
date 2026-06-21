@@ -1,11 +1,4 @@
-﻿using Application.Auth.Services;
-using Application.EmailServices;
-using Application.Interfaces;
-using Application.UnitOfWork;
-using Infra.Context;
-using Infra.DataSources;
-using Infra.Persistencia;
-using Infra.Services;
+﻿using Infra.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,14 +9,6 @@ namespace Infra
     {
         public static IServiceCollection AddInfraServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped<IOrdemServicoDataSource, OrdemServicoDataSource>();
-            services.AddScoped<IEmailService, EmailService>();
-            services.AddScoped<IJwtService, JwtService>();
-            services.AddScoped<IPecaDataSource, PecaDataSource>();
-            services.AddScoped<IInsumoDataSource, InsumoDataSource>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), sqlOptions =>
             {
                 sqlOptions.EnableRetryOnFailure(

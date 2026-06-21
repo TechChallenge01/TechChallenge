@@ -17,5 +17,10 @@
         public string MarcaPeca { get; set; }
         public decimal ValorUnitario { get; set; }
         public ICollection<OrdemServicoPecaDbModel> OrdemServicoPecas { get; set; } = new List<OrdemServicoPecaDbModel> ();
+        public Guid IdUsuarioCriacao { get; set; }
+        public DateTime DataCriacao { get; set; }
+        public Guid? IdUsuarioAtualizacao { get; set; }
+        public DateTime? DataAtualizacao { get; set; }
+        public bool Ativo { get; set; }
     }
 }

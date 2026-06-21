@@ -25,7 +25,6 @@ namespace Infra.DataSources
             await _appDbContext.Clientes.AddAsync(clienteDbModel, ct);
             await _appDbContext.SaveChangesAsync(ct);
         }
-
         public async Task<ClienteInputDTO?> GetByCnpj(string cnpj, CancellationToken ct)
         {
             return await _appDbContext.Clientes
@@ -57,7 +56,6 @@ namespace Infra.DataSources
                 })
                 .FirstOrDefaultAsync(ct);
         }
-
         public async Task<ClienteInputDTO?> GetByCpf(string cpf, CancellationToken ct)
         {
             return await _appDbContext.Clientes
@@ -89,7 +87,6 @@ namespace Infra.DataSources
                })
                .FirstOrDefaultAsync(ct);
         }
-
         public async Task<ClienteInputDTO?> GetById(Guid id, CancellationToken ct)
         {
             var cliente = await _appDbContext.Clientes
@@ -127,7 +124,6 @@ namespace Infra.DataSources
 
             return clienteResponse;
         }
-
         public async Task<(List<ClienteInputDTO> clientes, int total)> GetPaginated(int page, int pageSize, CancellationToken ct)
         {
             IQueryable<ClienteDbModel> query = _appDbContext.Clientes.Where(c => c.Ativo);
@@ -168,7 +164,6 @@ namespace Infra.DataSources
 
             return (clientesResponse, total);
         }
-
         public async Task Update(ClienteInputDTO cliente, CancellationToken ct)
         {
             var dbModel = _appDbContext.Clientes.FirstOrDefault(c => c.Id == cliente.Id && c.Ativo);

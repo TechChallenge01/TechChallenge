@@ -1,5 +1,4 @@
 ﻿using Application.Gateways.Pecas;
-using Application.Pecas.DTOs.Requests;
 using Domain.Entities;
 
 namespace Application.UseCases.Pecas;

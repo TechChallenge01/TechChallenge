@@ -1,4 +1,5 @@
-﻿using Domain.Enums;
+﻿using Domain.Entities;
+using Domain.Enums;
 
 namespace Domain.ValueObjects;
 
@@ -12,6 +13,7 @@ public class OrdemServicoServico
     public DateTime? DataTerminoExecucao { get; private set; }
     public int Quantidade { get; private set; }
     public decimal ValorTotal => ValorUnitario * Quantidade;
+    public Servico Servico { get; set; }
 
     public OrdemServicoServico(Guid osId, Guid servicoId, int quantidade, decimal valorUnitario)
     {

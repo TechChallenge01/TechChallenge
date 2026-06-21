@@ -38,16 +38,14 @@ public class Estoque : Base
         QuantidadeReservada = quantidadeReservada;
     }
 
-    protected Estoque() { }
-
     public Guid Id { get; private set; }
     public Guid? PecaId { get; private set; }
     public Guid? InsumoId {  get; private set; }
     public int QuantidadeDisponivel { get; private set; }
     public int QuantidadeReservada { get; private set; }
     public ICollection<EstoqueHistorico> Historicos { get; private set; } = new List<EstoqueHistorico>();
-    public virtual Peca Peca { get; private set; }
-    public virtual Insumo Insumo { get; private set; }
+    public Peca Peca { get; private set; }
+    public Insumo Insumo { get; private set; }
     public int QuantidadeTotal => QuantidadeDisponivel + QuantidadeReservada;
 
     private void ValidarPecaId(Guid pecaId)

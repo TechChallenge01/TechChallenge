@@ -1,6 +1,5 @@
 ﻿using Application.Gateways.Pecas;
 using Application.Interfaces;
-using Application.Pecas.DTOs.Requests;
 using Application.Presenters.Pecas;
 using Application.UseCases.Pecas;
 using Shared.DTOs;

@@ -1,5 +1,4 @@
-﻿using Application.Estoques.DTOs.Requests;
-using Application.Gateways.Estoques;
+﻿using Application.Gateways.Estoques;
 using Application.Interfaces;
 using Application.Presenters.Estoques;
 using Application.UseCases.Estoques;

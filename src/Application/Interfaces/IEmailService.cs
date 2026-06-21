@@ -1,6 +1,6 @@
 ﻿using Shared.DTOs;
 
-namespace Application.EmailServices
+namespace Application.Interfaces
 {
     public interface IEmailService
     {

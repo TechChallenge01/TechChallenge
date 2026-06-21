@@ -16,8 +16,6 @@ public class EstoqueHistorico : Base
         EstoqueId = estoqueId;
     }
 
-    protected EstoqueHistorico() { }
-
     public Guid Id { get; private set; }
     public int Quantidade { get; private set; } 
     public string Observacao { get; private set; } = string.Empty;

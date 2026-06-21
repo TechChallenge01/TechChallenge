@@ -1,5 +1,4 @@
-﻿using Application.Estoques.DTOs.Requests;
-using Application.Gateways.Estoques;
+﻿using Application.Gateways.Estoques;
 using Domain.Enums;
 
 namespace Application.UseCases.Estoques;

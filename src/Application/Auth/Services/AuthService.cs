@@ -1,6 +1,5 @@
 ﻿using Application.Auth.DTOs.Requests;
 using Application.Auth.DTOs.Responses;
-using Domain.Entities.Repositories;
 using Shared.Result;
 using System.Net;
 using Domain.Entities;

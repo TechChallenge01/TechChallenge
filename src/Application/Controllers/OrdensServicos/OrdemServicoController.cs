@@ -153,5 +153,113 @@ namespace Application.Controllers.OrdensServicos
                 return presenter.InternalError(ex.Message);
             }
         }
+        public async Task<ICommandResult> FinalizarServico(Guid id, Guid idUsuario, FinalizarServicoRequestDTO request, IServicoDataSource servicoDataSource, CancellationToken ct)
+        {
+            var presenter = new OrdemServicoPresenter("Serviços finalizados com sucesso!");
+            try
+            {
+                var ordemServicoGateway = OrdemServicoGateway.Create(_dataSource);
+                var servicoGateway = ServicoGateway.Create(servicoDataSource);
+
+                var useCase = FinalizarServicoUseCase.Create(ordemServicoGateway, servicoGateway);
+                await useCase.Run(request, id, idUsuario, ct);
+
+                return presenter.NoContent();
+
+            }
+            catch (ArgumentException ex)
+            {
+                return presenter.BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return presenter.NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return presenter.InternalError(ex.Message);
+            }
+        }
+        public async Task<ICommandResult> RealizarEntrega(Guid id, Guid idUsuario, CancellationToken ct)
+        {
+            var presenter = new OrdemServicoPresenter("Ordem de serviço Entregue!");
+            try
+            {
+                var ordemServicoGateway = OrdemServicoGateway.Create(_dataSource);
+                var useCase = RegistrarEntregaUseCase.Create(ordemServicoGateway);
+
+                await useCase.Run(id, idUsuario, ct);
+
+                return presenter.NoContent();
+            }
+            catch (ArgumentException ex)
+            {
+                return presenter.BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return presenter.NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return presenter.InternalError(ex.Message);
+            }
+        }
+        public async Task<ICommandResult> IniciarDiagnostico(Guid id, Guid idUsuario, CancellationToken ct)
+        {
+            var presenter = new OrdemServicoPresenter("Diagnóstico iniciado com sucesso!");
+            try
+            {
+                var ordemServicoGateway = OrdemServicoGateway.Create(_dataSource);
+                var useCase = IniciarDiagnosticoUseCase.Create(ordemServicoGateway);
+
+                await useCase.Run(id, idUsuario, ct);
+
+                return presenter.NoContent();
+
+            }
+            catch (ArgumentException ex)
+            {
+                return presenter.BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return presenter.NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return presenter.InternalError(ex.Message);
+            }
+        }
+        public async Task<ICommandResult> RealizarDiagnostico(Guid id, Guid idUsuario, DiagnosticoRequestDTO request, IPecaDataSource pecaDataSource, IServicoDataSource servicoDataSource, IInsumoDataSource insumoDataSource, IEstoqueDataSource estoqueDataSource, IClienteDataSource clienteDataSource, IEmailService emailService, CancellationToken ct)
+        {
+            var presenter = new OrdemServicoPresenter("Diagnóstico realizado com sucesso!");
+            try
+            {
+                var ordemServicoGateway = OrdemServicoGateway.Create(_dataSource);
+                var pecaGateway = PecaGateway.Create(pecaDataSource);
+                var servicoGateway = ServicoGateway.Create(servicoDataSource);
+                var insumoGateway = InsumoGateway.Create(insumoDataSource);
+                var estoqueGateway = EstoqueGateway.Create(estoqueDataSource);
+                var clienteGateway = ClienteGateway.Create(clienteDataSource);
+
+                var useCase = RealizarDiagnosticoUseCase.Create(ordemServicoGateway, pecaGateway, servicoGateway, insumoGateway, estoqueGateway, clienteGateway, emailService);
+                await useCase.Run(id, idUsuario, request, ct);
+
+                return presenter.NoContent();
+            }
+            catch (ArgumentException ex)
+            {
+                return presenter.BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return presenter.NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return presenter.InternalError(ex.Message);
+            }
+        }
     }
 }

@@ -1,12 +1,13 @@
 ﻿using Domain.Entities;
+using Infra.DbModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infra.EntityTypeConfiguration
 {
-    public class PecaMap : IEntityTypeConfiguration<Peca>
+    public class PecaMap : IEntityTypeConfiguration<PecaDbModel>
     {
-        public void Configure(EntityTypeBuilder<Peca> builder)
+        public void Configure(EntityTypeBuilder<PecaDbModel> builder)
         {
             builder.ToTable("Pecas");
 
@@ -27,7 +28,17 @@ namespace Infra.EntityTypeConfiguration
             builder.Property(p => p.ValorUnitario)
                 .IsRequired();
 
-            builder.ConfigurarAuditoria();
+            builder.Property(e => e.IdUsuarioCriacao)
+                   .IsRequired();
+
+            builder.Property(e => e.DataCriacao)
+                   .IsRequired();
+
+            builder.Property(e => e.IdUsuarioAtualizacao)
+                   .IsRequired(false);
+
+            builder.Property(e => e.DataAtualizacao)
+                   .IsRequired(false);
         }
     }
 }

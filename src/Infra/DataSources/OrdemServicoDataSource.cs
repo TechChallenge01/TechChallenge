@@ -261,5 +261,14 @@ namespace Infra.DataSources
                 }).ToList()
             }).ToList();
         }
+
+        public async Task<ICollection<TimeSpan?>> GetByIdsSTimeSpanDataExecucao(ICollection<Guid> ids, CancellationToken ct)
+        {
+            IQueryable<OrdemServicoServicoDbModel?> query = _appDbContext.OrdensServico.SelectMany(os => os.Servicos).Where(s => ids.Contains(s.ServicoId));
+
+            var result = await query.Select(s => s.DataTerminoExecucao - s.DataInicioExecucao).ToListAsync(ct);
+
+            return result;
+        }
     }
 }

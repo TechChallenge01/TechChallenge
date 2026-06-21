@@ -1,4 +1,4 @@
-﻿using Application.EmailServices;
+﻿using Application.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Shared.DTOs;
 using System.Diagnostics.CodeAnalysis;

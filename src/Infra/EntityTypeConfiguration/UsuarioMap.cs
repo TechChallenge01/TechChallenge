@@ -1,11 +1,12 @@
 ﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infra.EntityTypeConfiguration;
 
 public class UsuarioMap : IEntityTypeConfiguration<Usuario>
 {
-    public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Usuario> builder)
+    public void Configure(EntityTypeBuilder<Usuario> builder)
     {
         builder.ToTable("Usuarios");
 

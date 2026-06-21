@@ -1,6 +1,5 @@
 ﻿using API.Extensions;
 using Application.Controllers.Estoques;
-using Application.Estoques.DTOs.Requests;
 using Application.Interfaces;
 using Infra.Context;
 using Infra.DataSources;

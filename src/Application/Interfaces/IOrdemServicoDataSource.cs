@@ -10,5 +10,6 @@ namespace Application.Interfaces
         Task Update(OrdemServicoInputDTO ordemServico, CancellationToken ct);
         Task<List<OrdemServicoInputDTO>> GetByClienteId(Guid clienteId, CancellationToken ct);
         Task<List<OrdemServicoInputDTO>> GetByStatus(string status, CancellationToken ct);
+        Task<ICollection<TimeSpan?>> GetByIdsSTimeSpanDataExecucao(ICollection<Guid> ids, CancellationToken ct);
     }
 }

@@ -15,4 +15,9 @@ public class InsumoDbModel
     public string Descricao { get; set; }
     public decimal CustoUnitario { get; set; }
     public ICollection<OrdemServicoInsumoDbModel> OrdemServicoInsumos { get; set; } = new List<OrdemServicoInsumoDbModel>();
+    public Guid IdUsuarioCriacao { get; set; }
+    public DateTime DataCriacao { get; set; }
+    public Guid? IdUsuarioAtualizacao { get; set; }
+    public DateTime? DataAtualizacao { get; set; }
+    public bool Ativo { get; set; }
 }

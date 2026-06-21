@@ -44,7 +44,7 @@ namespace Infra.DataSources
             return servicoResponse;
         }
 
-        public async Task<List<ServicoInputDTO>>? GetByIds(List<Guid> ids, CancellationToken ct)
+        public async Task<ICollection<ServicoInputDTO>>? GetByIds(ICollection<Guid> ids, CancellationToken ct)
         {
             IQueryable<ServicoDbModel> query = _appDbContext.Servicos.Where(s => s.Ativo);
 
@@ -103,6 +103,33 @@ namespace Infra.DataSources
             servicoDbModel.ValorUnitario = servico.ValorUnitario;
             servicoDbModel.TempoMedioExecucao = servico.TempoMedioExecucao;
             servicoDbModel.IdUsuarioAtualizacao = servico.IdUsuarioAtualizacao;
+
+            await _appDbContext.SaveChangesAsync(ct);
+        }
+
+        public async Task UpdateServicos(ICollection<ServicoInputDTO> servicos, CancellationToken ct)
+        {
+            var ids = servicos.Select(s => s.Id).ToList();
+            var servicosModels = await _appDbContext.Servicos.Where(s => ids.Contains(s.Id)).ToListAsync(ct);
+
+            if (servicosModels.Count() != servicos.Count())
+                throw new KeyNotFoundException("Um ou mais serviços não encontrados!");
+
+            ServicoInputDTO servico;
+
+            foreach(var servicoDbModel in servicosModels)
+            {
+                servico = servicos.FirstOrDefault(s => s.Id == servicoDbModel.Id);
+
+                servicoDbModel.Id = servico.Id;
+                servicoDbModel.Ativo = servico.Ativo;
+                servicoDbModel.Descricao = servico.Descricao;
+                servicoDbModel.DataAtualizacao = servico.DataAtualizacao;
+                servicoDbModel.Nome = servico.Nome;
+                servicoDbModel.ValorUnitario = servico.ValorUnitario;
+                servicoDbModel.TempoMedioExecucao = servico.TempoMedioExecucao;
+                servicoDbModel.IdUsuarioAtualizacao = servico.IdUsuarioAtualizacao;
+            }
 
             await _appDbContext.SaveChangesAsync(ct);
         }

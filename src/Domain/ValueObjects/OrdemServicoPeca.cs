@@ -1,5 +1,4 @@
-﻿using Domain.Aggregates.OrdemServicoAggregates;
-using Domain.Entities;
+﻿using Domain.Entities;
 
 namespace Domain.ValueObjects;
 
@@ -11,7 +10,6 @@ public class OrdemServicoPeca
     public decimal ValorUnitario { get; private set; }
     public decimal ValorTotal => Quantidade * ValorUnitario;
     public virtual Peca Peca { get; private set; }
-    public virtual OrdemServico OrdemServico { get; private set; }
 
     public OrdemServicoPeca(Guid osId, Guid pecaId, int quantidade, decimal valorUnitario)
     {

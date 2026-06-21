@@ -1,5 +1,4 @@
 ﻿using Application.Gateways.Insumos;
-using Application.Insumos.DTOs.Requests;
 
 namespace Application.UseCases.Insumos;
 
