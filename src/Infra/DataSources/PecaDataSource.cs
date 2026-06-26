@@ -1,5 +1,4 @@
 ﻿using Application.Interfaces;
-using Domain.Entities;
 using Infra.Context;
 using Infra.DbModel;
 using Microsoft.EntityFrameworkCore;
@@ -94,7 +93,7 @@ public class PecaDataSource : IPecaDataSource
         pecaDbModel.ValorUnitario = request.ValorUnitario;
         pecaDbModel.DataAtualizacao = request.DataAtualizacao;
         pecaDbModel.IdUsuarioAtualizacao = request.IdUsuarioAtualizacao;
-        pecaDbModel.Ativo = pecaDbModel.Ativo;
+        pecaDbModel.Ativo = request.Ativo;
 
         await _appDbContext.SaveChangesAsync(ct);
     }
