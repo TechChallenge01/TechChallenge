@@ -1,5 +1,4 @@
-﻿using Domain.Entities;
-using Infra.DbModel;
+﻿using Infra.DbModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

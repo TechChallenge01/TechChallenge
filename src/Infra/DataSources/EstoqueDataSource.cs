@@ -1,5 +1,4 @@
 ﻿using Application.Interfaces;
-using Domain.Aggregates.EstoqueAggregates;
 using Infra.Context;
 using Infra.DbModel;
 using Microsoft.EntityFrameworkCore;

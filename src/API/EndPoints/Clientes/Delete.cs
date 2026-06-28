@@ -12,7 +12,7 @@ namespace API.EndPoints.Clientes
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapDelete("/clientes/{id}", async (AppDbContext appDbContext, HttpContext httpContext, [FromRoute] Guid id, CancellationToken ct) =>
+            app.MapDelete("/api/clientes/{id}", async (AppDbContext appDbContext, HttpContext httpContext, [FromRoute] Guid id, CancellationToken ct) =>
             {
                 var idUsuario = httpContext.User.ObterIdUsuario();
                 IClienteDataSource dataSource = new ClienteDataSource(appDbContext);

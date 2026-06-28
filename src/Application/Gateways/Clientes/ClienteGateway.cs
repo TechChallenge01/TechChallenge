@@ -25,9 +25,9 @@ namespace Application.Gateways.Clientes
         {
             var response = await _dataSource.GetPaginated(page, pageSize, ct);
 
-            var clientes = response.clientes.Select(c => new Cliente(c.Id, c.Nome, new Cpf(c.Cpf), new Cnpj(c.Cnpj), new Email(c.Email), 
+            var clientes = response.clientes.Select(c => new Cliente(c.Id, c.Nome, c.Cpf == null ? null : new Cpf(c.Cpf), c.Cnpj == null ? null : new Cnpj(c.Cnpj), new Email(c.Email), 
                                                    new Telefone(c.Telefone.DDD,c.Telefone.DDI, c.Telefone.Numero), 
-                                                   new Endereco(c.Endereco.Logradouro, c.Endereco.Numero, c.Endereco.Complemento, c.Endereco.Bairro, c.Endereco.Cep, c.Endereco.Cidade, c.Endereco.Uf), 
+                                                   new Endereco(c.Endereco.Logradouro, c.Endereco.Numero, c.Endereco.Complemento, c.Endereco.Bairro, c.Endereco.Cidade, c.Endereco.Uf, c.Endereco.Cep), 
                                                    c.Veiculos.Select(v => new Veiculo(v)).ToList())).ToList();
 
             return (clientes, response.total);
@@ -39,9 +39,9 @@ namespace Application.Gateways.Clientes
             if (response == null)
                 return null;
 
-            var cliente = new Cliente(response.Id, response.Nome, new Cpf(response.Cpf), new Cnpj(response.Cnpj), new Email(response.Email), 
+            var cliente = new Cliente(response.Id, response.Nome, response.Cpf == null ? null : new Cpf(response.Cpf), response.Cnpj == null ? null : new Cnpj(response.Cnpj), new Email(response.Email), 
                                       new Telefone(response.Telefone.DDD, response.Telefone.DDI, response.Telefone.Numero), 
-                                      new Endereco(response.Endereco.Logradouro, response.Endereco.Numero, response.Endereco.Complemento, response.Endereco.Bairro, response.Endereco.Cep, response.Endereco.Cidade, response.Endereco.Uf), 
+                                      new Endereco(response.Endereco.Logradouro, response.Endereco.Numero, response.Endereco.Complemento, response.Endereco.Bairro, response.Endereco.Cidade, response.Endereco.Uf, response.Endereco.Cep), 
                                       response.Veiculos.Select(v => new Veiculo(v)).ToList());
 
             return cliente;
@@ -53,9 +53,9 @@ namespace Application.Gateways.Clientes
             if (response == null)
                 return null;
 
-            var cliente = new Cliente(response.Id, response.Nome, new Cpf(response.Cpf), new Cnpj(response.Cnpj), new Email(response.Email), 
-                                      new Telefone(response.Telefone.DDD, response.Telefone.DDI, response.Telefone.Numero), 
-                                      new Endereco(response.Endereco.Logradouro, response.Endereco.Numero, response.Endereco.Complemento, response.Endereco.Bairro, response.Endereco.Cep, response.Endereco.Cidade, response.Endereco.Uf), 
+            var cliente = new Cliente(response.Id, response.Nome, response.Cpf == null ? null : new Cpf(response.Cpf), response.Cnpj == null ? null : new Cnpj(response.Cnpj), new Email(response.Email), 
+                                      new Telefone(response.Telefone.DDD, response.Telefone.DDI, response.Telefone.Numero),
+                                      new Endereco(response.Endereco.Logradouro, response.Endereco.Numero, response.Endereco.Complemento, response.Endereco.Bairro, response.Endereco.Cidade, response.Endereco.Uf, response.Endereco.Cep),
                                       response.Veiculos.Select(v => new Veiculo(v)).ToList());
 
             return cliente;
@@ -67,9 +67,9 @@ namespace Application.Gateways.Clientes
             if (response == null)
                 return null;
 
-            var cliente = new Cliente(response.Id, response.Nome, new Cpf(response.Cpf), new Cnpj(response.Cnpj), new Email(response.Email), 
-                                      new Telefone(response.Telefone.DDD, response.Telefone.DDI, response.Telefone.Numero), 
-                                      new Endereco(response.Endereco.Logradouro, response.Endereco.Numero, response.Endereco.Complemento, response.Endereco.Bairro, response.Endereco.Cep, response.Endereco.Cidade, response.Endereco.Uf), 
+            var cliente = new Cliente(response.Id, response.Nome, response.Cpf == null ? null : new Cpf(response.Cpf), response.Cnpj == null ? null : new Cnpj(response.Cnpj), new Email(response.Email), 
+                                      new Telefone(response.Telefone.DDD, response.Telefone.DDI, response.Telefone.Numero),
+                                      new Endereco(response.Endereco.Logradouro, response.Endereco.Numero, response.Endereco.Complemento, response.Endereco.Bairro, response.Endereco.Cidade, response.Endereco.Uf, response.Endereco.Cep),
                                       response.Veiculos.Select(v => new Veiculo(v)).ToList());
 
             return cliente;

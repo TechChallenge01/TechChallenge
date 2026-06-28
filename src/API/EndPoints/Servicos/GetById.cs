@@ -10,7 +10,7 @@ namespace API.EndPoints.Servicos
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapGet("/api/Servicos/{id}", async (AppDbContext appDbContext, Guid id, CancellationToken ct) =>
+            app.MapGet("/api/servicos/{id}", async (AppDbContext appDbContext, Guid id, CancellationToken ct) =>
             {
                 IServicoDataSource dataSource = new ServicoDataSource(appDbContext);
                 var controller = new ServicoController(dataSource);

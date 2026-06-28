@@ -13,7 +13,7 @@ namespace API.EndPoints.OrdemServicos
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("/api/OrdemServico", async (AppDbContext appDbContext, HttpContext httpContext, [FromBody] OrdemServicoRequestDTO request, CancellationToken ct) =>
+            app.MapPost("/api/ordemServico", async (AppDbContext appDbContext, HttpContext httpContext, [FromBody] OrdemServicoRequestDTO request, CancellationToken ct) =>
             {
                 var idUsuario = httpContext.User.ObterIdUsuario();
                 IOrdemServicoDataSource dataSource = new OrdemServicoDataSource(appDbContext);

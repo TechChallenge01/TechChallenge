@@ -42,8 +42,8 @@ namespace Application.Presenters.Clientes
                 Id = cliente.Id,
                 Nome = cliente.Nome,
                 Email = cliente.Email.EnderecoEmail,
-                Cnpj = cliente.Cnpj.Valor,
-                Cpf = cliente.Cpf.Valor,
+                Cnpj = cliente.Cnpj == null ? null : cliente.Cnpj.Valor,
+                Cpf = cliente.Cpf == null ? null : cliente.Cpf.Valor,
                 Endereco = new EnderecoDTO
                 {
                     Bairro = cliente.Endereco.Bairro,

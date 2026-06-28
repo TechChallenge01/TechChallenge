@@ -10,7 +10,7 @@ namespace API.EndPoints.Veiculos
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapGet("/api/Veiculos/{id}", async (AppDbContext appDbContext, Guid id, CancellationToken ct) =>
+            app.MapGet("/api/veiculos/{id}", async (AppDbContext appDbContext, Guid id, CancellationToken ct) =>
             {
                 IVeiculoDataSource dataSource = new VeiculoDataSource(appDbContext);
                 var controller = new VeiculoController(dataSource);

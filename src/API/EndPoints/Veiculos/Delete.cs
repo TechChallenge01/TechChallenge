@@ -11,7 +11,7 @@ namespace API.EndPoints.Veiculos
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapDelete("/api/Veiculos/{id}", async (AppDbContext appDbContext, HttpContext httpContext,Guid id, CancellationToken ct) =>
+            app.MapDelete("/api/veiculos/{id}", async (AppDbContext appDbContext, HttpContext httpContext,Guid id, CancellationToken ct) =>
             {
                 var idUsuario = httpContext.User.ObterIdUsuario();
                 IVeiculoDataSource dataSource = new VeiculoDataSource(appDbContext);

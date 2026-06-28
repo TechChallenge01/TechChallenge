@@ -12,7 +12,7 @@ namespace API.EndPoints.Clientes
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPut("/clientes/{id}", async (AppDbContext appDbContext, HttpContext httpContext, [FromRoute] Guid id, [FromBody] ClienteRequestDTO clienteRequest, CancellationToken ct) =>
+            app.MapPut("/api/clientes/{id}", async (AppDbContext appDbContext, HttpContext httpContext, [FromRoute] Guid id, [FromBody] ClienteRequestDTO clienteRequest, CancellationToken ct) =>
             {
                 var idUsuario = httpContext.User.ObterIdUsuario();
                 var dataSource = new ClienteDataSource(appDbContext);

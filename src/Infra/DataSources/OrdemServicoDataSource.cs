@@ -1,4 +1,5 @@
 using Application.Interfaces;
+using Domain.Enums;
 using Infra.Context;
 using Infra.DbModel;
 using Microsoft.EntityFrameworkCore;
@@ -98,7 +99,20 @@ namespace Infra.DataSources
 
         public async Task<(List<OrdemServicoInputDTO> ordensServico, int total)> GetPaginated(int page, int pageSize, CancellationToken ct)
         {
-            IQueryable<OrdemServicoDbModel> query = _appDbContext.OrdensServico.Where(os => os.Ativo).Include(os => os.Insumos).Include(os => os.Pecas).Include(os => os.Servicos);
+            IQueryable<OrdemServicoDbModel> query = _appDbContext.OrdensServico
+                                                                .Where(os => os.Ativo
+                                                                    && os.StatusOS != EStatusOS.Finalizada.ToString()
+                                                                    && os.StatusOS != EStatusOS.Entregue.ToString())
+                                                                .Include(os => os.Insumos)
+                                                                .Include(os => os.Pecas)
+                                                                .Include(os => os.Servicos)
+                                                                .OrderBy(os =>
+                                                                    os.StatusOS == EStatusOS.EmExecucao.ToString() ? 1 :
+                                                                    os.StatusOS == EStatusOS.AguardandoAprovacao.ToString() ? 2 :
+                                                                    os.StatusOS == EStatusOS.EmDiagnostico.ToString() ? 3 :
+                                                                    os.StatusOS == EStatusOS.Recebida.ToString() ? 4 :
+                                                                    5)
+                                                                .ThenBy(os => os.DataCriacao);
 
             var total = await query.CountAsync(ct);
 

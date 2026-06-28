@@ -12,7 +12,7 @@ namespace API.EndPoints.Usuarios
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("api/Login", async (AppDbContext appDbContext, JwtService jwtService, [FromBody] LoginRequestDTO request, CancellationToken ct) =>
+            app.MapPost("api/login", async (AppDbContext appDbContext, JwtService jwtService, [FromBody] LoginRequestDTO request, CancellationToken ct) =>
             {
                 var dataSource = new UsuarioDataSource(appDbContext);
                 var controller = new UsuarioController(dataSource);

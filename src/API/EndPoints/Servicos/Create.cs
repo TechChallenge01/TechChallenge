@@ -13,7 +13,7 @@ namespace API.EndPoints.Servicos
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("api/Servicos", async (AppDbContext appDbContext, HttpContext httpContext, [FromBody] ServicoRequestDTO request, CancellationToken ct) =>
+            app.MapPost("api/servicos", async (AppDbContext appDbContext, HttpContext httpContext, [FromBody] ServicoRequestDTO request, CancellationToken ct) =>
             {
                 var IdUsuario = httpContext.User.ObterIdUsuario();
                 IServicoDataSource dataSource = new ServicoDataSource(appDbContext);

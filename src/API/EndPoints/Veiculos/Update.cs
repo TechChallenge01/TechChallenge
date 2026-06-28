@@ -13,7 +13,7 @@ namespace API.EndPoints.Veiculos
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPut("api/Veiculos/{id}", async (AppDbContext appDbContext, HttpContext httpContext,Guid id, [FromBody] VeiculoRequestDTO request, CancellationToken ct) =>
+            app.MapPut("api/veiculos/{id}", async (AppDbContext appDbContext, HttpContext httpContext,Guid id, [FromBody] VeiculoRequestDTO request, CancellationToken ct) =>
             {
                 var idUsuario = httpContext.User.ObterIdUsuario();
                 IVeiculoDataSource dataSource = new VeiculoDataSource(appDbContext);

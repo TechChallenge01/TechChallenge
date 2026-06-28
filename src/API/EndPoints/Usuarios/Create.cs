@@ -12,7 +12,7 @@ namespace API.EndPoints.Usuarios
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("api/Usuario/", async (AppDbContext appDbContext, HttpContext httpContext, [FromBody] CriarUsuarioRequestDTO request, CancellationToken ct) =>
+            app.MapPost("api/usuarios", async (AppDbContext appDbContext, HttpContext httpContext, [FromBody] CriarUsuarioRequestDTO request, CancellationToken ct) =>
             {
                 var idUsuario = httpContext.User.ObterIdUsuario();
                 var usuarioDataSource = new UsuarioDataSource(appDbContext);

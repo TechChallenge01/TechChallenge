@@ -2,7 +2,6 @@ using Application.Controllers.OrdensServicos;
 using Application.Interfaces;
 using Infra.Context;
 using Infra.DataSources;
-using Microsoft.AspNetCore.Mvc;
 using Shared.Result;
 
 namespace API.EndPoints.OrdemServicos
@@ -11,7 +10,7 @@ namespace API.EndPoints.OrdemServicos
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapGet("/api/ordensservico/{id}", async (AppDbContext appDbContext, [FromRoute] Guid id, CancellationToken ct) =>
+            app.MapGet("/api/ordemServico/{id}", async (AppDbContext appDbContext, Guid id, CancellationToken ct) =>
             {
                 IOrdemServicoDataSource dataSource = new OrdemServicoDataSource(appDbContext);
                 var controller = new OrdemServicoController(dataSource);

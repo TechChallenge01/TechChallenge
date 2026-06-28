@@ -11,7 +11,7 @@ namespace API.EndPoints.OrdemServicos
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapGet("/api/OrdemServico", async (AppDbContext appDbContext, [FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken ct = default) =>
+            app.MapGet("/api/ordemServico", async (AppDbContext appDbContext, [FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken ct = default) =>
             {
                 IOrdemServicoDataSource dataSource = new OrdemServicoDataSource(appDbContext);
                 var controller = new OrdemServicoController(dataSource);

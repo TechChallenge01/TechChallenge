@@ -1,5 +1,6 @@
 ﻿using API.EndPoints;
 using Infra.Context;
+using Infra.DbInitializer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Scalar.AspNetCore;
@@ -52,7 +53,7 @@ namespace API.Extensions
             {
                 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-                //await DbSeeds.Seed(context);
+                await DbSeeds.Seed(context);
             }
 
             return app;

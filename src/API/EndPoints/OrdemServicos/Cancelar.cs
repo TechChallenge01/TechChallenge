@@ -10,7 +10,7 @@ namespace API.EndPoints.OrdemServicos
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPut("api/OrdemServico/{id}/Cancelar", async (AppDbContext appDbContext, HttpContext httpContext,Guid id, CancellationToken ct) =>
+            app.MapPut("api/ordemServico/{id}/Cancelar", async (AppDbContext appDbContext, HttpContext httpContext,Guid id, CancellationToken ct) =>
             {
                 var idUsuario = httpContext.User.ObterIdUsuario();
                 var dataSource = new OrdemServicoDataSource(appDbContext);

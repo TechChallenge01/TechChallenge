@@ -107,7 +107,7 @@ namespace Infra.DataSources
                 {
                     DDD = cliente.DDD,
                     DDI = cliente.DDI,
-                    Numero = cliente.Numero
+                    Numero = cliente.NumeroTelefone
                 },
                 Endereco = new EnderecoDTO
                 {
@@ -145,7 +145,7 @@ namespace Infra.DataSources
                 {
                     DDD = c.DDD,
                     DDI = c.DDI,
-                    Numero = c.Numero
+                    Numero = c.NumeroTelefone
                 },
                 Endereco = new EnderecoDTO
                 {
