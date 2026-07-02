@@ -372,7 +372,7 @@ namespace Domain.test.Tests
             Assert.Equal(ordemServico.StatusOS, EStatusOS.Finalizada.ToString());
             Assert.Equal(ordemServico.TempoExecucao, ordemServico.TerminoExecucao - ordemServico.InicioExecucao);
             Assert.True(Math.Abs((ordemServico.Servicos.First().DataTerminoExecucao!.Value - ordemServico.TerminoExecucao!.Value).TotalMinutes) < 1);
-            }
+        }
 
         [Fact]
         public void CriarOrdemServico_EntregarServico_DeveRealizarComSucesso()
@@ -398,8 +398,6 @@ namespace Domain.test.Tests
             // Assert
             Assert.Equal(ordemServico.StatusOS, EStatusOS.Entregue.ToString());
             Assert.Equal(ordemServico.TempoExecucao, ordemServico.TerminoExecucao - ordemServico.InicioExecucao);
-            }
-
-
+        }
     }
 }
