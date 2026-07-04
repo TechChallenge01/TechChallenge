@@ -23,6 +23,9 @@ namespace Application.Gateways.Usuarios
         {
             var usuarioDto = await _usuarioDataSource.GetByEmail(Email, ct);
 
+            if (usuarioDto is null || !usuarioDto.Ativo)
+                return null;
+
             Enum.TryParse<EPerfilUsuario>(usuarioDto.Perfil, out var perfilEnum);
 
             var usuario = new Usuario(usuarioDto.Id, usuarioDto.Nome, usuarioDto.Email, usuarioDto.SenhaHash, usuarioDto.Perfil);
