@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ${JOB_NAME}
+  namespace: techchallenger-ns
+spec:
+  backoffLimit: 2
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: migrate
+          image: ${IMAGE}
+          # Ajuste o comando conforme a estratégia de migration escolhida:
+          # 1) Se usar EF Core migration bundle empacotado na imagem:
+          command: ["/app/efbundle"]
+          # 2) Se preferir rodar via "dotnet ef database update" (precisa do SDK/tooling na imagem):
+          # command: ["dotnet", "ef", "database", "update"]
+          envFrom:
+            - configMapRef:
+                name: techchallenger-config
+            - secretRef:
+                name: techchallenger-secrets
