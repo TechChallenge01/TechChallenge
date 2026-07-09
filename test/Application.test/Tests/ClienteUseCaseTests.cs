@@ -65,7 +65,7 @@ public class ClienteUseCaseTests
     }
 
     [Fact]
-    public async Task CriarCliente_ComCpfJaCadastrado_DeveThrowArgumentException()
+    public async Task CriarCliente_ComCpfJaCadastrado_DeveThrowInvalidOperationException()
     {
         var mock = CriarMockDataSource();
         mock.Setup(m => m.GetByCpf(It.IsAny<string>(), It.IsAny<CancellationToken>()))
@@ -73,7 +73,7 @@ public class ClienteUseCaseTests
         var gateway = ClienteGateway.Create(mock.Object);
         var useCase = CreateUseCase.Create(gateway);
 
-        await Assert.ThrowsAsync<ArgumentException>(() =>
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
             useCase.Run(CriarClienteRequestDTO(), Guid.NewGuid(), CancellationToken.None));
     }
 

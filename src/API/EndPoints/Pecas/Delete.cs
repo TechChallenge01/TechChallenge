@@ -16,10 +16,11 @@ public class Delete : IEndpoint
         {
             var idUsuario = httpContext.User.ObterIdUsuario();
             IPecaDataSource dataSource = new PecaDataSource(appDbContext);
+            IEstoqueDataSource estoqueDataSource = new EstoqueDataSource(appDbContext);
             var controller = new PecaController(dataSource);
-            var response = await controller.Delete(id, idUsuario, ct);
+            var response = await controller.Delete(id, idUsuario, estoqueDataSource, ct);
 
-            return response.ToResult();
+            return response.ToMinimalResult();
         }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Almoxarifado"));
     }
 }

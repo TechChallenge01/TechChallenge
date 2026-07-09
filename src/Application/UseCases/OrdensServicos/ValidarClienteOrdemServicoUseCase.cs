@@ -64,13 +64,13 @@ namespace Application.UseCases.OrdensServicos
                 }
 
             }
-            catch (ArgumentException ex)
+            catch (ArgumentException)
             {
-                throw new ArgumentException(ex.Message);
+                throw;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw new Exception(ex.Message);
+                throw;
             }
         }
     }

@@ -18,7 +18,7 @@ namespace API.EndPoints.Veiculos
                 var controller = new VeiculoController(dataSource);
                 var response = await controller.Delete(id, idUsuario, ct);
 
-                return response.ToResult();
+                return response.ToMinimalResult();
             }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Funcionario"));
         }
     }

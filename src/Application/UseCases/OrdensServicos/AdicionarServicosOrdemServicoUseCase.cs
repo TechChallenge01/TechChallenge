@@ -21,7 +21,7 @@ namespace Application.UseCases.OrdensServicos
 
         public async Task Run(ICollection<OrdemServicoServicoRequestDTO> servicosRequest, OrdemServico ordemServico, Guid idUsuario, CancellationToken ct)
         {
-            if (servicosRequest.Any())
+            if (!servicosRequest.Any())
                 return;
 
             var servicosAgrupados = servicosRequest

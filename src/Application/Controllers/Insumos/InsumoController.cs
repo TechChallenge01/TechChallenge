@@ -1,4 +1,5 @@
-﻿using Application.Gateways.Insumos;
+﻿using Application.Gateways.Estoques;
+using Application.Gateways.Insumos;
 using Application.Interfaces;
 using Application.Presenters.Insumos;
 using Application.UseCases.Insumos;
@@ -102,19 +103,24 @@ public class InsumoController
         {
             return presenter.BadRequest(ex.Message);
         }
+        catch (KeyNotFoundException ex)
+        {
+            return presenter.NotFound(ex.Message);
+        }
         catch (Exception ex)
         {
             return presenter.InternalError(ex.Message);
         }
     }
     
-    public async Task<ICommandResult> Delete(Guid id, Guid idUsuario, CancellationToken ct)
+    public async Task<ICommandResult> Delete(Guid id, Guid idUsuario, IEstoqueDataSource estoqueDataSource, CancellationToken ct)
     {
         var presenter = new InsumoPresenter("Insumo deletado com sucesso!");
         try
         {
             var insumoGateway = InsumoGateway.Create(_dataSource);
-            var userCase = DeleteUseCase.Create(insumoGateway);
+            var estoqueGateway = EstoqueGateway.Create(estoqueDataSource);
+            var userCase = DeleteUseCase.Create(insumoGateway, estoqueGateway);
             await userCase.Run(idUsuario, id, ct);
 
             return presenter.NoContent("Insumo deletado com sucesso!");
@@ -122,6 +128,10 @@ public class InsumoController
         catch (ArgumentException ex)
         {
             return presenter.BadRequest(ex.Message);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return presenter.NotFound(ex.Message);
         }
         catch (Exception ex)
         {

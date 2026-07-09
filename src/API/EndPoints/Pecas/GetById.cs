@@ -1,3 +1,4 @@
+using API.Extensions;
 ﻿using Application.Controllers.Pecas;
 using Application.Interfaces;
 using Infra.Context;
@@ -16,7 +17,7 @@ public class GetById : IEndpoint
             var controller = new PecaController(dataSource);
             var response = await controller.GetById(id, ct);
             
-            return response.ToResult();
+            return response.ToMinimalResult();
         }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Funcionario", "Mecanico", "Almoxarifado"));
     }
 }

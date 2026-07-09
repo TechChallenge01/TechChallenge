@@ -21,6 +21,11 @@ public class UpdateUseCase
     {
         try
         {
+            if (string.IsNullOrWhiteSpace(insumoRequest.Nome))
+                throw new ArgumentException("O nome do insumo é obrigatório.");
+            if (insumoRequest.CustoUnitario < 0)
+                throw new ArgumentException("O custo unitário não pode ser negativo.");
+
             var insumo = await _insumoGateway.GetById(idInsumo, ct);
 
             if (insumo is null)

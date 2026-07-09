@@ -1,3 +1,4 @@
+using API.Extensions;
 using Application.Controllers.OrdensServicos;
 using Application.Interfaces;
 using Infra.Context;
@@ -16,7 +17,7 @@ namespace API.EndPoints.OrdemServicos
                 var controller = new OrdemServicoController(dataSource);
                 var response = await controller.GetById(id, ct);
 
-                return response.ToResult();
+                return response.ToMinimalResult();
             }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Funcionario", "Mecanico", "Cliente"));
         }
     }

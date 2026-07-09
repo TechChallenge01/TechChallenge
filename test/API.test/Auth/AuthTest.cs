@@ -29,7 +29,7 @@ public class AuthTest : IClassFixture<ApiWebApplicationFactory>, IAsyncLifetime
             Senha = "12345678"
         };
 
-        var result = await client.PostAsJsonAsync("/api/auth/login", user);
+        var result = await client.PostAsJsonAsync("/api/login", user);
 
         Assert.Equal(HttpStatusCode.OK, result.StatusCode);
     }
@@ -44,7 +44,7 @@ public class AuthTest : IClassFixture<ApiWebApplicationFactory>, IAsyncLifetime
             Senha = "32165465414230321"
         };
 
-        var result = await client.PostAsJsonAsync("/api/auth/login", user);
+        var result = await client.PostAsJsonAsync("/api/login", user);
 
         Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
     }

@@ -1,4 +1,5 @@
-﻿using Application.Gateways.Pecas;
+﻿using Application.Gateways.Estoques;
+using Application.Gateways.Pecas;
 using Application.Interfaces;
 using Application.UseCases.Pecas;
 using Moq;
@@ -86,7 +87,9 @@ public class PecaUseCaseTests
         var id = Guid.NewGuid();
         var mock = CriarMockDataSource(id);
         var gateway = PecaGateway.Create(mock.Object);
-        var useCase = DeleteUseCase.Create(gateway);
+        var mockEstoque = new Mock<IEstoqueDataSource>();
+        var estoqueGateway = EstoqueGateway.Create(mockEstoque.Object);
+        var useCase = DeleteUseCase.Create(gateway, estoqueGateway);
 
         await useCase.Run(Guid.NewGuid(), id, CancellationToken.None);
 
@@ -98,9 +101,11 @@ public class PecaUseCaseTests
     {
         var mock = new Mock<IPecaDataSource>();
         mock.Setup(m => m.GetById(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((PecaInputDTO)null);
+            .ReturnsAsync((PecaInputDTO?)null);
         var gateway = PecaGateway.Create(mock.Object);
-        var useCase = DeleteUseCase.Create(gateway);
+        var mockEstoque = new Mock<IEstoqueDataSource>();
+        var estoqueGateway = EstoqueGateway.Create(mockEstoque.Object);
+        var useCase = DeleteUseCase.Create(gateway, estoqueGateway);
 
         await Assert.ThrowsAsync<KeyNotFoundException>(() =>
             useCase.Run(Guid.NewGuid(), Guid.NewGuid(), CancellationToken.None));

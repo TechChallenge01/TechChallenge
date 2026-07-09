@@ -13,13 +13,13 @@ public class Movimentar : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("/api/estoques/movimentar", async (AppDbContext appDbContext, HttpContext httpContext, [FromBody] EstoqueRequestDTO request, CancellationToken ct) =>
+        app.MapPost("/api/estoques", async (AppDbContext appDbContext, HttpContext httpContext, [FromBody] EstoqueRequestDTO request, CancellationToken ct) =>
         {
             var idUsuario = httpContext.User.ObterIdUsuario();
             IEstoqueDataSource dataSource = new EstoqueDataSource(appDbContext);
             var controller = new EstoqueController(dataSource);
             var response = await controller.Movimentar(request, idUsuario, ct);
-            return response.ToResult();
+            return response.ToMinimalResult();
         }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Funcionario", "Almoxarifado"));
     }
 }

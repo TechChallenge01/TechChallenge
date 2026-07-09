@@ -113,7 +113,7 @@ public class EstoqueGateway
         if (response is null)
             return null;
 
-        return response.Select(e => new Estoque(null, e.PecaId, e.QuantidadeDisponivel, e.IdUsuarioCriacao, e.DataCriacao)).ToList();
+        return response.Select(e => new Estoque(e.Id, e.InsumoId, e.PecaId, e.QuantidadeDisponivel, e.QuantidadeReservada, e.IdUsuarioCriacao, e.DataCriacao)).ToList();
     }
     public async Task<List<Estoque>?> GetByInsumosIds(List<Guid> ids, CancellationToken ct)
     {
@@ -122,7 +122,7 @@ public class EstoqueGateway
         if (response is null)
             return null;
 
-        return response.Select(e => new Estoque(e.InsumoId, null, e.QuantidadeDisponivel, e.IdUsuarioCriacao, e.DataCriacao)).ToList();
+        return response.Select(e => new Estoque(e.Id, e.InsumoId, e.PecaId, e.QuantidadeDisponivel, e.QuantidadeReservada, e.IdUsuarioCriacao, e.DataCriacao)).ToList();
     }
 
 }

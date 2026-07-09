@@ -26,13 +26,15 @@ namespace Application.UseCases.Veiculos
         {
             try
             {
+                var placa = new Placa(veiculo.Placa);
+
                 var clienteUseCase = Clientes.GetByIdUseCase.Create(_clienteGateway);
-                var cliente = clienteUseCase.Run(veiculo.ClienteId, ct);
+                var cliente = await clienteUseCase.Run(veiculo.ClienteId, ct);
 
                 if (cliente is null)
                     throw new KeyNotFoundException("Cliente não encontrado!");
 
-                var veiculoEntity = new Veiculo(veiculo.Modelo, veiculo.MarcaVeiculo, veiculo.ClienteId, veiculo.Ano, new Placa(veiculo.Placa), veiculo.Cor, usuarioCriacaoId);
+                var veiculoEntity = new Veiculo(veiculo.Modelo, veiculo.MarcaVeiculo, veiculo.ClienteId, veiculo.Ano, placa, veiculo.Cor, usuarioCriacaoId);
 
                 await _veiculoGateway.Create(veiculoEntity, ct);
 

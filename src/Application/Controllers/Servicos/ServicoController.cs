@@ -48,7 +48,7 @@ namespace Application.Controllers.Servicos
                 var servico = await useCase.Run(id, ct);
 
                 if(servico is null)
-                    presenter.NoContent();
+                    return presenter.NotFound<ServicoOutputDTO>("Serviço não encontrado");
 
                 return presenter.TransformObject(servico);
             }

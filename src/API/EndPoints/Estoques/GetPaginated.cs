@@ -1,3 +1,4 @@
+using API.Extensions;
 ﻿using Application.Controllers.Estoques;
 using Application.Interfaces;
 using Infra.Context;
@@ -16,7 +17,7 @@ public class GetPaginated : IEndpoint
             IEstoqueDataSource dataSource = new EstoqueDataSource(appDbContext);
             var controller = new EstoqueController(dataSource);
             var response = await controller.GetPaginated(page, pageSize, ct);
-            return response.ToResult();
+            return response.ToMinimalResult();
         }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Funcionario", "Mecanico", "Almoxarifado"));
     }
 }

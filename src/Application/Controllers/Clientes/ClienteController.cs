@@ -73,6 +73,10 @@ namespace Application.Controllers.Clientes
                 var idCliente = await useCase.Run(request, idUsuario, ct);
                 return presenter.Created(idCliente);
             }
+            catch (InvalidOperationException ex)
+            {
+                return presenter.Conflict<Guid>(ex.Message);
+            }
             catch (ArgumentException ex)
             {
                 return presenter.BadRequest<Guid>(ex.Message);

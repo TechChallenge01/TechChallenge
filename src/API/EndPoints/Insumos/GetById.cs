@@ -1,3 +1,4 @@
+using API.Extensions;
 ﻿using Infra.Context;
 using Shared.Result;
 using Application.Interfaces;
@@ -15,7 +16,7 @@ public class GetById : IEndpoint
             var controller = new InsumoController(dataSource);
             var response = await controller.GetById(id, ct);
 
-            return response.ToResult();
+            return response.ToMinimalResult();
         }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Funcionario", "Mecanico", "Almoxarifado"));
     }
 }

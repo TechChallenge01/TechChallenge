@@ -1,3 +1,4 @@
+using Application.Gateways.Estoques;
 using Application.Gateways.Insumos;
 using Application.Interfaces;
 using Application.UseCases.Insumos;
@@ -103,7 +104,9 @@ public class InsumoUseCaseTests
         var id = Guid.NewGuid();
         var mock = CriarMockDataSource(id);
         var gateway = InsumoGateway.Create(mock.Object);
-        var useCase = DeleteUseCase.Create(gateway);
+        var mockEstoque = new Mock<IEstoqueDataSource>();
+        var estoqueGateway = EstoqueGateway.Create(mockEstoque.Object);
+        var useCase = DeleteUseCase.Create(gateway, estoqueGateway);
 
         await useCase.Run(Guid.NewGuid(), id, CancellationToken.None);
 
@@ -113,16 +116,18 @@ public class InsumoUseCaseTests
     }
 
     [Fact]
-    public async Task DeletarInsumo_InsumoNaoEncontrado_DeveThrowArgumentNullException()
+    public async Task DeletarInsumo_InsumoNaoEncontrado_DeveThrowKeyNotFoundException()
     {
         var mock = new Mock<IInsumoDataSource>();
         mock.Setup(m => m.GetById(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((InsumoInputDTO)null);
+            .ReturnsAsync((InsumoInputDTO?)null);
 
         var gateway = InsumoGateway.Create(mock.Object);
-        var useCase = DeleteUseCase.Create(gateway);
+        var mockEstoque = new Mock<IEstoqueDataSource>();
+        var estoqueGateway = EstoqueGateway.Create(mockEstoque.Object);
+        var useCase = DeleteUseCase.Create(gateway, estoqueGateway);
 
-        await Assert.ThrowsAsync<ArgumentNullException>(() =>
+        await Assert.ThrowsAsync<KeyNotFoundException>(() =>
             useCase.Run(Guid.NewGuid(), Guid.NewGuid(), CancellationToken.None));
     }
 

@@ -34,13 +34,13 @@ namespace Application.UseCases.Clientes
                 {
                     var clienteValidation = await _clienteGateway.GetByCpf(new Cpf(request.Cpf), ct);
                     if (clienteValidation is not null)
-                        throw new ArgumentException("CPF já cadastrado em outro cliente");
+                        throw new InvalidOperationException("CPF já cadastrado em outro cliente");
                 }
                 else
                 {
                     var clienteValidation = await _clienteGateway.GetByCnpj(new Cnpj(request.Cnpj), ct);
                     if (clienteValidation is not null)
-                        throw new ArgumentException("Cnpj já cadastrado em outro cliente");
+                        throw new InvalidOperationException("Cnpj já cadastrado em outro cliente");
                 }
                 Cliente cliente;
                 var endereco = new Endereco(request.Endereco.Logradouro, request.Endereco.Numero, request.Endereco.Complemento, request.Endereco.Bairro, request.Endereco.Cidade, request.Endereco.Uf, request.Endereco.Cep);
@@ -58,6 +58,10 @@ namespace Application.UseCases.Clientes
 
                 await _clienteGateway.Create(cliente, ct);
                 return cliente.Id;
+            }
+            catch(InvalidOperationException)
+            {
+                throw;
             }
             catch(ArgumentException ex)
             {

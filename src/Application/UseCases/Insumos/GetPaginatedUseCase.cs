@@ -18,6 +18,9 @@ public class GetPaginatedUseCase
 
     public async Task<(List<Insumo> Insumos, int total)> Run(int page, int pageSize, CancellationToken ct)
     {
+        if (page <= 0)
+            throw new ArgumentException("A página deve ser maior que zero.");
+
         try
         {
             var response = await _insumoGateway.GetPaginated(page, pageSize, ct);

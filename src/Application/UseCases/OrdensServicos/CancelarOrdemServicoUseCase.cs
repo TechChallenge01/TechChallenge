@@ -68,6 +68,10 @@ namespace Application.UseCases.OrdensServicos
             {
                 throw new KeyNotFoundException(ex.Message);
             }
+            catch(InvalidOperationException)
+            {
+                throw;
+            }
             catch(Exception ex)
             {
                 throw new Exception(ex.Message);

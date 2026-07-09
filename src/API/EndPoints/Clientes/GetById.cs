@@ -1,3 +1,4 @@
+using API.Extensions;
 ﻿using Application.Controllers.Clientes;
 using Application.Interfaces;
 using Infra.Context;
@@ -15,7 +16,7 @@ namespace API.EndPoints.Clientes
                 IClienteDataSource dataSource = new ClienteDataSource(appDbContext);
                 var controller = new ClienteController(dataSource);
                 var response = await controller.GetById(id, ct);
-                return response.ToResult();
+                return response.ToMinimalResult();
             }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Funcionario"));
         }
     }

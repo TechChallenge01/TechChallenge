@@ -13,7 +13,7 @@ namespace API.EndPoints.OrdemServicos
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPut("api/ordemServico/{id}/Realizar", async (AppDbContext appDbContext, EmailService emailService, HttpContext httpContext, Guid id, [FromBody] DiagnosticoRequestDTO request, CancellationToken ct) =>
+            app.MapPut("api/ordemServico/{id}/RealizarDiagnostico", async (AppDbContext appDbContext, EmailService emailService, HttpContext httpContext, Guid id, [FromBody] DiagnosticoRequestDTO request, CancellationToken ct) =>
             {
                 var idUsuario = httpContext.User.ObterIdUsuario();
                 var dataSource = new OrdemServicoDataSource(appDbContext);
@@ -28,7 +28,7 @@ namespace API.EndPoints.OrdemServicos
 
                 var response = await controller.RealizarDiagnostico(id, idUsuario, request, pecaDataSource, servicoDataSource, insumoDataSource, estoqueDataSource, clienteDataSource, emailService, ct);
 
-                return response.ToResult();
+                return response.ToMinimalResult();
             }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Mecanico"));
         }
     }

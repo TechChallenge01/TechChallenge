@@ -1,4 +1,5 @@
-﻿using Application.Gateways.Pecas;
+﻿using Application.Gateways.Estoques;
+using Application.Gateways.Pecas;
 using Application.Interfaces;
 using Application.Presenters.Pecas;
 using Application.UseCases.Pecas;
@@ -111,13 +112,14 @@ public class PecaController
         }
     }
 
-    public async Task<ICommandResult> Delete(Guid id, Guid idUsuario, CancellationToken ct)
+    public async Task<ICommandResult> Delete(Guid id, Guid idUsuario, IEstoqueDataSource estoqueDataSource, CancellationToken ct)
     {
         var presenter = new PecaPresenter("Peça deletada com sucesso!");
         try
         {
             var gateway = PecaGateway.Create(_dataSource);
-            var useCase = DeleteUseCase.Create(gateway);
+            var estoqueGateway = EstoqueGateway.Create(estoqueDataSource);
+            var useCase = DeleteUseCase.Create(gateway, estoqueGateway);
             await useCase.Run(idUsuario, id, ct);
 
             return presenter.NoContent("Peça deletada com sucesso!");

@@ -19,7 +19,7 @@ namespace API.EndPoints.Servicos
                 var controller = new ServicoController(dataSource);
                 var response = await controller.Delete(idUsuario, id, ct);
 
-                return response.ToResult();
+                return response.ToMinimalResult();
             }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Funcionario"));
         }
     }

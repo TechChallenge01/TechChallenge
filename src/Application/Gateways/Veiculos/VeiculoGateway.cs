@@ -49,7 +49,8 @@ namespace Application.Gateways.Veiculos
                 UsuarioCriacaoId = veiculo.IdUsuarioCriacao,
                 MarcaVeiculo = veiculo.MarcaVeiculo,
                 Modelo = veiculo.Modelo,
-                Placa = veiculo.Placa
+                Placa = veiculo.Placa,
+                Ativo = true
             };
 
             await _dataSource.Create(veiculoInput, ct);

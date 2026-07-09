@@ -1,3 +1,4 @@
+using API.Extensions;
 ﻿using Infra.Context;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Result;
@@ -17,7 +18,7 @@ public class GetPaginated : IEndpoint
             var controller = new InsumoController(dataSource);
             var response = await controller.GetPaginated(page, pageSize, ct);
             
-            return response.ToResult();
+            return response.ToMinimalResult();
         }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Funcionario", "Mecanico", "Almoxarifado"));
     }
 }

@@ -1,6 +1,7 @@
-﻿using Application.Servicos.DTOs.Requests;
-using Infra.Context;
+﻿using Infra.Context;
+using Infra.DbModel;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.DTOs.Servicos.Requests;
 using System.Net;
 using System.Net.Http.Json;
 
@@ -8,12 +9,16 @@ namespace API.test.Servicos;
 
 public class ServicoTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
 {
-    const string ApiKey = "api/Servico";
+    const string ApiKey = "api/servicos";
 
     private readonly HttpClient _client;
     private readonly ApiWebApplicationFactory _factory;
     private readonly IntegrationTestFixture _fixture;
-    public async Task InitializeAsync() => await _factory.ResetDatabaseAsync();
+    public async Task InitializeAsync()
+    {
+        await _factory.ResetDatabaseAsync();
+        _client.DefaultRequestHeaders.Authorization = await _fixture.AuthenticateAsync(_factory, _client);
+    }
     public Task DisposeAsync() => Task.CompletedTask;
 
     public ServicoTest(IntegrationTestFixture fixture)
@@ -60,12 +65,10 @@ public class ServicoTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
         {
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-            var servico = new Domain.Entities.Servico(
-                "Alinhamento",
-                "Alinhamento e balanceamento 3D",
-                120.00m,
-                Guid.Empty,
-                DateTime.UtcNow
+            var admin = context.Usuarios.First();
+            var servico = new ServicoDbModel(
+                Guid.NewGuid(), "Alinhamento", "Alinhamento e balanceamento 3D", 120.00m,
+                null, admin.Id, DateTime.UtcNow, null, null, true
             );
 
             context.Servicos.Add(servico);
@@ -89,7 +92,11 @@ public class ServicoTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
         {
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-            var servico = new Domain.Entities.Servico("Lavagem", "Lavagem simples", 50.00m, Guid.Empty, DateTime.UtcNow);
+            var admin = context.Usuarios.First();
+            var servico = new ServicoDbModel(
+                Guid.NewGuid(), "Lavagem", "Lavagem simples", 50.00m,
+                null, admin.Id, DateTime.UtcNow, null, null, true
+            );
             context.Servicos.Add(servico);
             await context.SaveChangesAsync();
             servicoId = servico.Id;
@@ -118,7 +125,11 @@ public class ServicoTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
         {
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-            var servico = new Domain.Entities.Servico("Revisão", "Revisão Geral", 200.00m, Guid.Empty, DateTime.UtcNow);
+            var admin = context.Usuarios.First();
+            var servico = new ServicoDbModel(
+                Guid.NewGuid(), "Revisão", "Revisão Geral", 200.00m,
+                null, admin.Id, DateTime.UtcNow, null, null, true
+            );
             context.Servicos.Add(servico);
             await context.SaveChangesAsync();
             servicoId = servico.Id;
@@ -213,7 +224,11 @@ public class ServicoTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
         using (var scope = _factory.Services.CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            var servico = new Domain.Entities.Servico("Teste", "Desc", 10m, Guid.Empty, DateTime.UtcNow);
+            var admin = context.Usuarios.First();
+            var servico = new ServicoDbModel(
+                Guid.NewGuid(), "Teste", "Desc", 10m,
+                null, admin.Id, DateTime.UtcNow, null, null, true
+            );
             context.Servicos.Add(servico);
             await context.SaveChangesAsync();
             servicoId = servico.Id;

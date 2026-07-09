@@ -19,7 +19,7 @@ namespace API.EndPoints.Clientes
                 var controller = new ClienteController(dataSource);
                 var response = await controller.Delete(idUsuario, id, ct);
 
-                return response.ToResult();
+                return response.ToMinimalResult();
             }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Funcionario"));
         }
     }

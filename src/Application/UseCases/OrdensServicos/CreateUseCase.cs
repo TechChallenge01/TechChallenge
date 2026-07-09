@@ -70,17 +70,17 @@ namespace Application.UseCases.OrdensServicos
 
                 return ordemServico.Id;
             }
-            catch(KeyNotFoundException ex)
+            catch(KeyNotFoundException)
             {
-                throw new KeyNotFoundException(ex.Message);
+                throw;
             }
-            catch(ArgumentException ex)
+            catch(ArgumentException)
             {
-                throw new ArgumentException(ex.Message);
+                throw;
             }
-            catch(Exception ex)
+            catch(Exception)
             {
-                throw new Exception(ex.Message);
+                throw;
             }
         }
     }

@@ -19,6 +19,9 @@ namespace Application.UseCases.Veiculos
 
         public async Task<(List<Veiculo> veiculos, int total)> Run(int page, int pageSize, CancellationToken ct)
         {
+            if (page <= 0)
+                throw new ArgumentException("A página deve ser maior que zero.");
+
             try
             {
                 var response = await _veiculoGateway.GetPaginated(page, pageSize, ct);

@@ -1,3 +1,4 @@
+using API.Extensions;
 ﻿using Application.Auth.DTOs.Requests;
 using Application.Controllers.Usuarios;
 using Infra.Context;
@@ -19,7 +20,7 @@ namespace API.EndPoints.Usuarios
 
                 var response = await controller.Login(request, jwtService, ct);
 
-                return response.ToResult();
+                return response.ToMinimalResult();
             });
         }
     }

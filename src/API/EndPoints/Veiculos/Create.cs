@@ -22,7 +22,7 @@ namespace API.EndPoints.Veiculos
                 var controller = new VeiculoController(dataSource);
                 var response = await controller.Create(request, idUsuario, clienteDataSource, ct);
 
-                return response.ToResult();
+                return response.ToMinimalResult();
             }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Funcionario"));
         }
     }

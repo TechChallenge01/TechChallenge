@@ -1,3 +1,4 @@
+using API.Extensions;
 ﻿using Application.Controllers.Veiculos;
 using Application.Interfaces;
 using Infra.Context;
@@ -17,7 +18,7 @@ namespace API.EndPoints.Veiculos
                 var controller = new VeiculoController(dataSource);
                 var response = await controller.GetPaginated(page, pageSize, ct);
 
-                return response.ToResult();
+                return response.ToMinimalResult();
             }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Funcionario"));
         }
     }

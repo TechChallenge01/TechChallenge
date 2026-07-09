@@ -20,7 +20,7 @@ public class Update : IEndpoint
             var controller = new PecaController(dataSource);
             var response = await controller.Update(id, request, idUsuario, ct);
 
-            return response.ToResult();
+            return response.ToMinimalResult();
         }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Almoxarifado"));
     }
 }

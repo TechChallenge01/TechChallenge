@@ -19,7 +19,7 @@ public class Update : IEndpoint
             var controller = new InsumoController(dataSource); 
             var result = await controller.Update(id, insumoRequest, idUsuario, ct);
 
-            return result.ToResult();
+            return result.ToMinimalResult();
         }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Almoxarifado"));
     }
 }

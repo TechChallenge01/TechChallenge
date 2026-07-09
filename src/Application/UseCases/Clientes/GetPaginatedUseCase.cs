@@ -19,6 +19,9 @@ namespace Application.UseCases.Clientes
 
         public async Task<(List<Cliente> Clientes, int total)> Run(int page, int pageSize, CancellationToken ct)
         {
+            if (page <= 0)
+                throw new ArgumentException("A página deve ser maior que zero.");
+
             try
             {
                 var response = await _clienteGateway.GetPaginated(page, pageSize, ct);

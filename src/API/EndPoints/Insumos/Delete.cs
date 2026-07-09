@@ -15,9 +15,10 @@ public class Delete : IEndpoint
         {
             var idUsuario = httpContext.User.ObterIdUsuario();
             IInsumoDataSource dataSource = new InsumoDataSource(appDbContext);
+            IEstoqueDataSource estoqueDataSource = new EstoqueDataSource(appDbContext);
             var controller = new InsumoController(dataSource);
-            var response = await controller.Delete(id, idUsuario, ct);
-            return response.ToResult();
+            var response = await controller.Delete(id, idUsuario, estoqueDataSource, ct);
+            return response.ToMinimalResult();
         }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Almoxarifado"));
     }
 }

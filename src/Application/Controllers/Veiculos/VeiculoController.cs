@@ -52,7 +52,7 @@ namespace Application.Controllers.Veiculos
                 var response = await useCase.Run(id, ct);
 
                 if (response is null)
-                    presenter.NotFound<VeiculoOutputDTO>("Veiculo não encontrado!");
+                    return presenter.NotFound<VeiculoOutputDTO>("Veiculo não encontrado!");
 
                 return presenter.TransformObject(response);
             }

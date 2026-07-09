@@ -95,5 +95,13 @@ namespace Application.Presenters.Clientes
         {
             return new CommandResult<T> { Message = message , StatusCode = HttpStatusCode.NotFound};
         }
+        public ICommandResult Conflict(string message)
+        {
+            return new CommandResult { Message = message, StatusCode = HttpStatusCode.Conflict };
+        }
+        public ICommandResult<T> Conflict<T>(string message)
+        {
+            return new CommandResult<T> { Message = message, StatusCode = HttpStatusCode.Conflict };
+        }
     }
 }

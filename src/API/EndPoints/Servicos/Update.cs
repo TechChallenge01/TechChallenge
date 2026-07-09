@@ -19,7 +19,7 @@ namespace API.EndPoints.Servicos
                 var controller = new ServicoController(dataSource);
                 var result = await controller.Update(id, request, idUsuario, ct);
 
-                return result.ToResult();
+                return result.ToMinimalResult();
             }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Funcionario"));
         }
     }

@@ -28,7 +28,7 @@ namespace API.EndPoints.OrdemServicos
                 var controller = new OrdemServicoController(dataSource);
                 var response = await controller.Create(request, idUsuario,clienteDataSource, veiculoDataSource, pecaDataSource, servicoDataSource, insumoDataSource, estoqueDataSource, ct);
 
-                return response.ToResult();
+                return response.ToMinimalResult();
             }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Funcionario"));
         }
     }

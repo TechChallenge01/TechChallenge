@@ -19,6 +19,9 @@ public class GetPaginatedUseCase
 
     public async Task<(List<Peca> Pecas, int total)> Run(int page, int pageSize, CancellationToken ct)
     {
+        if (page <= 0)
+            throw new ArgumentException("A página deve ser maior que zero.");
+
         try
         {
             return await _pecaGateway.GetPaginated(page, pageSize, ct);

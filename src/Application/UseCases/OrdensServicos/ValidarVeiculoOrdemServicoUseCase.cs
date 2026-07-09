@@ -36,19 +36,19 @@ namespace Application.UseCases.OrdensServicos
                     return veiculo;
                 }
 
-                if (veiculo.ClienteId == cliente.Id)
+                if (veiculo.ClienteId != cliente.Id)
                     throw new ArgumentException("Numeração da placa existente em outro veiculo pertencente à outro cliente, realize ajustes no cadastro, antes de criar a Ordem de Serviço");
 
                 return veiculo;
 
             }
-            catch (ArgumentException ex)
+            catch (ArgumentException)
             {
-                throw new ArgumentException(ex.Message);
+                throw;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw new Exception(ex.Message);
+                throw;
             }
         }
     }

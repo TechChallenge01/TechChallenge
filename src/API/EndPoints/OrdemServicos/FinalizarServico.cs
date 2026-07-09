@@ -12,7 +12,7 @@ namespace API.EndPoints.OrdemServicos
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPut("api/ordemServico/{id}/Aprovar", async (AppDbContext appDbContext, HttpContext httpContext, Guid id,[FromBody] FinalizarServicoRequestDTO request,CancellationToken ct) =>
+            app.MapPut("api/ordemServico/{id}/FinalizarServico", async (AppDbContext appDbContext, HttpContext httpContext, Guid id,[FromBody] FinalizarServicoRequestDTO request,CancellationToken ct) =>
             {
                 var idUsuario = httpContext.User.ObterIdUsuario();
                 var dataSource = new OrdemServicoDataSource(appDbContext);
@@ -22,7 +22,7 @@ namespace API.EndPoints.OrdemServicos
 
                 var response = await controller.FinalizarServico(id, idUsuario, request, servicoDataSource, ct);
 
-                return response.ToResult();
+                return response.ToMinimalResult();
             }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Mecanico"));
         }
     }

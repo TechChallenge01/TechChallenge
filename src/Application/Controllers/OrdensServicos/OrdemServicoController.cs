@@ -116,6 +116,10 @@ namespace Application.Controllers.OrdensServicos
             {
                 return presenter.BadRequest(ex.Message);
             }
+            catch(InvalidOperationException ex)
+            {
+                return presenter.BadRequest(ex.Message);
+            }
             catch(KeyNotFoundException ex)
             {
                 return presenter.NotFound(ex.Message);
@@ -141,6 +145,10 @@ namespace Application.Controllers.OrdensServicos
                 return presenter.NoContent();
             }
             catch(ArgumentException ex)
+            {
+                return presenter.BadRequest(ex.Message);
+            }
+            catch(InvalidOperationException ex)
             {
                 return presenter.BadRequest(ex.Message);
             }
@@ -171,6 +179,10 @@ namespace Application.Controllers.OrdensServicos
             {
                 return presenter.BadRequest(ex.Message);
             }
+            catch (InvalidOperationException ex)
+            {
+                return presenter.BadRequest(ex.Message);
+            }
             catch (KeyNotFoundException ex)
             {
                 return presenter.NotFound(ex.Message);
@@ -193,6 +205,10 @@ namespace Application.Controllers.OrdensServicos
                 return presenter.NoContent();
             }
             catch (ArgumentException ex)
+            {
+                return presenter.BadRequest(ex.Message);
+            }
+            catch (InvalidOperationException ex)
             {
                 return presenter.BadRequest(ex.Message);
             }
@@ -219,6 +235,10 @@ namespace Application.Controllers.OrdensServicos
 
             }
             catch (ArgumentException ex)
+            {
+                return presenter.BadRequest(ex.Message);
+            }
+            catch (InvalidOperationException ex)
             {
                 return presenter.BadRequest(ex.Message);
             }
@@ -249,6 +269,10 @@ namespace Application.Controllers.OrdensServicos
                 return presenter.NoContent();
             }
             catch (ArgumentException ex)
+            {
+                return presenter.BadRequest(ex.Message);
+            }
+            catch (InvalidOperationException ex)
             {
                 return presenter.BadRequest(ex.Message);
             }

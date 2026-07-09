@@ -19,6 +19,9 @@ public class GetPaginatedUseCase
 
     public async Task<(List<Estoque> Estoques, int total)> Run(int page, int pageSize, CancellationToken ct)
     {
+        if (page <= 0)
+            throw new ArgumentException("A página deve ser maior que zero.");
+
         return await _estoqueGateway.GetPaginated(page, pageSize, ct);
     }
 }

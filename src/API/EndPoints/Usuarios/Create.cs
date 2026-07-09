@@ -19,7 +19,7 @@ namespace API.EndPoints.Usuarios
                 var controller = new UsuarioController(usuarioDataSource);
                 var response = await controller.CriarUsuario(request, idUsuario, ct);
 
-                return response.ToResult();
+                return response.ToMinimalResult();
             }).RequireAuthorization(policy => policy.RequireRole("Administrador"));
         }
     }

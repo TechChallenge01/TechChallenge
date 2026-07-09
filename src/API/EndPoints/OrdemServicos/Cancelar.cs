@@ -22,7 +22,7 @@ namespace API.EndPoints.OrdemServicos
 
                 var response = await controller.Cancelar(id, idUsuario, pecaDataSource, insumoDataSource, estoqueDataSource, ct);
 
-                return response.ToResult();
+                return response.ToMinimalResult();
             }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Funcionario"));
         }
     }
