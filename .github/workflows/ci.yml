@@ -1,0 +1,44 @@
+name: CI
+
+# Roda em:
+# - Pull Requests que miram release ou main (validação antes do merge)
+# - Push direto na branch release (pós-merge do PR) -> SOMENTE CI, sem deploy
+on:
+  pull_request:
+    branches: [release, main]
+  push:
+    branches: [release]
+
+permissions:
+  contents: read
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Testes automatizados
+        run: dotnet test --no-build --configuration Release --logger trx --results-directory TestResults
+
+      - name: Publicar resultados dos testes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: TestResults
+
+      - name: Build da imagem Docker (validação, sem push)
+        run: docker build -t app:ci-${{ github.sha }} .

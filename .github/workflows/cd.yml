@@ -1,0 +1,150 @@
+name: CD
+
+# Roda somente em push na main -> pipeline completo com deploy
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+env:
+  AWS_REGION: us-east-1              # ajuste para a região usada no Lab
+  ECR_REPOSITORY: techchallenger     # nome do repositório no ECR
+  EKS_CLUSTER_NAME: meu-cluster      # nome do cluster EKS
+  K8S_NAMESPACE: techchallenger-ns
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Testes automatizados
+        run: dotnet test --no-build --configuration Release --logger trx --results-directory TestResults
+
+      - name: Publicar resultados dos testes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: TestResults
+
+  build-push-image:
+    needs: build-test
+    runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.image.outputs.image }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar credenciais AWS Academy (temporárias)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login no ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build e push da imagem Docker
+        id: image
+        env:
+          REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+        run: |
+          IMAGE_URI="$REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }}"
+          docker build -t "$IMAGE_URI" .
+          docker push "$IMAGE_URI"
+          echo "image=$IMAGE_URI" >> "$GITHUB_OUTPUT"
+
+  migrate-database:
+    needs: build-push-image
+    runs-on: ubuntu-latest
+    env:
+      IMAGE: ${{ needs.build-push-image.outputs.image }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar credenciais AWS Academy (temporárias)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Atualizar kubeconfig do EKS
+        run: aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
+
+      - name: Garantir namespace e ConfigMap
+        run: |
+          kubectl apply -f k8s/namespace.yaml
+          kubectl apply -f k8s/configmap.yaml
+
+      - name: Criar/atualizar Secret do banco (a partir do GitHub Secret)
+        run: |
+          kubectl create secret generic techchallenger-secrets \
+            --namespace ${{ env.K8S_NAMESPACE }} \
+            --from-literal=ConnectionStrings__DefaultConnection="${{ secrets.RDS_CONNECTION_STRING }}" \
+            --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Rodar Job de migration no cluster
+        run: |
+          export IMAGE="${{ env.IMAGE }}"
+          export JOB_NAME="techchallenger-migrate-${{ github.sha }}"
+          envsubst < k8s/migration-job.yaml | kubectl apply -f -
+          kubectl wait --for=condition=complete --timeout=300s \
+            job/$JOB_NAME -n ${{ env.K8S_NAMESPACE }}
+          kubectl delete job/$JOB_NAME -n ${{ env.K8S_NAMESPACE }}
+
+  deploy:
+    needs: migrate-database
+    runs-on: ubuntu-latest
+    env:
+      IMAGE: ${{ needs.build-push-image.outputs.image }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar credenciais AWS Academy (temporárias)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Atualizar kubeconfig do EKS
+        run: aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
+
+      - name: Aplicar Deployment, Service e HPA
+        run: |
+          export IMAGE="${{ env.IMAGE }}"
+          envsubst < k8s/deployment.yaml | kubectl apply -f -
+          kubectl apply -f k8s/service.yaml
+          kubectl apply -f k8s/hpa.yaml
+
+      - name: Aguardar rollout
+        run: |
+          kubectl rollout status deployment/techchallenger -n ${{ env.K8S_NAMESPACE }} --timeout=300s
+
+      - name: Mostrar endereço público
+        run: |
+          kubectl get service techchallenger-service -n ${{ env.K8S_NAMESPACE }}

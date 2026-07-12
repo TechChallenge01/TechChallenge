@@ -26,7 +26,7 @@ RUN dotnet publish src/API/API.csproj \
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 
-# Variáveis de ambiente padrão — sobrescreva no docker-compose
+# Variáveis de ambiente padrão — sobrescrita pelo ConfigMap no Kubernetes
 ENV ASPNETCORE_ENVIRONMENT=Development
 ENV ASPNETCORE_URLS=http://+:8080
 

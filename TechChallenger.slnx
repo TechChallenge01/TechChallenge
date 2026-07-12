@@ -2,6 +2,33 @@
   <Folder Name="/Itens de Solução/">
     <File Path="docker-compose.yml" />
   </Folder>
+  <Folder Name="/Itens de Solução/techChallenger.Infra/" />
+  <Folder Name="/Itens de Solução/techChallenger.Infra/k8s/">
+    <File Path=".github/workflows/migration-job.yaml" />
+    <File Path="techChallenger.Infra/k8s/configmap.yaml" />
+    <File Path="techChallenger.Infra/k8s/deployment.yaml" />
+    <File Path="techChallenger.Infra/k8s/hpa.yaml" />
+    <File Path="techChallenger.Infra/k8s/namespace.yaml" />
+    <File Path="techChallenger.Infra/k8s/secret.yaml" />
+    <File Path="techChallenger.Infra/k8s/service.yaml" />
+  </Folder>
+  <Folder Name="/Itens de Solução/techChallenger.Infra/terraform/">
+    <File Path="techChallenger.Infra/terraform/ecr.tf" />
+    <File Path="techChallenger.Infra/terraform/eks.tf" />
+    <File Path="techChallenger.Infra/terraform/iam.tf" />
+    <File Path="techChallenger.Infra/terraform/outputs.tf" />
+    <File Path="techChallenger.Infra/terraform/provider.tf" />
+    <File Path="techChallenger.Infra/terraform/sqlserver.tf" />
+    <File Path="techChallenger.Infra/terraform/terraform.tfstate" />
+    <File Path="techChallenger.Infra/terraform/terraform.tfstate.backup" />
+    <File Path="techChallenger.Infra/terraform/terraform.tfvars" />
+    <File Path="techChallenger.Infra/terraform/variables.tf" />
+    <File Path="techChallenger.Infra/terraform/vpc.tf" />
+  </Folder>
+  <Folder Name="/Itens de Solução/techChallenger.Infra/workflows/">
+    <File Path=".github/workflows/cd.yml" />
+    <File Path=".github/workflows/ci.yml" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="src/API/API.csproj" />
     <Project Path="src/Application/Application.csproj" Id="d3e044ea-9a0d-4bf9-9304-a1157904cb5c" />
