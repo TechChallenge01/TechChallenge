@@ -11,7 +11,7 @@ permissions:
 env:
   AWS_REGION: us-east-1              # ajuste para a região usada no Lab
   ECR_REPOSITORY: techchallenger     # nome do repositório no ECR
-  EKS_CLUSTER_NAME: meu-cluster      # nome do cluster EKS
+  EKS_CLUSTER_NAME: techchallenge      # nome do cluster EKS
   K8S_NAMESPACE: techchallenger-ns
 
 jobs:
