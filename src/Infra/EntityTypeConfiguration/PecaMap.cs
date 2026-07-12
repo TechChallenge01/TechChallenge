@@ -36,6 +36,9 @@ namespace Infra.EntityTypeConfiguration
             builder.Property(e => e.IdUsuarioAtualizacao)
                    .IsRequired(false);
 
+            builder.Property(p => p.ValorUnitario)
+                   .HasPrecision(18, 2);
+
             builder.Property(e => e.DataAtualizacao)
                    .IsRequired(false);
         }
