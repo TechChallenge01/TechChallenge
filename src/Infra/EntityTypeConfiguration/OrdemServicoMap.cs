@@ -1,12 +1,12 @@
-﻿using Domain.Aggregates.OrdemServicoAggregates;
+﻿using Infra.DbModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infra.EntityTypeConfiguration;
 
-public class OrdemServicoMap : IEntityTypeConfiguration<OrdemServico>
+public class OrdemServicoMap : IEntityTypeConfiguration<OrdemServicoDbModel>
 {
-    public void Configure(EntityTypeBuilder<OrdemServico> builder)
+    public void Configure(EntityTypeBuilder<OrdemServicoDbModel> builder)
     {
         builder.ToTable("OrdemServico");
 

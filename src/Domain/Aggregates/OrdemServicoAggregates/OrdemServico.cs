@@ -26,8 +26,6 @@ public class OrdemServico : Base
 
     public TimeSpan TempoExecucao => TerminoExecucao.HasValue && InicioExecucao.HasValue ? TerminoExecucao.Value - InicioExecucao.Value : TimeSpan.Zero;
 
-    protected OrdemServico() {}
-
     public OrdemServico(Guid clienteId, Guid veiculoId,Guid idUsuarioCriacao) : base(idUsuarioCriacao, DateTime.UtcNow, null, null)
     {
         if(clienteId == Guid.Empty) throw new ArgumentException("O cliente é obrigatório.", nameof(clienteId));
@@ -41,6 +39,22 @@ public class OrdemServico : Base
         ValorTotal = 0;
         IdUsuarioCriacao = idUsuarioCriacao;
         DataCriacao = DataCriacao;
+    }
+
+    public OrdemServico(Guid id, Guid clienteId, Guid veiculoId, string statusOS, string? observacao, decimal valorTotal, decimal valorDesconto, DateTime? inicioExecucao, DateTime? terminoExecucao, ICollection<OrdemServicoServico> servicos, ICollection<OrdemServicoPeca> pecas, ICollection<OrdemServicoInsumo> insumos)
+    {
+        Id = id;
+        ClienteId = clienteId;
+        VeiculoId = veiculoId;
+        StatusOS = statusOS;
+        Observacao = observacao;
+        ValorTotal = valorTotal;
+        ValorDesconto = valorDesconto;
+        InicioExecucao = inicioExecucao;
+        TerminoExecucao = terminoExecucao;
+        Servicos = servicos;
+        Pecas = pecas;
+        Insumos = insumos;
     }
 
     public void IniciarDiagnostico()

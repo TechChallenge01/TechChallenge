@@ -1,11 +1,10 @@
-﻿using Application.Clientes.DTOs.Requests;
-using Application.Clientes.DTOs.Shared;
-using Bogus;
+﻿using Bogus;
 using Bogus.Extensions.Brazil;
-using Domain.Aggregates.ClienteAggregates;
-using Domain.ValueObjects;
 using Infra.Context;
+using Infra.DbModel;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.DTOs.Clientes.Request;
+using Shared.DTOs.Clientes.Shared;
 using System.Net;
 using System.Net.Http.Json;
 
@@ -13,16 +12,22 @@ namespace API.test.Clientes
 {
     public class ClienteTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
     {
-        const string ApiKey = "api/Cliente";
+        const string ApiKey = "api/clientes";
         private readonly HttpClient _client;
         private readonly ApiWebApplicationFactory _factory;
+        private readonly IntegrationTestFixture _fixture;
 
-        public async Task InitializeAsync() => await _factory.ResetDatabaseAsync();
+        public async Task InitializeAsync()
+        {
+            await _factory.ResetDatabaseAsync();
+            _client.DefaultRequestHeaders.Authorization = await _fixture.AuthenticateAsync(_factory, _client);
+        }
 
         public Task DisposeAsync() => Task.CompletedTask;
 
         public ClienteTest(IntegrationTestFixture fixture)
         {
+            _fixture = fixture;
             _client = fixture.Client;
             _factory = fixture.App;
         }
@@ -43,8 +48,7 @@ namespace API.test.Clientes
         public async Task Cliente_Get_GetPaginated_Unauthorized()
         {
             //arrange
-            var app = new ApiWebApplicationFactory();
-            using var client = app.CreateClient();
+            using var client = _factory.CreateClient();
 
             //act
             var result = await client.GetAsync(ApiKey);
@@ -59,8 +63,7 @@ namespace API.test.Clientes
             //arrange
             var faker = new Faker("pt_BR");
 
-            // CPF válido aleatório (só números)
-            var cpf = faker.Person.Cpf(includeFormatSymbols: false); // "13247904077"
+            var cpf = faker.Person.Cpf(includeFormatSymbols: false); 
             var cliente = new ClienteRequestDTO
             {
                 Nome = "Test test",
@@ -132,8 +135,6 @@ namespace API.test.Clientes
         public async Task Cliente_Post_Create_Unautorized()
         {
             //arrange
-            var app = new ApiWebApplicationFactory();            
-
             var cliente = new ClienteRequestDTO
             {
                 Nome = "Test test",
@@ -158,7 +159,7 @@ namespace API.test.Clientes
                 }
             };
 
-            using var client = app.CreateClient();
+            using var client = _factory.CreateClient();
 
             //act
             var result = await client.PostAsJsonAsync(ApiKey, cliente);
@@ -238,27 +239,23 @@ namespace API.test.Clientes
         public async Task Cliente_get_GetById_OK()
         {
             // arrange
-            var app = new ApiWebApplicationFactory();
-
             Guid clienteId;
 
-            using (var scope = app.Services.CreateScope())
+            using (var scope = _factory.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                var admin = context.Usuarios.First();
 
-                var cliente = new Cliente(
-                    "Teste",
-                    new Cpf("52998224725"),
-                    Guid.NewGuid(),
-                    new Endereco("Rua A", "123", "", "Centro", "São Paulo", "SP", "01310100"),
-                    new Telefone("11", "55", "999999999"),
-                    new Email("teste@email.com")
+                var clienteDbModel = new ClienteDbModel(
+                    Guid.NewGuid(), "Teste", "52998224725", null, "teste@email.com",
+                    "11", "55", "999999999", "Rua A", "123", null, "Centro", "01310100", "São Paulo", "SP",
+                    admin.Id, DateTime.UtcNow, null, null
                 );
 
-                context.Clientes.Add(cliente);
-                context.SaveChanges();
+                context.Clientes.Add(clienteDbModel);
+                await context.SaveChangesAsync();
 
-                clienteId = cliente.Id;
+                clienteId = clienteDbModel.Id;
             }
 
             // act
@@ -271,27 +268,23 @@ namespace API.test.Clientes
         public async Task Cliente_Put_Update_NoContent()
         {
             // arrange
-            var app = new ApiWebApplicationFactory();
-
             Guid clienteId;
 
-            using (var scope = app.Services.CreateScope())
+            using (var scope = _factory.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                var admin = context.Usuarios.First();
 
-                var cliente = new Cliente(
-                    "Teste",
-                    new Cpf("52998224725"),
-                    Guid.NewGuid(),
-                    new Endereco("Rua A", "123", "", "Centro", "São Paulo", "SP", "01310100"),
-                    new Telefone("11", "55", "999999999"),
-                    new Email("teste@email.com")
+                var clienteDbModel = new ClienteDbModel(
+                    Guid.NewGuid(), "Teste", "52998224725", null, "teste@email.com",
+                    "11", "55", "999999999", "Rua A", "123", null, "Centro", "01310100", "São Paulo", "SP",
+                    admin.Id, DateTime.UtcNow, null, null
                 );
 
-                context.Clientes.Add(cliente);
-                context.SaveChanges();
+                context.Clientes.Add(clienteDbModel);
+                await context.SaveChangesAsync();
 
-                clienteId = cliente.Id;
+                clienteId = clienteDbModel.Id;
             }
             var clienteDTO = new ClienteRequestDTO
             {
@@ -328,27 +321,23 @@ namespace API.test.Clientes
         public async Task Cliente_Delete_Delete_NoContent()
         {
             // arrange
-            var app = new ApiWebApplicationFactory();
-
             Guid clienteId;
 
-            using (var scope = app.Services.CreateScope())
+            using (var scope = _factory.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                var admin = context.Usuarios.First();
 
-                var cliente = new Cliente(
-                    "Teste",
-                    new Cpf("52998224725"),
-                    Guid.NewGuid(),
-                    new Endereco("Rua A", "123", "", "Centro", "São Paulo", "SP", "01310100"),
-                    new Telefone("11", "55", "999999999"),
-                    new Email("teste@email.com")
+                var clienteDbModel = new ClienteDbModel(
+                    Guid.NewGuid(), "Teste", "52998224725", null, "teste@email.com",
+                    "11", "55", "999999999", "Rua A", "123", null, "Centro", "01310100", "São Paulo", "SP",
+                    admin.Id, DateTime.UtcNow, null, null
                 );
 
-                context.Clientes.Add(cliente);
-                context.SaveChanges();
+                context.Clientes.Add(clienteDbModel);
+                await context.SaveChangesAsync();
 
-                clienteId = cliente.Id;
+                clienteId = clienteDbModel.Id;
             }
 
             // act

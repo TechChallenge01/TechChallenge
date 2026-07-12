@@ -93,5 +93,44 @@ namespace Domain.test.Tests
             Assert.Equal("123", endereco.Numero);
             Assert.Equal("São Paulo", endereco.Cidade);
         }
+
+        [Fact]
+        public void CriarCnpj_ComCnpjValido_DeveCriarComSucesso()
+        {
+            var cnpj = new Cnpj("11222333000181");
+
+            Assert.NotNull(cnpj);
+            Assert.Equal("11222333000181", cnpj.Valor);
+        }
+
+        [Fact]
+        public void CriarCnpj_ComFormatoMascarado_DeveCriarComSucesso()
+        {
+            var cnpj = new Cnpj("11.222.333/0001-81");
+
+            Assert.NotNull(cnpj);
+            Assert.Equal("11222333000181", cnpj.Valor);
+        }
+
+        [Theory]
+        [InlineData("00000000000000")]
+        [InlineData("11111111111111")]
+        [InlineData("12345678000100")]
+        [InlineData("1234")]
+        public void CriarCnpj_ComCnpjInvalido_DeveThrowArgumentException(string cnpjInvalido)
+        {
+            Assert.Throws<ArgumentException>(() => new Cnpj(cnpjInvalido));
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("   ")]
+        [InlineData("ABC12345")]
+        [InlineData("1234567")]
+        [InlineData("ABCDEFG")]
+        public void CriarPlaca_ComFormatoInvalido_DeveThrowArgumentException(string placaInvalida)
+        {
+            Assert.Throws<ArgumentException>(() => new Placa(placaInvalida));
+        }
     }
 }

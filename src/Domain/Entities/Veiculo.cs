@@ -1,6 +1,4 @@
-﻿using Domain.Aggregates.ClienteAggregates;
-using Domain.Aggregates.OrdemServicoAggregates;
-using Domain.BaseEntity;
+﻿using Domain.BaseEntity;
 using Domain.ValueObjects;
 
 namespace Domain.Entities
@@ -29,7 +27,32 @@ namespace Domain.Entities
             Ativo = true;
         }
 
-        protected Veiculo() { }
+        public Veiculo(Guid id)
+        {
+            Id = id;
+        }
+
+        public Veiculo(Guid id,string modelo, string marcaVeiculo, Guid clienteId, int ano, Placa placa, string cor, Guid idUsuarioCriacao) : base(idUsuarioCriacao, DateTime.UtcNow, null, null)
+        {
+            if (placa is null)
+                throw new ArgumentException("a Placa não pode ser nulla");
+
+            ValidaModelo(modelo);
+            ValidaAno(ano);
+            ValidaMarcaVeiculo(marcaVeiculo);
+            ValidaPlaca(placa.ToString());
+            ValidarCor(cor);
+
+
+            Id = id;
+            Modelo = modelo.Trim();
+            MarcaVeiculo = marcaVeiculo;
+            ClienteId = clienteId;
+            Ano = ano;
+            Placa = placa.ToString();
+            Cor = cor;
+            Ativo = true;
+        }
 
         public Guid Id { get; private set; }
         public string Modelo { get; private set; }
@@ -38,8 +61,6 @@ namespace Domain.Entities
         public int Ano { get; private set; }
         public string Placa { get; private set; }
         public string Cor { get; private set; }
-        public ICollection<OrdemServico> OrdemServicos = new List<OrdemServico>();
-        public virtual Cliente Cliente { get; private set; }        
 
         private void ValidaModelo(string modelo) 
         {

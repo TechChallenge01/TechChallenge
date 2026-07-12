@@ -1,6 +1,4 @@
-﻿using Domain.Aggregates.OrdemServicoAggregates;
-
-namespace Domain.ValueObjects
+﻿namespace Domain.ValueObjects
 {
     public class OrdemServicoInsumo
     {
@@ -24,7 +22,6 @@ namespace Domain.ValueObjects
         public decimal CustoUnitario { get; private set; }
         public decimal ValorTotal => Quantidade * CustoUnitario;
         public virtual Insumo Insumo { get; private set; }
-        public virtual OrdemServico OrdemServico { get; private set; }
         private void ValidarQuantidade(int quantidade)
         {
             if (quantidade <= 0)

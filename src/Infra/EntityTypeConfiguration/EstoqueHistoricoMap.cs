@@ -1,13 +1,12 @@
-﻿using Domain.Aggregates.EstoqueAggregates;
-using Infra.BaseMap;
+﻿using Infra.DbModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infra.EntityTypeConfiguration;
 
-public class EstoqueHistoricoMap : IEntityTypeConfiguration<EstoqueHistorico>
+public class EstoqueHistoricoMap : IEntityTypeConfiguration<EstoqueHistoricoDbmodel>
 {
-    public void Configure(EntityTypeBuilder<EstoqueHistorico> builder)
+    public void Configure(EntityTypeBuilder<EstoqueHistoricoDbmodel> builder)
     {
         builder.ToTable("EstoqueHistoricos");
 
@@ -30,6 +29,10 @@ public class EstoqueHistoricoMap : IEntityTypeConfiguration<EstoqueHistorico>
                .HasForeignKey(x => x.EstoqueId)
                .OnDelete(DeleteBehavior.Cascade);
 
-        builder.ConfigurarAuditoria();
+        builder.Property(e => e.IdUsuarioCriacao)
+               .IsRequired();
+
+        builder.Property(e => e.DataCriacao)
+               .IsRequired();
     }
 }

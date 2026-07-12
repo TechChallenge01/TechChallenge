@@ -1,13 +1,12 @@
-﻿using Domain.Aggregates.EstoqueAggregates;
-using Infra.BaseMap;
+﻿using Infra.DbModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infra.EntityTypeConfiguration;
 
-public class EstoqueMap : IEntityTypeConfiguration<Estoque>
+public class EstoqueMap : IEntityTypeConfiguration<EstoqueDbModel>
 {
-    public void Configure(EntityTypeBuilder<Estoque> builder)
+    public void Configure(EntityTypeBuilder<EstoqueDbModel> builder)
     {
         builder.ToTable("Estoques");
 
@@ -30,8 +29,7 @@ public class EstoqueMap : IEntityTypeConfiguration<Estoque>
                         .IsRequired()
                         .HasDefaultValue(0);
 
-        builder.ConfigurarAuditoria();
-
-        builder.Ignore(e => e.QuantidadeTotal);
+        builder.Property(e => e.Ativo)
+               .IsRequired();
     }
 }

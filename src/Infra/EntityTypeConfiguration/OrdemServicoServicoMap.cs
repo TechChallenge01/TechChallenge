@@ -1,13 +1,13 @@
-﻿using Domain.ValueObjects;
+﻿using Infra.DbModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 
 namespace Infra.EntityTypeConfiguration;
 
-public class OrdemServicoServicoMap : IEntityTypeConfiguration<OrdemServicoServico>
+public class OrdemServicoServicoMap : IEntityTypeConfiguration<OrdemServicoServicoDbModel>
 {
-    public void Configure(EntityTypeBuilder<OrdemServicoServico> builder)
+    public void Configure(EntityTypeBuilder<OrdemServicoServicoDbModel> builder)
     {
         builder.ToTable("OrdemServicoServicos");
 
@@ -45,7 +45,5 @@ public class OrdemServicoServicoMap : IEntityTypeConfiguration<OrdemServicoServi
                .WithMany(s => s.OrdemServicoServicos)
                .HasForeignKey(oss => oss.ServicoId) 
                .OnDelete(DeleteBehavior.Restrict);
-
-        builder.Ignore(oss => oss.ValorTotal);
     }
 }

@@ -12,12 +12,7 @@
 
             Valor = cpf;
         }
-
-        protected Cpf() { }
-
-
         public string Valor { get; private set; }
-
         private void ValidarCpf(string cpf)
         {
 

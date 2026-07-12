@@ -1,13 +1,13 @@
-﻿using Domain.Entities;
-using Infra.BaseMap;
+
+﻿using Infra.DbModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infra.EntityTypeConfiguration
 {
-    public class ServicoMap : IEntityTypeConfiguration<Servico>
+    public class ServicoMap : IEntityTypeConfiguration<ServicoDbModel>
     {
-        public void Configure(EntityTypeBuilder<Servico> builder)
+        public void Configure(EntityTypeBuilder<ServicoDbModel> builder)
         {
             builder.ToTable("Servicos");
 
@@ -26,7 +26,17 @@ namespace Infra.EntityTypeConfiguration
 
             builder.Property(x => x.TempoMedioExecucao);
 
-            builder.ConfigurarAuditoria();
+            builder.Property(e => e.IdUsuarioCriacao)
+                   .IsRequired();
+
+            builder.Property(e => e.DataCriacao)
+                   .IsRequired();
+
+            builder.Property(e => e.IdUsuarioAtualizacao)
+                   .IsRequired(false);
+
+            builder.Property(e => e.DataAtualizacao)
+                   .IsRequired(false);
         }
     }
 }

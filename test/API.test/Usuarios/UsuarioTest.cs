@@ -7,7 +7,7 @@ namespace API.test.Usuarios;
 
 public class UsuarioTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
 {
-    const string ApiKey = "api/Usuario";
+    const string ApiKey = "api/usuarios";
 
     private readonly HttpClient _client;
     private readonly ApiWebApplicationFactory _factory;
