@@ -11,6 +11,7 @@ using System.Net.Http.Json;
 
 namespace API.test.OrdemServicos;
 
+[Collection("Integration")]
 public class OrdemServicoTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
 {
     const string ApiKey = "api/ordemServico";

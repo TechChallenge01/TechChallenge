@@ -6,6 +6,8 @@ using System.Net;
 using System.Net.Http.Json;
 
 namespace API.test.Veiculos;
+
+[Collection("Integration")]
 public class VeiculoTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
 {
     const string ApiKey = "api/veiculos";

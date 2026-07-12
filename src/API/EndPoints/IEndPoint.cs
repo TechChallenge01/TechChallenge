@@ -1,5 +1,4 @@
-using API.Extensions;
-﻿namespace API.EndPoints
+namespace API.EndPoints
 {
     public interface IEndpoint
     {

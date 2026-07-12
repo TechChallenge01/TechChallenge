@@ -7,6 +7,7 @@ using System.Net.Http.Json;
 
 namespace API.test.Estoques;
 
+[Collection("Integration")]
 public class EstoqueTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
 {
     const string ApiKey = "api/estoques";

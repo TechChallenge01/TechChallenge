@@ -10,6 +10,7 @@ using System.Net.Http.Json;
 
 namespace API.test.Clientes
 {
+    [Collection("Integration")]
     public class ClienteTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
     {
         const string ApiKey = "api/clientes";

@@ -7,6 +7,7 @@ using System.Net.Http.Json;
 
 namespace API.test.Servicos;
 
+[Collection("Integration")]
 public class ServicoTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
 {
     const string ApiKey = "api/servicos";
