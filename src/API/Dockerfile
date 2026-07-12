@@ -22,6 +22,19 @@ RUN dotnet publish src/API/API.csproj \
     -c Release \
     -o /app/publish
 
+# Gera o EF Core migration bundle (executável self-contained, independente de dotnet
+# runtime) — é isso que o k8s/migration-job.yaml executa como /app/efbundle.
+# Ajuste --project/--startup-project se o DbContext estiver em outro projeto que não o Infra.
+RUN dotnet tool install --global dotnet-ef
+ENV PATH="$PATH:/root/.dotnet/tools"
+RUN dotnet ef migrations bundle \
+    --project src/Infra/Infra.csproj \
+    --startup-project src/API/API.csproj \
+    --configuration Release \
+    --self-contained \
+    -r linux-x64 \
+    -o /app/efbundle
+
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
@@ -30,8 +43,9 @@ WORKDIR /app
 ENV ASPNETCORE_ENVIRONMENT=Development
 ENV ASPNETCORE_URLS=http://+:8080
 
-# Copia apenas o artefato publicado
+# Copia o artefato publicado e o migration bundle
 COPY --from=build /app/publish .
+COPY --from=build /app/efbundle .
 
 # Porta exposta
 EXPOSE 8080
