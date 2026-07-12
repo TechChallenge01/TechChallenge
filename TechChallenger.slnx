@@ -38,8 +38,8 @@
   </Folder>
   <Folder Name="/tests/" />
   <Folder Name="/tests/TestesUnitarios/">
-    <Project Path="test/Domain.test/Domain.test.csproj" Id="e1d8550e-a215-4e19-8817-b1ae8d052ed1" />
     <Project Path="test/Application.test/Application.test.csproj" />
+    <Project Path="test/Domain.test/Domain.test.csproj" Id="e1d8550e-a215-4e19-8817-b1ae8d052ed1" />
   </Folder>
   <Folder Name="/tests/TestesIntegracao/">
     <Project Path="test/API.test/API.test.csproj" />
