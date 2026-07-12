@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Infra.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class initialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -67,7 +68,7 @@ namespace Infra.Migrations
                     Nome = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Descricao = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     MarcaPeca = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ValorUnitario = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ValorUnitario = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     IdUsuarioCriacao = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DataCriacao = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IdUsuarioAtualizacao = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
@@ -86,7 +87,7 @@ namespace Infra.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Nome = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Descricao = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ValorUnitario = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ValorUnitario = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     TempoMedioExecucao = table.Column<TimeSpan>(type: "time", nullable: true),
                     IdUsuarioCriacao = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DataCriacao = table.Column<DateTime>(type: "datetime2", nullable: false),
