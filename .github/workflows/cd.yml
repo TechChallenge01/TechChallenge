@@ -69,7 +69,7 @@ jobs:
           REGISTRY: ${{ steps.ecr-login.outputs.registry }}
         run: |
           IMAGE_URI="$REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }}"
-          docker build -t "$IMAGE_URI" .
+          docker build -f src/API/Dockerfile -t "$IMAGE_URI" .
           docker push "$IMAGE_URI"
           echo "image=$IMAGE_URI" >> "$GITHUB_OUTPUT"
 

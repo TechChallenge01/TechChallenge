@@ -41,4 +41,4 @@ jobs:
           path: TestResults
 
       - name: Build da imagem Docker (validação, sem push)
-        run: docker build -t app:ci-${{ github.sha }} .
+        run: docker build -f src/API/Dockerfile -t app:ci-${{ github.sha }} .
