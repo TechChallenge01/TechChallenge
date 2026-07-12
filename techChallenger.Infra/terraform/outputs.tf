@@ -8,6 +8,11 @@ output "cluster_endpoint" {
   value       = aws_eks_cluster.cluster.endpoint
 }
 
+output "ecr_repository_url" {
+  description = "URL do repositorio ECR (para referencia; a esteira descobre isso sozinha)"
+  value       = aws_ecr_repository.app.repository_url
+}
+
 output "database_endpoint" {
   description = "Endpoint de conexao do RDS SQL Server"
   value       = aws_db_instance.sqlserver.endpoint

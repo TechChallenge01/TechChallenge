@@ -56,7 +56,7 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapEndpoints();
 
-app.MapGet("/", () => Results.Ok("TechChallenge API - Running"));
+app.MapGet("/health", () => Results.Ok("TechChallenge API - Running"));
 
 app.Run();
 

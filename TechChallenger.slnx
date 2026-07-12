@@ -13,7 +13,7 @@
     <File Path="techChallenger.Infra/k8s/service.yaml" />
   </Folder>
   <Folder Name="/Itens de Solução/techChallenger.Infra/terraform/">
-    <File Path="techChallenger.Infra/terraform/.terraform.lock.hcl" />
+    <File Path="techChallenger.Infra/terraform/ecr.tf" />
     <File Path="techChallenger.Infra/terraform/eks.tf" />
     <File Path="techChallenger.Infra/terraform/iam.tf" />
     <File Path="techChallenger.Infra/terraform/outputs.tf" />

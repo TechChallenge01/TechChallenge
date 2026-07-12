@@ -16,6 +16,12 @@ variable "cluster_name" {
   default     = "techchallenge"
 }
 
+variable "ecr_repository_name" {
+  description = "Nome do repositorio ECR (deve bater com ECR_REPOSITORY no cd.yml)"
+  type        = string
+  default     = "techchallenger"
+}
+
 variable "kubernetes_version" {
   description = "Versao do Kubernetes no EKS"
   type        = string
