@@ -4,7 +4,6 @@ using Application.Controllers.Usuarios;
 using Infra.Context;
 using Infra.DataSources;
 using Microsoft.AspNetCore.Mvc;
-using Shared.Result;
 
 namespace API.EndPoints.Usuarios
 {

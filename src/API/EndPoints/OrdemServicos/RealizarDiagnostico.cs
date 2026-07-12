@@ -5,7 +5,6 @@ using Infra.DataSources;
 using Infra.Services;
 using Microsoft.AspNetCore.Mvc;
 using Shared.DTOs.OrdemServicos.Request;
-using Shared.Result;
 
 namespace API.EndPoints.OrdemServicos
 {

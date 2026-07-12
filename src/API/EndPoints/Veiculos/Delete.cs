@@ -3,7 +3,6 @@ using Application.Controllers.Veiculos;
 using Application.Interfaces;
 using Infra.Context;
 using Infra.DataSources;
-using Shared.Result;
 
 namespace API.EndPoints.Veiculos
 {

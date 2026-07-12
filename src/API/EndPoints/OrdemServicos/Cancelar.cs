@@ -2,7 +2,6 @@
 using Application.Controllers.OrdensServicos;
 using Infra.Context;
 using Infra.DataSources;
-using Shared.Result;
 
 namespace API.EndPoints.OrdemServicos
 {

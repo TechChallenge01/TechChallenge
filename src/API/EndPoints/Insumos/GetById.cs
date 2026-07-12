@@ -1,6 +1,5 @@
 using API.Extensions;
-﻿using Infra.Context;
-using Shared.Result;
+using Infra.Context;
 using Application.Interfaces;
 using Infra.DataSources;
 using Application.Controllers.Insumos;

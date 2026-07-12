@@ -1,11 +1,10 @@
 using API.Extensions;
-﻿using Application.Auth.DTOs.Requests;
+using Application.Auth.DTOs.Requests;
 using Application.Controllers.Usuarios;
 using Infra.Context;
 using Infra.DataSources;
 using Infra.Services;
 using Microsoft.AspNetCore.Mvc;
-using Shared.Result;
 
 namespace API.EndPoints.Usuarios
 {

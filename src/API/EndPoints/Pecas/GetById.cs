@@ -1,9 +1,8 @@
 using API.Extensions;
-﻿using Application.Controllers.Pecas;
+using Application.Controllers.Pecas;
 using Application.Interfaces;
 using Infra.Context;
 using Infra.DataSources;
-using Shared.Result;
 
 namespace API.EndPoints.Pecas;
 

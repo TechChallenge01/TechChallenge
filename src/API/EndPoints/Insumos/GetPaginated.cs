@@ -1,7 +1,6 @@
 using API.Extensions;
-﻿using Infra.Context;
+using Infra.Context;
 using Microsoft.AspNetCore.Mvc;
-using Shared.Result;
 using Application.Interfaces;
 using Infra.DataSources;
 using Application.Controllers.Insumos;

@@ -5,7 +5,6 @@ using Infra.Context;
 using Infra.DataSources;
 using Microsoft.AspNetCore.Mvc;
 using Shared.DTOs.Veiculos.Requests;
-using Shared.Result;
 
 namespace API.EndPoints.Veiculos
 {

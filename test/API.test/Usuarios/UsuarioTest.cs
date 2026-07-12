@@ -5,6 +5,7 @@ using System.Net.Http.Json;
 
 namespace API.test.Usuarios;
 
+[Collection("Integration")]
 public class UsuarioTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
 {
     const string ApiKey = "api/usuarios";

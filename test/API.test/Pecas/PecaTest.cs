@@ -7,6 +7,7 @@ using System.Net.Http.Json;
 
 namespace API.test.Pecas;
 
+[Collection("Integration")]
 public class PecaTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
 {
     const string ApiKey = "api/pecas";

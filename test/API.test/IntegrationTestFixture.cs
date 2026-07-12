@@ -7,14 +7,17 @@ public class IntegrationTestFixture : IntegrationTestBase, IAsyncLifetime
 
     public async Task InitializeAsync()
     {
+        await App.InitializeAsync();
+
         Client = App.CreateClient();
         await App.ResetDatabaseAsync();
         Client.DefaultRequestHeaders.Authorization = await AuthenticateAsync(App, Client);
     }
 
-    public Task DisposeAsync()
+    public async Task DisposeAsync()
     {
         Client.Dispose();
-        return Task.CompletedTask;
+
+        await ((IAsyncLifetime)App).DisposeAsync();
     }
 }

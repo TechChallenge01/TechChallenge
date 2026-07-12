@@ -1,10 +1,9 @@
 using API.Extensions;
-﻿using Application.Controllers.Estoques;
+using Application.Controllers.Estoques;
 using Application.Interfaces;
 using Infra.Context;
 using Infra.DataSources;
 using Microsoft.AspNetCore.Mvc;
-using Shared.Result;
 
 namespace API.EndPoints.Estoques;
 

@@ -7,6 +7,7 @@ using System.Net.Http.Json;
 
 namespace API.test.Insumos;
 
+[Collection("Integration")]
 public class InsumoTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
 {
     const string ApiKey = "api/insumos";

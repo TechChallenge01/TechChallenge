@@ -51,26 +51,3 @@ services:
     networks:
       - app-network
     restart: on-failure
-
-  integration-tests:
-    build:
-      context: .
-      dockerfile: src/API/Dockerfile
-    container_name: app-api-integration-test
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      ASPNETCORE_URLS: http://+:8080
-
-      Jwt__Key: "f3a7c9b8e1d2a3f4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8"
-      Jwt__Issuer: "TechChallenger"
-      Jwt__Audience: "TechChallenger"
-
-      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=AppDb_IntegrationTests;User Id=sa;Password=Str0ng@Passw0rd!;TrustServerCertificate=True;"
-    ports:
-      - "9090:9090"
-    depends_on:
-      sqlserver:
-        condition: service_healthy
-    networks:
-      - app-network
-    restart: on-failure
