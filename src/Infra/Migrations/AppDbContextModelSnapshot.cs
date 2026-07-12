@@ -410,6 +410,7 @@ namespace Infra.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<decimal>("ValorUnitario")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -452,6 +453,7 @@ namespace Infra.Migrations
                         .HasColumnType("time");
 
                     b.Property<decimal>("ValorUnitario")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");

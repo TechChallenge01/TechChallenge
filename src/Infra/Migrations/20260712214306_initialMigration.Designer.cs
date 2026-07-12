@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infra.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260621214507_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20260712214306_initialMigration")]
+    partial class initialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -413,6 +413,7 @@ namespace Infra.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<decimal>("ValorUnitario")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -455,6 +456,7 @@ namespace Infra.Migrations
                         .HasColumnType("time");
 
                     b.Property<decimal>("ValorUnitario")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");

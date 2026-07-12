@@ -32,6 +32,9 @@ namespace Infra.EntityTypeConfiguration
             builder.Property(e => e.DataCriacao)
                    .IsRequired();
 
+            builder.Property(p => p.ValorUnitario)
+                    .HasPrecision(18, 2);
+
             builder.Property(e => e.IdUsuarioAtualizacao)
                    .IsRequired(false);
 
