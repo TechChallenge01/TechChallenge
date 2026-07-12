@@ -2,8 +2,6 @@
 {
     public class Cnpj
     {
-        protected Cnpj() { }
-
         public Cnpj(string cnpj) 
         {
             cnpj = cnpj.Replace(".", "").Replace("-", "").Replace("/", "");

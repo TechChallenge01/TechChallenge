@@ -1,12 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Infra.DbModel;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Infra.BaseMap;
 
 namespace Infra.EntityTypeConfiguration
 {
-    public class InsumoMap : IEntityTypeConfiguration<Insumo>
+    public class InsumoMap : IEntityTypeConfiguration<InsumoDbModel>
     {
-        public void Configure(EntityTypeBuilder<Insumo> builder)
+        public void Configure(EntityTypeBuilder<InsumoDbModel> builder)
         {
             builder.ToTable("Insumos");
 
@@ -23,7 +23,17 @@ namespace Infra.EntityTypeConfiguration
                 .IsRequired()
                 .HasPrecision(10, 2);
 
-            builder.ConfigurarAuditoria();
+            builder.Property(e => e.IdUsuarioCriacao)
+                    .IsRequired();
+
+            builder.Property(e => e.DataCriacao)
+                   .IsRequired();
+
+            builder.Property(e => e.IdUsuarioAtualizacao)
+                   .IsRequired(false);
+
+            builder.Property(e => e.DataAtualizacao)
+                   .IsRequired(false);
         }
     }
 }

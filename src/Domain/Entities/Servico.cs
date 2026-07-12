@@ -1,12 +1,9 @@
 ﻿using Domain.BaseEntity;
-using Domain.ValueObjects;
 
 namespace Domain.Entities
 {
     public class Servico : Base
     {
-        public Servico() { }
-
         public Servico(string nome, string descricao, decimal precoVenda, Guid idUsuarioCriacao, DateTime dataCriacao) : base(idUsuarioCriacao, dataCriacao, null, null)
         {
 
@@ -23,11 +20,19 @@ namespace Domain.Entities
             DataCriacao = dataCriacao;
         }
 
+        public Servico(Guid id, string nome, string descricao, decimal valorUnitario, TimeSpan? tempoMedioExecucao)
+        {
+            Id = id;
+            Nome = nome;
+            Descricao = descricao;
+            ValorUnitario = valorUnitario;
+            TempoMedioExecucao = tempoMedioExecucao;
+        }
+
         public Guid Id { get; private set; }
         public string Nome { get; private set; }
         public string Descricao { get; private set; }
         public decimal ValorUnitario { get; private set; }
-        public ICollection<OrdemServicoServico> OrdemServicoServicos { get; private set; } = new List<OrdemServicoServico>();
         public TimeSpan? TempoMedioExecucao { get; private set; }
 
 

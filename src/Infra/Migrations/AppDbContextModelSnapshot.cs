@@ -22,7 +22,7 @@ namespace Infra.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Aggregates.ClienteAggregates.Cliente", b =>
+            modelBuilder.Entity("Infra.DbModel.ClienteDbModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -31,29 +31,104 @@ namespace Infra.Migrations
                     b.Property<bool>("Ativo")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Bairro")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("Bairro");
+
+                    b.Property<string>("Cep")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)")
+                        .HasColumnName("Cep");
+
+                    b.Property<string>("Cidade")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("Cidade");
+
+                    b.Property<string>("Cnpj")
+                        .HasMaxLength(14)
+                        .HasColumnType("nvarchar(14)")
+                        .HasColumnName("Cnpj");
+
+                    b.Property<string>("Complemento")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
+                        .HasColumnName("Complemento");
+
+                    b.Property<string>("Cpf")
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)")
+                        .HasColumnName("Cpf");
+
+                    b.Property<string>("DDD")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("nvarchar(3)")
+                        .HasColumnName("DDD");
+
+                    b.Property<string>("DDI")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("nvarchar(3)")
+                        .HasColumnName("DDI");
+
                     b.Property<DateTime?>("DataAtualizacao")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DataCriacao")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
+                        .HasColumnName("Email");
+
                     b.Property<Guid?>("IdUsuarioAtualizacao")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("IdUsuarioCriacao")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Logradouro")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
+                        .HasColumnName("Logradouro");
 
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("Numero")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("Numero");
+
+                    b.Property<string>("NumeroTelefone")
+                        .IsRequired()
+                        .HasMaxLength(9)
+                        .HasColumnType("nvarchar(9)")
+                        .HasColumnName("NumeroTelefone");
+
+                    b.Property<string>("Uf")
+                        .IsRequired()
+                        .HasMaxLength(2)
+                        .HasColumnType("nvarchar(2)")
+                        .HasColumnName("Uf");
+
                     b.HasKey("Id");
 
                     b.ToTable("Clientes", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Aggregates.EstoqueAggregates.Estoque", b =>
+            modelBuilder.Entity("Infra.DbModel.EstoqueDbModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -61,18 +136,6 @@ namespace Infra.Migrations
 
                     b.Property<bool>("Ativo")
                         .HasColumnType("bit");
-
-                    b.Property<DateTime?>("DataAtualizacao")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DataCriacao")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("IdUsuarioAtualizacao")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("IdUsuarioCriacao")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("InsumoId")
                         .HasColumnType("uniqueidentifier");
@@ -99,24 +162,15 @@ namespace Infra.Migrations
                     b.ToTable("Estoques", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Aggregates.EstoqueAggregates.EstoqueHistorico", b =>
+            modelBuilder.Entity("Infra.DbModel.EstoqueHistoricoDbmodel", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("Ativo")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("DataAtualizacao")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DataCriacao")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("EstoqueId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("IdUsuarioAtualizacao")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("IdUsuarioCriacao")
@@ -142,7 +196,7 @@ namespace Infra.Migrations
                     b.ToTable("EstoqueHistoricos", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Aggregates.OrdemServicoAggregates.OrdemServico", b =>
+            modelBuilder.Entity("Infra.DbModel.InsumoDbModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -150,6 +204,48 @@ namespace Infra.Migrations
 
                     b.Property<bool>("Ativo")
                         .HasColumnType("bit");
+
+                    b.Property<decimal>("CustoUnitario")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<DateTime?>("DataAtualizacao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DataCriacao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<Guid?>("IdUsuarioAtualizacao")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("IdUsuarioCriacao")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Insumos", (string)null);
+                });
+
+            modelBuilder.Entity("Infra.DbModel.OrdemServicoDbModel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Ativo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<Guid>("ClienteId")
                         .HasColumnType("uniqueidentifier");
@@ -203,7 +299,81 @@ namespace Infra.Migrations
                     b.ToTable("OrdemServico", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.Peca", b =>
+            modelBuilder.Entity("Infra.DbModel.OrdemServicoInsumoDbModel", b =>
+                {
+                    b.Property<Guid>("OrdemServicoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("InsumoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("CustoUnitario")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<int>("Quantidade")
+                        .HasColumnType("int");
+
+                    b.HasKey("OrdemServicoId", "InsumoId");
+
+                    b.HasIndex("InsumoId");
+
+                    b.ToTable("OrdemServicoInsumos", (string)null);
+                });
+
+            modelBuilder.Entity("Infra.DbModel.OrdemServicoPecaDbModel", b =>
+                {
+                    b.Property<Guid>("OrdemServicoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PecaId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Quantidade")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("ValorUnitario")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.HasKey("OrdemServicoId", "PecaId");
+
+                    b.HasIndex("PecaId");
+
+                    b.ToTable("OrdemServicoPecas", (string)null);
+                });
+
+            modelBuilder.Entity("Infra.DbModel.OrdemServicoServicoDbModel", b =>
+                {
+                    b.Property<Guid>("OrdemServicoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ServicoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DataInicioExecucao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DataTerminoExecucao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Quantidade")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<decimal>("ValorUnitario")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.HasKey("OrdemServicoId", "ServicoId");
+
+                    b.HasIndex("ServicoId");
+
+                    b.ToTable("OrdemServicoServicos", (string)null);
+                });
+
+            modelBuilder.Entity("Infra.DbModel.PecaDbModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -247,7 +417,7 @@ namespace Infra.Migrations
                     b.ToTable("Pecas", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.Servico", b =>
+            modelBuilder.Entity("Infra.DbModel.ServicoDbModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -289,7 +459,7 @@ namespace Infra.Migrations
                     b.ToTable("Servicos", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.Usuario", b =>
+            modelBuilder.Entity("Infra.DbModel.UsuarioDbModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -340,7 +510,7 @@ namespace Infra.Migrations
                     b.ToTable("Usuarios", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.Veiculo", b =>
+            modelBuilder.Entity("Infra.DbModel.VeiculoDbModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -369,9 +539,6 @@ namespace Infra.Migrations
                     b.Property<Guid?>("IdUsuarioAtualizacao")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("IdUsuarioCriacao")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("MarcaVeiculo")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -387,6 +554,9 @@ namespace Infra.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<Guid>("UsuarioCriacaoId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ClienteId");
@@ -394,284 +564,13 @@ namespace Infra.Migrations
                     b.ToTable("Veiculos", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.ValueObjects.OrdemServicoInsumo", b =>
+            modelBuilder.Entity("Infra.DbModel.EstoqueDbModel", b =>
                 {
-                    b.Property<Guid>("OrdemServicoId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("InsumoId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("CustoUnitario")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<int>("Quantidade")
-                        .HasColumnType("int");
-
-                    b.HasKey("OrdemServicoId", "InsumoId");
-
-                    b.HasIndex("InsumoId");
-
-                    b.ToTable("OrdemServicoInsumos", (string)null);
-                });
-
-            modelBuilder.Entity("Domain.ValueObjects.OrdemServicoPeca", b =>
-                {
-                    b.Property<Guid>("OrdemServicoId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("PecaId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Quantidade")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("ValorUnitario")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.HasKey("OrdemServicoId", "PecaId");
-
-                    b.HasIndex("PecaId");
-
-                    b.ToTable("OrdemServicoPecas", (string)null);
-                });
-
-            modelBuilder.Entity("Domain.ValueObjects.OrdemServicoServico", b =>
-                {
-                    b.Property<Guid>("OrdemServicoId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ServicoId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("DataInicioExecucao")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DataTerminoExecucao")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Quantidade")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<decimal>("ValorUnitario")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.HasKey("OrdemServicoId", "ServicoId");
-
-                    b.HasIndex("ServicoId");
-
-                    b.ToTable("OrdemServicoServicos", (string)null);
-                });
-
-            modelBuilder.Entity("Insumo", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("Ativo")
-                        .HasColumnType("bit");
-
-                    b.Property<decimal>("CustoUnitario")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<DateTime?>("DataAtualizacao")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DataCriacao")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Descricao")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<Guid?>("IdUsuarioAtualizacao")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("IdUsuarioCriacao")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Insumos", (string)null);
-                });
-
-            modelBuilder.Entity("Domain.Aggregates.ClienteAggregates.Cliente", b =>
-                {
-                    b.OwnsOne("Domain.ValueObjects.Cnpj", "Cnpj", b1 =>
-                        {
-                            b1.Property<Guid>("ClienteId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("Valor")
-                                .IsRequired()
-                                .HasMaxLength(14)
-                                .HasColumnType("nvarchar(14)")
-                                .HasColumnName("Cnpj");
-
-                            b1.HasKey("ClienteId");
-
-                            b1.ToTable("Clientes");
-
-                            b1.WithOwner()
-                                .HasForeignKey("ClienteId");
-                        });
-
-                    b.OwnsOne("Domain.ValueObjects.Cpf", "Cpf", b1 =>
-                        {
-                            b1.Property<Guid>("ClienteId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("Valor")
-                                .IsRequired()
-                                .HasMaxLength(11)
-                                .HasColumnType("nvarchar(11)")
-                                .HasColumnName("Cpf");
-
-                            b1.HasKey("ClienteId");
-
-                            b1.ToTable("Clientes");
-
-                            b1.WithOwner()
-                                .HasForeignKey("ClienteId");
-                        });
-
-                    b.OwnsOne("Domain.ValueObjects.Email", "Email", b1 =>
-                        {
-                            b1.Property<Guid>("ClienteId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("EnderecoEmail")
-                                .IsRequired()
-                                .HasMaxLength(200)
-                                .HasColumnType("nvarchar(200)")
-                                .HasColumnName("Email");
-
-                            b1.HasKey("ClienteId");
-
-                            b1.ToTable("Clientes");
-
-                            b1.WithOwner()
-                                .HasForeignKey("ClienteId");
-                        });
-
-                    b.OwnsOne("Domain.ValueObjects.Telefone", "Telefone", b1 =>
-                        {
-                            b1.Property<Guid>("ClienteId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("DDD")
-                                .IsRequired()
-                                .HasMaxLength(3)
-                                .HasColumnType("nvarchar(3)")
-                                .HasColumnName("DDD");
-
-                            b1.Property<string>("DDI")
-                                .IsRequired()
-                                .HasMaxLength(3)
-                                .HasColumnType("nvarchar(3)")
-                                .HasColumnName("DDI");
-
-                            b1.Property<string>("Numero")
-                                .IsRequired()
-                                .HasMaxLength(9)
-                                .HasColumnType("nvarchar(9)");
-
-                            b1.HasKey("ClienteId");
-
-                            b1.ToTable("Clientes");
-
-                            b1.WithOwner()
-                                .HasForeignKey("ClienteId");
-                        });
-
-                    b.OwnsOne("Endereco", "Endereco", b1 =>
-                        {
-                            b1.Property<Guid>("ClienteId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("Bairro")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("nvarchar(100)")
-                                .HasColumnName("Bairro");
-
-                            b1.Property<string>("Cep")
-                                .IsRequired()
-                                .HasMaxLength(8)
-                                .HasColumnType("nvarchar(8)")
-                                .HasColumnName("Cep");
-
-                            b1.Property<string>("Cidade")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("nvarchar(100)")
-                                .HasColumnName("Cidade");
-
-                            b1.Property<string>("Complemento")
-                                .HasMaxLength(200)
-                                .HasColumnType("nvarchar(200)")
-                                .HasColumnName("Complemento");
-
-                            b1.Property<string>("Logradouro")
-                                .IsRequired()
-                                .HasMaxLength(200)
-                                .HasColumnType("nvarchar(200)")
-                                .HasColumnName("Logradouro");
-
-                            b1.Property<string>("Numero")
-                                .IsRequired()
-                                .HasMaxLength(20)
-                                .HasColumnType("nvarchar(20)")
-                                .HasColumnName("Numero");
-
-                            b1.Property<string>("Uf")
-                                .IsRequired()
-                                .HasMaxLength(2)
-                                .HasColumnType("nvarchar(2)")
-                                .HasColumnName("Uf");
-
-                            b1.HasKey("ClienteId");
-
-                            b1.ToTable("Clientes");
-
-                            b1.WithOwner()
-                                .HasForeignKey("ClienteId");
-                        });
-
-                    b.Navigation("Cnpj");
-
-                    b.Navigation("Cpf");
-
-                    b.Navigation("Email")
-                        .IsRequired();
-
-                    b.Navigation("Endereco")
-                        .IsRequired();
-
-                    b.Navigation("Telefone")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Domain.Aggregates.EstoqueAggregates.Estoque", b =>
-                {
-                    b.HasOne("Insumo", "Insumo")
+                    b.HasOne("Infra.DbModel.InsumoDbModel", "Insumo")
                         .WithMany()
                         .HasForeignKey("InsumoId");
 
-                    b.HasOne("Domain.Entities.Peca", "Peca")
+                    b.HasOne("Infra.DbModel.PecaDbModel", "Peca")
                         .WithMany()
                         .HasForeignKey("PecaId");
 
@@ -680,9 +579,9 @@ namespace Infra.Migrations
                     b.Navigation("Peca");
                 });
 
-            modelBuilder.Entity("Domain.Aggregates.EstoqueAggregates.EstoqueHistorico", b =>
+            modelBuilder.Entity("Infra.DbModel.EstoqueHistoricoDbmodel", b =>
                 {
-                    b.HasOne("Domain.Aggregates.EstoqueAggregates.Estoque", "Estoque")
+                    b.HasOne("Infra.DbModel.EstoqueDbModel", "Estoque")
                         .WithMany("Historicos")
                         .HasForeignKey("EstoqueId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -691,15 +590,15 @@ namespace Infra.Migrations
                     b.Navigation("Estoque");
                 });
 
-            modelBuilder.Entity("Domain.Aggregates.OrdemServicoAggregates.OrdemServico", b =>
+            modelBuilder.Entity("Infra.DbModel.OrdemServicoDbModel", b =>
                 {
-                    b.HasOne("Domain.Aggregates.ClienteAggregates.Cliente", "Cliente")
+                    b.HasOne("Infra.DbModel.ClienteDbModel", "Cliente")
                         .WithMany("OrdemServicos")
                         .HasForeignKey("ClienteId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Veiculo", "Veiculo")
+                    b.HasOne("Infra.DbModel.VeiculoDbModel", "Veiculo")
                         .WithMany("OrdemServicos")
                         .HasForeignKey("VeiculoId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -710,26 +609,15 @@ namespace Infra.Migrations
                     b.Navigation("Veiculo");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Veiculo", b =>
+            modelBuilder.Entity("Infra.DbModel.OrdemServicoInsumoDbModel", b =>
                 {
-                    b.HasOne("Domain.Aggregates.ClienteAggregates.Cliente", "Cliente")
-                        .WithMany("Veiculos")
-                        .HasForeignKey("ClienteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cliente");
-                });
-
-            modelBuilder.Entity("Domain.ValueObjects.OrdemServicoInsumo", b =>
-                {
-                    b.HasOne("Insumo", "Insumo")
+                    b.HasOne("Infra.DbModel.InsumoDbModel", "Insumo")
                         .WithMany("OrdemServicoInsumos")
                         .HasForeignKey("InsumoId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Domain.Aggregates.OrdemServicoAggregates.OrdemServico", "OrdemServico")
+                    b.HasOne("Infra.DbModel.OrdemServicoDbModel", "OrdemServico")
                         .WithMany("Insumos")
                         .HasForeignKey("OrdemServicoId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -740,15 +628,15 @@ namespace Infra.Migrations
                     b.Navigation("OrdemServico");
                 });
 
-            modelBuilder.Entity("Domain.ValueObjects.OrdemServicoPeca", b =>
+            modelBuilder.Entity("Infra.DbModel.OrdemServicoPecaDbModel", b =>
                 {
-                    b.HasOne("Domain.Aggregates.OrdemServicoAggregates.OrdemServico", "OrdemServico")
+                    b.HasOne("Infra.DbModel.OrdemServicoDbModel", "OrdemServico")
                         .WithMany("Pecas")
                         .HasForeignKey("OrdemServicoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Peca", "Peca")
+                    b.HasOne("Infra.DbModel.PecaDbModel", "Peca")
                         .WithMany("OrdemServicoPecas")
                         .HasForeignKey("PecaId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -759,15 +647,15 @@ namespace Infra.Migrations
                     b.Navigation("Peca");
                 });
 
-            modelBuilder.Entity("Domain.ValueObjects.OrdemServicoServico", b =>
+            modelBuilder.Entity("Infra.DbModel.OrdemServicoServicoDbModel", b =>
                 {
-                    b.HasOne("Domain.Aggregates.OrdemServicoAggregates.OrdemServico", "OrdemServico")
+                    b.HasOne("Infra.DbModel.OrdemServicoDbModel", "OrdemServico")
                         .WithMany("Servicos")
                         .HasForeignKey("OrdemServicoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Servico", "Servico")
+                    b.HasOne("Infra.DbModel.ServicoDbModel", "Servico")
                         .WithMany("OrdemServicoServicos")
                         .HasForeignKey("ServicoId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -778,19 +666,35 @@ namespace Infra.Migrations
                     b.Navigation("Servico");
                 });
 
-            modelBuilder.Entity("Domain.Aggregates.ClienteAggregates.Cliente", b =>
+            modelBuilder.Entity("Infra.DbModel.VeiculoDbModel", b =>
+                {
+                    b.HasOne("Infra.DbModel.ClienteDbModel", "Cliente")
+                        .WithMany("Veiculos")
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cliente");
+                });
+
+            modelBuilder.Entity("Infra.DbModel.ClienteDbModel", b =>
                 {
                     b.Navigation("OrdemServicos");
 
                     b.Navigation("Veiculos");
                 });
 
-            modelBuilder.Entity("Domain.Aggregates.EstoqueAggregates.Estoque", b =>
+            modelBuilder.Entity("Infra.DbModel.EstoqueDbModel", b =>
                 {
                     b.Navigation("Historicos");
                 });
 
-            modelBuilder.Entity("Domain.Aggregates.OrdemServicoAggregates.OrdemServico", b =>
+            modelBuilder.Entity("Infra.DbModel.InsumoDbModel", b =>
+                {
+                    b.Navigation("OrdemServicoInsumos");
+                });
+
+            modelBuilder.Entity("Infra.DbModel.OrdemServicoDbModel", b =>
                 {
                     b.Navigation("Insumos");
 
@@ -799,24 +703,19 @@ namespace Infra.Migrations
                     b.Navigation("Servicos");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Peca", b =>
+            modelBuilder.Entity("Infra.DbModel.PecaDbModel", b =>
                 {
                     b.Navigation("OrdemServicoPecas");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Servico", b =>
+            modelBuilder.Entity("Infra.DbModel.ServicoDbModel", b =>
                 {
                     b.Navigation("OrdemServicoServicos");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Veiculo", b =>
+            modelBuilder.Entity("Infra.DbModel.VeiculoDbModel", b =>
                 {
                     b.Navigation("OrdemServicos");
-                });
-
-            modelBuilder.Entity("Insumo", b =>
-                {
-                    b.Navigation("OrdemServicoInsumos");
                 });
 #pragma warning restore 612, 618
         }

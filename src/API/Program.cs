@@ -1,8 +1,8 @@
 using API.Extensions;
-using Application;
 using Infra;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,12 +33,13 @@ builder.Services
         };
     });
 
+builder.Services.AddEndpoints(Assembly.GetExecutingAssembly());
+
 builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi()
-                .AddApplicationServices()
                 .AddInfraServices(builder.Configuration);
 
 var app = builder.Build();
@@ -53,8 +54,9 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapEndpoints();
 
-app.MapGet("/", () => Results.Ok("TechChallenge API - Running"));
+app.MapGet("/health", () => Results.Ok("TechChallenge API - Running"));
 
 app.Run();
 

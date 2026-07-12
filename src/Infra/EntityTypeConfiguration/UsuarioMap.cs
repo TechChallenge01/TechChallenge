@@ -1,12 +1,12 @@
-﻿using Domain.Entities;
-using Infra.BaseMap;
+﻿using Infra.DbModel;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infra.EntityTypeConfiguration;
 
-public class UsuarioMap : IEntityTypeConfiguration<Usuario>
+public class UsuarioMap : IEntityTypeConfiguration<UsuarioDbModel>
 {
-    public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Usuario> builder)
+    public void Configure(EntityTypeBuilder<UsuarioDbModel> builder)
     {
         builder.ToTable("Usuarios");
 
@@ -35,6 +35,16 @@ public class UsuarioMap : IEntityTypeConfiguration<Usuario>
         builder.Property(u => u.Ativo)
             .HasDefaultValue(true);
 
-        builder.ConfigurarAuditoria();
+        builder.Property(e => e.IdUsuarioCriacao)
+                   .IsRequired();
+
+        builder.Property(e => e.DataCriacao)
+               .IsRequired();
+
+        builder.Property(e => e.IdUsuarioAtualizacao)
+               .IsRequired(false);
+
+        builder.Property(e => e.DataAtualizacao)
+               .IsRequired(false);
     }
 }

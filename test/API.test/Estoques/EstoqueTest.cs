@@ -1,19 +1,25 @@
-﻿using Application.Estoques.DTOs.Requests;
-using Infra.Context;
+﻿using Infra.Context;
+using Infra.DbModel;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.DTOs.Estoques.Request;
 using System.Net;
 using System.Net.Http.Json;
 
 namespace API.test.Estoques;
 
+[Collection("Integration")]
 public class EstoqueTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
 {
-    const string ApiKey = "api/Estoque";
+    const string ApiKey = "api/estoques";
 
     private readonly HttpClient _client;
     private readonly ApiWebApplicationFactory _factory;
     private readonly IntegrationTestFixture _fixture;
-    public async Task InitializeAsync() => await _factory.ResetDatabaseAsync();
+    public async Task InitializeAsync()
+    {
+        await _factory.ResetDatabaseAsync();
+        _client.DefaultRequestHeaders.Authorization = await _fixture.AuthenticateAsync(_factory, _client);
+    }
     public Task DisposeAsync() => Task.CompletedTask;
 
     public EstoqueTest(IntegrationTestFixture fixture)
@@ -33,10 +39,15 @@ public class EstoqueTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             var admin = context.Usuarios.First();
 
-            var insumo = new Insumo("Óleo", "Sintético 5W30", 60m, admin.Id, DateTime.UtcNow);
+            var insumo = new InsumoDbModel(
+                Guid.NewGuid(), "Óleo", "Sintético 5W30", 60m,
+                admin.Id, DateTime.UtcNow, null, null, true
+            );
             context.Insumos.Add(insumo);
 
-            var estoque = new Domain.Aggregates.EstoqueAggregates.Estoque(insumo.Id, null, 10, admin.Id, DateTime.UtcNow);
+            var estoque = new EstoqueDbModel(
+                Guid.NewGuid(), null, insumo.Id, 10, 0, new List<EstoqueHistoricoDbmodel>(), null!, null!, true
+            );
             context.Estoques.Add(estoque);
             await context.SaveChangesAsync();
             insumoId = insumo.Id;
@@ -66,10 +77,15 @@ public class EstoqueTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             var admin = context.Usuarios.First();
 
-            var insumo = new Insumo("Fluido Freio", "DOT4", 40m, admin.Id, DateTime.UtcNow);
+            var insumo = new InsumoDbModel(
+                Guid.NewGuid(), "Fluido Freio", "DOT4", 40m,
+                admin.Id, DateTime.UtcNow, null, null, true
+            );
             context.Insumos.Add(insumo);
 
-            var estoque = new Domain.Aggregates.EstoqueAggregates.Estoque(insumo.Id, null, 50, admin.Id, DateTime.UtcNow);
+            var estoque = new EstoqueDbModel(
+                Guid.NewGuid(), null, insumo.Id, 50, 0, new List<EstoqueHistoricoDbmodel>(), null!, null!, true
+            );
             context.Estoques.Add(estoque);
             await context.SaveChangesAsync();
             insumoId = insumo.Id;
@@ -99,10 +115,15 @@ public class EstoqueTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             var admin = context.Usuarios.First();
 
-            var peca = new Domain.Entities.Peca("Pastilha Freio", "Cerâmica", "Brembo", 250m, admin.Id, DateTime.UtcNow);
+            var peca = new PecaDbModel(
+                Guid.NewGuid(), "Pastilha Freio", "Cerâmica", "Brembo", 250m,
+                admin.Id, DateTime.UtcNow, null, null, true
+            );
             context.Pecas.Add(peca);
 
-            var estoque = new Domain.Aggregates.EstoqueAggregates.Estoque(null, peca.Id, 0, admin.Id, DateTime.UtcNow);
+            var estoque = new EstoqueDbModel(
+                Guid.NewGuid(), peca.Id, null, 0, 0, new List<EstoqueHistoricoDbmodel>(), null!, null!, true
+            );
             context.Estoques.Add(estoque);
             await context.SaveChangesAsync();
             pecaId = peca.Id;
@@ -132,10 +153,15 @@ public class EstoqueTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             var admin = context.Usuarios.First();
 
-            var peca = new Domain.Entities.Peca("Filtro Ar", "Esportivo", "K&N", 180m, admin.Id, DateTime.UtcNow);
+            var peca = new PecaDbModel(
+                Guid.NewGuid(), "Filtro Ar", "Esportivo", "K&N", 180m,
+                admin.Id, DateTime.UtcNow, null, null, true
+            );
             context.Pecas.Add(peca);
 
-            var estoque = new Domain.Aggregates.EstoqueAggregates.Estoque(null, peca.Id, 100, admin.Id, DateTime.UtcNow);
+            var estoque = new EstoqueDbModel(
+                Guid.NewGuid(), peca.Id, null, 100, 0, new List<EstoqueHistoricoDbmodel>(), null!, null!, true
+            );
             context.Estoques.Add(estoque);
             await context.SaveChangesAsync();
             pecaId = peca.Id;
@@ -218,7 +244,10 @@ public class EstoqueTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
         {
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             var admin = context.Usuarios.First();
-            var insumo = new Insumo("Teste", "Desc", 10m, admin.Id, DateTime.UtcNow);
+            var insumo = new InsumoDbModel(
+                Guid.NewGuid(), "Teste", "Desc", 10m,
+                admin.Id, DateTime.UtcNow, null, null, true
+            );
             context.Insumos.Add(insumo);
             await context.SaveChangesAsync();
             insumoId = insumo.Id;
@@ -248,10 +277,15 @@ public class EstoqueTest : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             var admin = context.Usuarios.First();
 
-            var insumo = new Insumo("Óleo", "Desc", 50m, admin.Id, DateTime.UtcNow);
+            var insumo = new InsumoDbModel(
+                Guid.NewGuid(), "Óleo", "Desc", 50m,
+                admin.Id, DateTime.UtcNow, null, null, true
+            );
             context.Insumos.Add(insumo);
 
-            var estoque = new Domain.Aggregates.EstoqueAggregates.Estoque(insumo.Id, null, 5, admin.Id, DateTime.UtcNow);
+            var estoque = new EstoqueDbModel(
+                Guid.NewGuid(), null, insumo.Id, 5, 0, new List<EstoqueHistoricoDbmodel>(), null!, null!, true
+            );
             context.Estoques.Add(estoque);
             await context.SaveChangesAsync();
             insumoId = insumo.Id;

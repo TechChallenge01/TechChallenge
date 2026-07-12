@@ -5,7 +5,7 @@ using Domain.Enums;
 namespace Domain.Aggregates.EstoqueAggregates;
 public class Estoque : Base
 {
-    public Estoque(Guid? insumoId, Guid? pecaId, int quantidadeDisponivel, Guid UsuarioCriacaoId, DateTime dataCriacao) : base(UsuarioCriacaoId, dataCriacao, null, null)
+    public Estoque(Guid? insumoId, Guid? pecaId, int quantidadeDisponivel, Guid usuarioCriacaoId, DateTime dataCriacao) : base(usuarioCriacaoId, dataCriacao, null, null)
     {
         if (insumoId is null && pecaId is null)
             throw new ArgumentException("É obrigatório o uso de uma peca ou um Insumo");
@@ -28,7 +28,15 @@ public class Estoque : Base
         QuantidadeReservada = 0;
     }
 
-    protected Estoque() { }
+    public Estoque(Guid id, Guid? insumoId, Guid? pecaId, int quantidadeDisponivel, int quantidadeReservada,
+           Guid idUsuarioCriacao, DateTime dataCriacao) : base(idUsuarioCriacao, dataCriacao, null, null)
+    {
+        Id = id;
+        InsumoId = insumoId;
+        PecaId = pecaId;
+        QuantidadeDisponivel = quantidadeDisponivel;
+        QuantidadeReservada = quantidadeReservada;
+    }
 
     public Guid Id { get; private set; }
     public Guid? PecaId { get; private set; }
@@ -36,8 +44,8 @@ public class Estoque : Base
     public int QuantidadeDisponivel { get; private set; }
     public int QuantidadeReservada { get; private set; }
     public ICollection<EstoqueHistorico> Historicos { get; private set; } = new List<EstoqueHistorico>();
-    public virtual Peca Peca { get; private set; }
-    public virtual Insumo Insumo { get; private set; }
+    public Peca Peca { get; private set; }
+    public Insumo Insumo { get; private set; }
     public int QuantidadeTotal => QuantidadeDisponivel + QuantidadeReservada;
 
     private void ValidarPecaId(Guid pecaId)
@@ -105,6 +113,7 @@ public class Estoque : Base
        
         QuantidadeReservada -= quantidade;
         QuantidadeDisponivel += quantidade;
+        RastrearAlteracao(usuarioCriacaoId, DateTime.UtcNow);
     }
 
     private void AdicionarMovimentacao(int quantidade, string observacao, ETipoMovimentacao tipoMovimentacao, Guid UsuarioCriacaoId, DateTime dataCriacao)

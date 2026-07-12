@@ -1,5 +1,4 @@
 ﻿using Domain.BaseEntity;
-using Domain.ValueObjects;
 
 public class Insumo : Base
 {
@@ -15,13 +14,34 @@ public class Insumo : Base
         CustoUnitario = custoUnitario;
     }
 
-    protected Insumo() { }
+    public Insumo(Guid id, string nome, string descricao, decimal custoUnitario,Guid idUsuarioCriacao, DateTime dataCriacao): base(idUsuarioCriacao, dataCriacao, null, null)
+    {
+        ValidarNome(nome);
+        ValidarDescricao(descricao);
+        ValidarCusto(custoUnitario);
+
+        Id = id;
+        Nome = nome;
+        Descricao = descricao;
+        CustoUnitario = custoUnitario;
+    }
+
+    public Insumo(Guid id, string nome, string descricao, decimal custoUnitario)
+    {
+        ValidarNome(nome);
+        ValidarDescricao(descricao);
+        ValidarCusto(custoUnitario);
+
+        Id = id;
+        Nome = nome;
+        Descricao = descricao;
+        CustoUnitario = custoUnitario;
+    }
 
     public Guid Id { get; private set; }
     public string Nome { get; private set; }
     public string Descricao { get; private set; }
     public decimal CustoUnitario { get; private set; }
-    public ICollection<OrdemServicoInsumo> OrdemServicoInsumos { get; private set;  } = new List<OrdemServicoInsumo>();
 
     private void ValidarNome(string nome)
     {

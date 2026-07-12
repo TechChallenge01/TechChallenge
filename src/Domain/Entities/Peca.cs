@@ -1,5 +1,4 @@
 ﻿using Domain.BaseEntity;
-using Domain.ValueObjects;
 
 namespace Domain.Entities
 {
@@ -20,14 +19,39 @@ namespace Domain.Entities
             Descricao = descricao;
         }
 
-        protected Peca() { }
+        public Peca(Guid id, string nome, string descricao, string marcaPeca, decimal valorUnitario)
+        {
+            ValidarNome(nome);
+            ValidaDescricao(descricao);
+            ValidarMarcaPeca(marcaPeca);
+            ValidarPrecoVenda(valorUnitario);
+
+            Id = id;
+            Nome = nome;
+            Descricao = descricao;
+            MarcaPeca = marcaPeca;
+            ValorUnitario = valorUnitario;
+        }
+
+        public Peca(Guid id, string nome, string descricao, string marcaPeca, decimal valorUnitario, Guid idUsuarioCriacao, DateTime dataCriacao) : base(idUsuarioCriacao, dataCriacao, null, null)
+        {
+            ValidarNome(nome);
+            ValidaDescricao(descricao);
+            ValidarMarcaPeca(marcaPeca);
+            ValidarPrecoVenda(valorUnitario);
+
+            Id = id;
+            Nome = nome;
+            Descricao = descricao;
+            MarcaPeca = marcaPeca;
+            ValorUnitario = valorUnitario;
+        }
 
         public Guid Id { get; private set; }
         public string Nome { get; private set; }
         public string Descricao { get; private set; }
         public string MarcaPeca { get; private set; }
         public decimal ValorUnitario { get; private set; }
-        public ICollection<OrdemServicoPeca> OrdemServicoPecas { get; private set; } = new List<OrdemServicoPeca>();
 
         private void ValidarNome(string name)
         {

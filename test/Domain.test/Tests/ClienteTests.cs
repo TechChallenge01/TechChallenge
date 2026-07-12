@@ -123,9 +123,74 @@ namespace Domain.test.Tests
             Assert.Throws<ArgumentException>(() => new Endereco("rua cleber", "10", null, "jabaquara", string.Empty, "SP", "01213001"));
         }
 
+        [Fact]
         public void CriarEndereco_UfNulo_DeveThrowArgumentException()
         {
             Assert.Throws<ArgumentException>(() => new Endereco("rua cleber", "10", null, "jabaquara", "São Paulo", string.Empty, "01213001"));
+        }
+
+        [Fact]
+        public void AlterarNome_ComNomeValido_DeveAlterarComSucesso()
+        {
+            var cliente = new Cliente("João Silva", new Cpf("50872558843"), Guid.NewGuid(),
+                new Endereco("Rua A", "123", null, "Centro", "São Paulo", "SP", "01310100"),
+                new Telefone("11", "55", "987654321"),
+                new Email("joao@email.com"));
+
+            cliente.AlterarNome("João Santos");
+
+            Assert.Equal("João Santos", cliente.Nome);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public void AlterarNome_ComNomeInvalido_DeveThrowArgumentException(string nome)
+        {
+            var cliente = new Cliente("João Silva", new Cpf("50872558843"), Guid.NewGuid(),
+                new Endereco("Rua A", "123", null, "Centro", "São Paulo", "SP", "01310100"),
+                new Telefone("11", "55", "987654321"),
+                new Email("joao@email.com"));
+
+            Assert.Throws<ArgumentException>(() => cliente.AlterarNome(nome));
+        }
+
+        [Fact]
+        public void AlterarTelefone_ComTelefoneValido_DeveAlterarComSucesso()
+        {
+            var cliente = new Cliente("João Silva", new Cpf("50872558843"), Guid.NewGuid(),
+                new Endereco("Rua A", "123", null, "Centro", "São Paulo", "SP", "01310100"),
+                new Telefone("11", "55", "987654321"),
+                new Email("joao@email.com"));
+
+            var novoTelefone = new Telefone("21", "55", "999888777");
+            cliente.AlterarTelefone(novoTelefone);
+
+            Assert.Equal("21", cliente.Telefone.DDD);
+        }
+
+        [Fact]
+        public void AlterarEndereco_ComEnderecoValido_DeveAlterarComSucesso()
+        {
+            var cliente = new Cliente("João Silva", new Cpf("50872558843"), Guid.NewGuid(),
+                new Endereco("Rua A", "123", null, "Centro", "São Paulo", "SP", "01310100"),
+                new Telefone("11", "55", "987654321"),
+                new Email("joao@email.com"));
+
+            var novoEndereco = new Endereco("Av. Brasil", "500", null, "Vila Nova", "Rio de Janeiro", "RJ", "20040020");
+            cliente.AlterarEndereco(novoEndereco);
+
+            Assert.Equal("Av. Brasil", cliente.Endereco.Logradouro);
+        }
+
+        [Fact]
+        public void CriarCliente_SemCpfECnpj_DeveThrowArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() =>
+                new Cliente("João Silva", (Cpf)null, Guid.NewGuid(),
+                    new Endereco("Rua A", "123", null, "Centro", "São Paulo", "SP", "01310100"),
+                    new Telefone("11", "55", "987654321"),
+                    new Email("joao@email.com")));
         }
     }
 }

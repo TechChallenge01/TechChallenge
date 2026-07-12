@@ -20,7 +20,14 @@ namespace Domain.Entities
             Perfil = perfil.ToString();
         }
 
-        public Usuario() { }
+        public Usuario(Guid id, string nome, string email, string senhaHash, string perfil)
+        {
+            Id = id;
+            Nome = nome;
+            Email = email;
+            SenhaHash = senhaHash;
+            Perfil = perfil;
+        }
 
         public Guid Id { get; private set; }
         public string Nome { get; private set; }
