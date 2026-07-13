@@ -1,0 +1,1514 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "API | v1",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://localhost:7193/"
+    }
+  ],
+  "paths": {
+    "/api/veiculos": {
+      "post": {
+        "tags": [
+          "API"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VeiculoRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "API"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/veiculos/{id}": {
+      "delete": {
+        "tags": [
+          "API"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "API"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "API"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VeiculoRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/usuarios": {
+      "post": {
+        "tags": [
+          "API"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CriarUsuarioRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/login": {
+      "post": {
+        "tags": [
+          "API"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/servicos": {
+      "post": {
+        "tags": [
+          "API"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ServicoRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "API"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/servicos/{id}": {
+      "delete": {
+        "tags": [
+          "API"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "API"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "API"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ServicoRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/pecas": {
+      "post": {
+        "tags": [
+          "API"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PecaRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "API"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/pecas/{id}": {
+      "delete": {
+        "tags": [
+          "API"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "API"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "API"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PecaRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/ordemServico/{id}/Aprovar": {
+      "put": {
+        "tags": [
+          "API"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/ordemServico/{id}/Cancelar": {
+      "put": {
+        "tags": [
+          "API"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/ordemServico": {
+      "post": {
+        "tags": [
+          "API"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrdemServicoRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "API"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/ordemServico/{id}/FinalizarServico": {
+      "put": {
+        "tags": [
+          "API"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FinalizarServicoRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/ordemServico/{id}": {
+      "get": {
+        "tags": [
+          "API"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/ordemServico/{id}/IniciarDiagnostico": {
+      "put": {
+        "tags": [
+          "API"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/ordemServico/{id}/RealizarDiagnostico": {
+      "put": {
+        "tags": [
+          "API"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DiagnosticoRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/ordemServico/{id}/RegistrarEntrega": {
+      "put": {
+        "tags": [
+          "API"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/insumos": {
+      "post": {
+        "tags": [
+          "API"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InsumoRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "API"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/insumos/{id}": {
+      "delete": {
+        "tags": [
+          "API"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "API"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "API"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InsumoRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/estoques/{id}": {
+      "get": {
+        "tags": [
+          "API"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/estoques": {
+      "get": {
+        "tags": [
+          "API"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "API"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EstoqueRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/clientes": {
+      "post": {
+        "tags": [
+          "API"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClienteRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "API"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/clientes/{id}": {
+      "delete": {
+        "tags": [
+          "API"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "API"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "API"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClienteRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": [
+          "API"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ClienteRequestDTO": {
+        "required": [
+          "nome",
+          "email",
+          "telefone"
+        ],
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string"
+          },
+          "cpf": {
+            "type": "string"
+          },
+          "cnpj": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "telefone": {
+            "$ref": "#/components/schemas/TelefoneDTO"
+          },
+          "endereco": {
+            "$ref": "#/components/schemas/EnderecoDTO"
+          },
+          "veiculos": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        }
+      },
+      "CriarUsuarioRequestDTO": {
+        "required": [
+          "nome",
+          "email",
+          "senha",
+          "perfil"
+        ],
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "senha": {
+            "minLength": 8,
+            "type": "string"
+          },
+          "perfil": {
+            "$ref": "#/components/schemas/EPerfilUsuario"
+          }
+        }
+      },
+      "DiagnosticoRequestDTO": {
+        "type": "object",
+        "properties": {
+          "servicos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrdemServicoServicoRequestDTO"
+            }
+          },
+          "pecas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrdemServicoPecaRequestDTO"
+            }
+          },
+          "insumos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrdemServicoInsumoRequestDTO"
+            }
+          },
+          "observacao": {
+            "maxLength": 500,
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "EnderecoDTO": {
+        "type": "object",
+        "properties": {
+          "logradouro": {
+            "type": "string"
+          },
+          "numero": {
+            "type": "string"
+          },
+          "complemento": {
+            "type": "string"
+          },
+          "bairro": {
+            "type": "string"
+          },
+          "cep": {
+            "type": "string"
+          },
+          "cidade": {
+            "type": "string"
+          },
+          "uf": {
+            "type": "string"
+          }
+        }
+      },
+      "EPerfilUsuario": {
+        "type": "integer"
+      },
+      "EstoqueRequestDTO": {
+        "required": [
+          "tipoMovimentacao",
+          "quantidade"
+        ],
+        "type": "object",
+        "properties": {
+          "pecaId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "insumoId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "tipoMovimentacao": {
+            "type": "string"
+          },
+          "quantidade": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "FinalizarServicoRequestDTO": {
+        "required": [
+          "servicosId"
+        ],
+        "type": "object",
+        "properties": {
+          "servicosId": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        }
+      },
+      "InsumoRequestDTO": {
+        "required": [
+          "nome",
+          "custoUnitario"
+        ],
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string"
+          },
+          "descricao": {
+            "type": "string"
+          },
+          "custoUnitario": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          }
+        }
+      },
+      "LoginRequestDTO": {
+        "required": [
+          "email",
+          "senha"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "senha": {
+            "type": "string"
+          }
+        }
+      },
+      "OrdemServicoInsumoRequestDTO": {
+        "type": "object",
+        "properties": {
+          "insumoId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "quantidade": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "OrdemServicoPecaRequestDTO": {
+        "type": "object",
+        "properties": {
+          "pecaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "quantidade": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "OrdemServicoRequestDTO": {
+        "type": "object",
+        "properties": {
+          "cliente": {
+            "$ref": "#/components/schemas/ClienteRequestDTO"
+          },
+          "veiculo": {
+            "$ref": "#/components/schemas/VeiculoRequestDTO"
+          },
+          "insumos": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/OrdemServicoInsumoRequestDTO"
+            }
+          },
+          "pecas": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/OrdemServicoPecaRequestDTO"
+            }
+          },
+          "servicos": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/OrdemServicoServicoRequestDTO"
+            }
+          },
+          "observacao": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "valorDesconto": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          }
+        }
+      },
+      "OrdemServicoServicoRequestDTO": {
+        "type": "object",
+        "properties": {
+          "servicoId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "quantidade": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "valorUnitario": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "dataInicioExecucao": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "dataTerminoExecucao": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "PecaRequestDTO": {
+        "required": [
+          "nome",
+          "descricao",
+          "marcaPeca",
+          "precoVenda"
+        ],
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string"
+          },
+          "descricao": {
+            "type": "string"
+          },
+          "marcaPeca": {
+            "type": "string"
+          },
+          "precoVenda": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          }
+        }
+      },
+      "ServicoRequestDTO": {
+        "required": [
+          "nome",
+          "descricao",
+          "precoVenda"
+        ],
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string"
+          },
+          "descricao": {
+            "type": "string"
+          },
+          "precoVenda": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          }
+        }
+      },
+      "TelefoneDTO": {
+        "type": "object",
+        "properties": {
+          "ddd": {
+            "type": "string"
+          },
+          "ddi": {
+            "type": "string"
+          },
+          "numero": {
+            "type": "string"
+          }
+        }
+      },
+      "VeiculoRequestDTO": {
+        "required": [
+          "modelo",
+          "marcaVeiculo",
+          "clienteId",
+          "ano",
+          "placa",
+          "cor"
+        ],
+        "type": "object",
+        "properties": {
+          "modelo": {
+            "type": "string"
+          },
+          "marcaVeiculo": {
+            "type": "string"
+          },
+          "clienteId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ano": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "placa": {
+            "type": "string"
+          },
+          "cor": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "API"
+    }
+  ]
+}

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechChallenge API</title>
+    <title>TechChallenge API — Fase 2</title>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -136,8 +136,8 @@
             <div class="hidden md:flex items-center gap-8 text-sm text-gray-400 font-medium">
                 <a href="#pitch" class="hover:text-white transition-colors">Pitch</a>
                 <a href="#architecture" class="hover:text-white transition-colors">Arquitetura</a>
+                <a href="#infra" class="hover:text-white transition-colors">Infraestrutura</a>
                 <a href="#docs" class="hover:text-white transition-colors">Documentação</a>
-                <a href="#quality" class="hover:text-white transition-colors">Qualidade & Segurança</a>
                 <a href="#team" class="hover:text-white transition-colors">Equipe</a>
             </div>
             <div>
@@ -154,17 +154,18 @@
         <div class="max-w-4xl mx-auto z-10">
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-medium text-gray-300 mb-8 animate-fade-in">
                 <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                v1.0 Produção Ready
+                Fase 2 · Kubernetes & IaC Ready
             </div>
 
             <h1 class="text-5xl md:text-7xl font-bold tracking-tighter mb-6 leading-tight reveal">
                 TechChallenge API <br>
-                <span class="text-gradient">Fase 1</span>
+                <span class="text-gradient">Fase 2</span>
             </h1>
 
             <p class="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto reveal" style="transition-delay: 100ms;">
-                Uma solução robusta e escalável desenvolvida em ASP.NET Core 10,
-                aplicando Clean Architecture, Domain-Driven Design e as melhores práticas de engenharia de software.
+                Evolução da API desenvolvida em ASP.NET Core 10, aplicando Clean Architecture e testes automatizados,
+                agora com conteinerização, orquestração em Kubernetes, Infraestrutura como Código via Terraform
+                e pipeline de CI/CD para suportar alta disponibilidade e escalabilidade dinâmica.
             </p>
 
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4 reveal" style="transition-delay: 200ms;">
@@ -172,7 +173,7 @@
                     <i class="ph ph-play-circle text-xl"></i>
                     Assistir Apresentação
                 </a>
-                <a href="#architecture" class="px-8 py-3 rounded-full border border-white/20 bg-white/5 text-white font-semibold hover:bg-white/10 transition-all w-full sm:w-auto flex items-center justify-center gap-2">
+                <a href="#infra" class="px-8 py-3 rounded-full border border-white/20 bg-white/5 text-white font-semibold hover:bg-white/10 transition-all w-full sm:w-auto flex items-center justify-center gap-2">
                     <i class="ph ph-code text-xl"></i>
                     Explorar Arquitetura
                 </a>
@@ -308,157 +309,248 @@
 
             <!-- Stack Visual Representation -->
             <div class="w-full lg:w-1/2 reveal font-mono text-sm">
-                <div class="glass-card p-6 border-l-4 border-l-blue-500 layer-box mb-4">
+                <div class="glass-card p-6 border-l-4 border-l-blue-500 layer-box mb-1">
                     <div class="flex justify-between items-center mb-2">
-                        <span class="text-blue-400 font-bold">1. API Layer (Controllers)</span>
+                        <span class="text-blue-400 font-bold">1. API — src/API</span>
+                        <span class="text-gray-500 text-xs">Controllers, DTOs</span>
                     </div>
-                    <p class="text-gray-400 text-xs">Autenticação JWT, Recebimento de requests, Validações primárias.</p>
+                    <p class="text-gray-400 text-xs mb-3">Autenticação JWT, Middlewares, recebimento de requests e validações primárias.</p>
+                    <div class="flex flex-wrap gap-1.5">
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-300 border border-blue-500/20">AuthController</span>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-300 border border-blue-500/20">OrdemServicoController</span>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-300 border border-blue-500/20">JwtMiddleware</span>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-300 border border-blue-500/20">DTOs (Request/Response)</span>
+                    </div>
                 </div>
 
-                <div class="flex justify-center my-2 text-gray-600"><i class="ph ph-arrow-down"></i></div>
+                <div class="flex items-center gap-2 justify-center my-1 text-gray-600 text-[10px]"><i class="ph ph-arrow-down"></i> depende de</div>
 
-                <div class="glass-card p-6 border-l-4 border-l-purple-500 layer-box mb-4">
+                <div class="glass-card p-6 border-l-4 border-l-purple-500 layer-box mb-1">
                     <div class="flex justify-between items-center mb-2">
-                        <span class="text-purple-400 font-bold">2. Application Layer</span>
+                        <span class="text-purple-400 font-bold">2. Application — src/Application</span>
                         <span class="text-gray-500 text-xs">Services & DTOs</span>
                     </div>
-                    <p class="text-gray-400 text-xs">Orquestração de lógica, mapeamento de objetos, regras de aplicação.</p>
+                    <p class="text-gray-400 text-xs mb-3">Orquestração de casos de uso, mapeamento de objetos e regras de aplicação.</p>
+                    <div class="flex flex-wrap gap-1.5">
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20">OrdemServicoService</span>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20">ClienteService</span>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20">CommandResult&lt;T&gt;</span>
+                    </div>
                 </div>
 
-                <div class="flex justify-center my-2 text-gray-600"><i class="ph ph-arrow-down"></i></div>
+                <div class="flex items-center gap-2 justify-center my-1 text-gray-600 text-[10px]"><i class="ph ph-arrow-down"></i> depende de</div>
 
-                <div class="glass-card p-6 border-l-4 border-l-emerald-500 layer-box mb-4 relative overflow-hidden">
+                <div class="glass-card p-6 border-l-4 border-l-emerald-500 layer-box mb-1 relative overflow-hidden">
                     <div class="absolute inset-0 bg-emerald-500/5"></div>
                     <div class="relative z-10">
                         <div class="flex justify-between items-center mb-2">
-                            <span class="text-emerald-400 font-bold">3. Domain Layer</span>
+                            <span class="text-emerald-400 font-bold">3. Domain — src/Domain</span>
                             <span class="text-gray-500 text-xs">Core Business</span>
                         </div>
-                        <p class="text-gray-400 text-xs">Entidades ricas, Agregados (Cliente, O.S, Estoque), Value Objects (CPF/CNPJ, Email).</p>
+                        <p class="text-gray-400 text-xs mb-3">Núcleo do negócio — não depende de nenhuma outra camada.</p>
+                        <div class="flex flex-wrap gap-1.5">
+                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">Entities (Cliente, OrdemServico, Veiculo)</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">Value Objects (CPF, CNPJ, Email)</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">StatusOS (Enum)</span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="flex justify-center my-2 text-gray-600"><i class="ph ph-arrow-down"></i></div>
+                <div class="flex items-center gap-2 justify-center my-1 text-gray-600 text-[10px]"><i class="ph ph-arrow-up"></i> implementada por</div>
 
                 <div class="glass-card p-6 border-l-4 border-l-gray-500 layer-box">
                     <div class="flex justify-between items-center mb-2">
-                        <span class="text-gray-400 font-bold">4. Infrastructure Layer</span>
+                        <span class="text-gray-400 font-bold">4. Infrastructure — src/Infra</span>
                         <span class="text-gray-500 text-xs">Data Access</span>
                     </div>
-                    <p class="text-gray-400 text-xs">EF Core, SQL Server 2022, Migrations, Repositories Concretos.</p>
+                    <p class="text-gray-400 text-xs mb-3">Implementa as interfaces definidas no Domain/Application.</p>
+                    <div class="flex flex-wrap gap-1.5">
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-500/10 text-gray-300 border border-gray-500/20">AppDbContext (EF Core)</span>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-500/10 text-gray-300 border border-gray-500/20">Repositories</span>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-500/10 text-gray-300 border border-gray-500/20">UnitOfWork</span>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-500/10 text-gray-300 border border-gray-500/20">Migrations</span>
+                    </div>
                 </div>
+
+                <p class="text-[11px] text-gray-500 mt-4 text-center font-sans">
+                    <i class="ph ph-info"></i> Infrastructure implementa contratos do Domain/Application (Repository Pattern) — a seta de dependência aponta sempre para dentro, mantendo o Domain isolado de frameworks.
+                </p>
             </div>
         </div>
     </section>
 
-    <!-- Planning & Documentation (Miro, Drive, Postman) -->
+    <!-- Infraestrutura & DevOps (K8s, Terraform, CI/CD) -->
+    <section id="infra" class="py-24 px-6 relative overflow-hidden">
+        <div class="absolute left-0 top-0 w-[500px] h-[500px] bg-accent/10 blur-[120px] rounded-full mix-blend-screen"></div>
+
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="mb-16 reveal">
+                <div class="inline-block px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-medium text-accent mb-6">
+                    <i class="ph ph-cloud align-middle mr-1"></i> Fase 2
+                </div>
+                <h2 class="text-3xl font-bold mb-4">Infraestrutura & DevOps</h2>
+                <p class="text-gray-400 max-w-2xl">Do container ao cluster: conteinerização, orquestração, infraestrutura como código e entrega contínua, provisionadas na AWS (EKS + RDS).</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Docker -->
+                <div class="glass-card p-8 reveal" style="transition-delay: 100ms;">
+                    <div class="w-12 h-12 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center text-2xl mb-6">
+                        <i class="ph ph-cube"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-3">Conteinerização</h3>
+                    <p class="text-gray-400 text-sm">Dockerfile multi-stage (build + runtime) e <code class="text-xs bg-black/50 px-1 py-0.5 rounded">docker-compose.yml</code> com SQL Server para desenvolvimento local.</p>
+                </div>
+                <!-- Kubernetes -->
+                <div class="glass-card p-8 reveal" style="transition-delay: 200ms;">
+                    <div class="w-12 h-12 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center text-2xl mb-6">
+                        <i class="ph ph-hexagon"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-3">Kubernetes</h3>
+                    <p class="text-gray-400 text-sm">Deployment (2 réplicas), Service, ConfigMap/Secret e HPA (2-6 réplicas por CPU/memória) em <code class="text-xs bg-black/50 px-1 py-0.5 rounded">/k8s</code>.</p>
+                </div>
+                <!-- Terraform -->
+                <div class="glass-card p-8 reveal" style="transition-delay: 300ms;">
+                    <div class="w-12 h-12 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl mb-6">
+                        <i class="ph ph-tree-structure"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-3">Terraform (IaC)</h3>
+                    <p class="text-gray-400 text-sm">Provisiona VPC, cluster EKS, repositório ECR e banco RDS SQL Server em <code class="text-xs bg-black/50 px-1 py-0.5 rounded">/infra/terraform</code>.</p>
+                </div>
+                <!-- CI/CD -->
+                <div class="glass-card p-8 reveal" style="transition-delay: 400ms;">
+                    <div class="w-12 h-12 rounded-lg bg-orange-500/20 text-orange-400 flex items-center justify-center text-2xl mb-6">
+                        <i class="ph ph-git-branch"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-3">CI/CD</h3>
+                    <p class="text-gray-400 text-sm">GitHub Actions: build, testes, build/push da imagem, migration do banco e deploy no EKS a cada push em <code class="text-xs bg-black/50 px-1 py-0.5 rounded">main</code>.</p>
+                </div>
+            </div>
+
+            <!-- Infra Architecture Diagram -->
+            <div class="mt-12 reveal" style="transition-delay: 500ms;">
+                <h3 class="text-sm font-semibold text-gray-300 mb-6 flex items-center gap-2">
+                    <i class="ph ph-flow-arrow text-accent"></i> Desenho da Arquitetura de Infraestrutura (AWS)
+                </h3>
+
+                <div class="glass-card p-6 md:p-8 overflow-x-auto">
+                    <div class="min-w-[880px] font-mono text-xs">
+
+                        <!-- CI/CD row (outside the cloud) -->
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="flex-1 p-3 rounded-lg bg-white/5 border border-white/10 text-center text-gray-300">
+                                <i class="ph ph-git-commit block text-lg mb-1 text-gray-400"></i>
+                                git push main
+                            </div>
+                            <i class="ph ph-arrow-right text-gray-600 text-lg"></i>
+                            <div class="flex-[2] p-3 rounded-lg bg-orange-500/10 border border-orange-500/30 text-center text-orange-300">
+                                <i class="ph ph-git-branch block text-lg mb-1"></i>
+                                GitHub Actions — CI/CD
+                                <div class="text-[10px] text-orange-300/70 mt-1 font-sans">build → test → build/push imagem → migration → deploy</div>
+                            </div>
+                            <i class="ph ph-arrow-right text-gray-600 text-lg"></i>
+                            <div class="flex-1 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-center text-emerald-300">
+                                <i class="ph ph-tree-structure block text-lg mb-1"></i>
+                                Terraform (IaC)
+                                <div class="text-[10px] text-emerald-300/70 mt-1 font-sans">provisiona toda a infra abaixo</div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-center text-gray-600 mb-2"><i class="ph ph-arrow-down text-lg"></i></div>
+
+                        <!-- AWS Cloud container -->
+                        <div class="border-2 border-dashed border-accent2/40 rounded-2xl p-5">
+                            <div class="text-accent2 font-semibold mb-4 flex items-center gap-2">
+                                <i class="ph ph-cloud"></i> AWS Cloud
+                            </div>
+
+                            <div class="flex flex-col lg:flex-row gap-4">
+                                <!-- ECR -->
+                                <div class="lg:w-[180px] flex flex-col justify-center items-center p-4 rounded-xl bg-white/5 border border-white/10 text-center text-gray-300">
+                                    <i class="ph ph-package text-2xl mb-2 text-gray-400"></i>
+                                    Amazon ECR
+                                    <div class="text-[10px] text-gray-500 mt-1 font-sans">imagens Docker</div>
+                                </div>
+
+                                <div class="flex items-center justify-center text-gray-600">
+                                    <i class="ph ph-arrow-right text-lg hidden lg:block"></i>
+                                    <i class="ph ph-arrow-down text-lg lg:hidden"></i>
+                                </div>
+
+                                <!-- VPC -->
+                                <div class="flex-1 border-2 border-dashed border-accent/40 rounded-2xl p-5">
+                                    <div class="text-accent font-semibold mb-4 flex items-center gap-2">
+                                        <i class="ph ph-network"></i> VPC — 10.0.0.0/16
+                                    </div>
+
+                                    <div class="flex flex-col md:flex-row gap-4">
+                                        <!-- Public subnet -->
+                                        <div class="flex-[1.6] border border-blue-500/30 rounded-xl p-4 bg-blue-500/5">
+                                            <div class="text-blue-300 text-[11px] font-semibold mb-3">Subnets Públicas</div>
+
+                                            <div class="p-3 rounded-lg bg-white/5 border border-white/10 text-center text-gray-300 mb-3">
+                                                <i class="ph ph-globe block text-lg mb-1 text-gray-400"></i>
+                                                Service (LoadBalancer :80)
+                                            </div>
+                                            <div class="flex justify-center text-gray-600 mb-2"><i class="ph ph-arrow-down"></i></div>
+
+                                            <div class="border border-purple-500/30 rounded-lg p-3 bg-purple-500/5">
+                                                <div class="text-purple-300 text-[11px] font-semibold mb-2">EKS Cluster — Node Group</div>
+                                                <div class="flex flex-wrap gap-2 mb-2">
+                                                    <div class="flex-1 min-w-[70px] p-2 rounded bg-white/5 border border-white/10 text-center text-gray-300">Pod API</div>
+                                                    <div class="flex-1 min-w-[70px] p-2 rounded bg-white/5 border border-white/10 text-center text-gray-300">Pod API</div>
+                                                    <div class="flex-1 min-w-[70px] p-2 rounded bg-white/5 border border-dashed border-white/20 text-center text-gray-500">+ até 4</div>
+                                                </div>
+                                                <div class="text-[10px] text-purple-300/70 font-sans">HPA: 2–6 réplicas (CPU 70% / Mem 80%)</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="flex items-center justify-center text-gray-600">
+                                            <i class="ph ph-arrow-right text-lg hidden md:block"></i>
+                                            <i class="ph ph-arrow-down text-lg md:hidden"></i>
+                                        </div>
+
+                                        <!-- Private subnet -->
+                                        <div class="flex-1 border border-red-500/30 rounded-xl p-4 bg-red-500/5 flex flex-col justify-center">
+                                            <div class="text-red-300 text-[11px] font-semibold mb-3">Subnet Privada</div>
+                                            <div class="p-3 rounded-lg bg-white/5 border border-white/10 text-center text-gray-300">
+                                                <i class="ph ph-database block text-lg mb-1 text-gray-400"></i>
+                                                RDS SQL Server Express
+                                                <div class="text-[10px] text-gray-500 mt-1 font-sans">porta 1433</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-[11px] text-gray-500 mt-4 text-center font-sans">
+                    <i class="ph ph-info"></i> Nodes do EKS em subnets públicas (evita custo de NAT Gateway em ambiente acadêmico) — acesso ao RDS restrito por Security Group apenas aos nodes do cluster.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Documentation (Postman) -->
     <section id="docs" class="py-24 px-6">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16 reveal">
-                <h2 class="text-3xl font-bold mb-4">Design, Planejamento e API</h2>
-                <p class="text-gray-400">Documentação funcional, modelagem de domínio estruturada e collections da API.</p>
+                <h2 class="text-3xl font-bold mb-4">Documentação da API</h2>
+                <p class="text-gray-400">Collection pronta para uso e documentação interativa dos endpoints.</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Domain Storytelling -->
-                <a href="https://drive.google.com/drive/folders/1mQZIdGoNfmsNbz4j9eP4vGVTwGZfESP5?usp=drive_link" target="_blank" class="glass-card p-8 group block reveal" style="transition-delay: 100ms;">
-                    <div class="flex justify-between items-start mb-6">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Drive_icon_%282020%29.svg" alt="Google Drive" class="w-10 h-10 grayscale group-hover:grayscale-0 transition-all">
-                        <i class="ph ph-arrow-up-right text-gray-500 group-hover:text-white transition-colors"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-2">Domain Storytelling</h3>
-                    <p class="text-gray-400 text-sm">Arquivos detalhando o fluxo operacional da oficina mecânica e os atores envolvidos (Acessar Drive).</p>
-                </a>
-
-                <!-- Event Storming -->
-                <a href="https://miro.com/app/board/uXjVGwZbhCk=/?share_link_id=905994680734" target="_blank" class="glass-card p-8 group block reveal" style="transition-delay: 200ms;">
-                    <div class="flex justify-between items-start mb-6">
-                        <!-- Miro Logo SVG representation -->
-                        <svg class="w-10 h-10 grayscale group-hover:grayscale-0 transition-all text-[#050038]" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M24 11.238L21.432.181l-3.238 2.05L19.5 12.396 24 11.238zm-4.761 1.488L17.755 1.54l-3.238 2.051 1.484 11.185 3.238-2.05zm-4.761 1.583L12.986 2.93l-3.238 2.05 1.492 11.378 3.238-2.05zm-4.762 1.624L8.225 4.316l-3.238 2.05 1.492 11.615 3.237-2.048zm-4.761 1.63L3.463 5.672.225 7.722l1.492 11.888L4.955 17.56z" /></svg>
-                        <i class="ph ph-arrow-up-right text-gray-500 group-hover:text-white transition-colors"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-2">Event Storming</h3>
-                    <p class="text-gray-400 text-sm">Mapeamento visual no Miro dos eventos de domínio, comandos, agregados e políticas do sistema.</p>
-                </a>
-
-                <!-- Linguagem Ubíqua -->
-                <a href="Dicionario_Linguagem_Ubiqua_Mecanica.docx" target="_blank" class="glass-card p-8 group block reveal" style="transition-delay: 300ms;">
-                    <div class="flex justify-between items-start mb-6">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/f/fd/Microsoft_Office_Word_%282019%E2%80%93present%29.svg" alt="Word Document" class="w-10 h-10 grayscale group-hover:grayscale-0 transition-all">
-                        <i class="ph ph-arrow-up-right text-gray-500 group-hover:text-white transition-colors"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-2">Linguagem Ubíqua</h3>
-                    <p class="text-gray-400 text-sm">Dicionário de termos do domínio, garantindo o alinhamento exato entre a equipe técnica e os especialistas de negócio.</p>
-                </a>
-
+            <div class="flex justify-center">
                 <!-- Postman / Swagger -->
-                <a href="https://github.com/TechChallenge01/TechChallenge/blob/main/docs/API%20-%20v1%20-%20Completa.postman_collection.json" target="_blank" class="glass-card p-8 group block reveal" style="transition-delay: 300ms;">
+                <a href="API-v2-Completa.postman_collection.json" target="_blank" class="glass-card p-8 group block reveal max-w-md w-full">
                     <div class="flex justify-between items-start mb-6">
                         <img src="https://www.vectorlogo.zone/logos/getpostman/getpostman-icon.svg" alt="Postman" class="w-10 h-10 grayscale group-hover:grayscale-0 transition-all">
-                        <i class="ph ph-arrow-up-right text-gray-500 group-hover:text-white transition-colors"></i>
+                        <i class="ph ph-download-simple text-gray-500 group-hover:text-white transition-colors"></i>
                     </div>
                     <h3 class="text-xl font-semibold mb-2">Postman & Open API</h3>
-                    <p class="text-gray-400 text-sm">Acesse a documentação interativa (Scalar) e baixe a Collection completa com requisições prontas.</p>
+                    <p class="text-gray-400 text-sm">Baixe a Collection completa com requisições prontas (também disponível em <code class="text-xs bg-black/50 px-1 py-0.5 rounded">/docs</code> no repositório) e acesse a documentação interativa via Scalar em <code class="text-xs bg-black/50 px-1 py-0.5 rounded">/scalar</code>.</p>
                 </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Quality & Security (Sonar + OWASP ZAP) -->
-    <section id="quality" class="py-24 px-6 bg-surface2 border-t border-white/10">
-        <div class="max-w-7xl mx-auto">
-            <div class="flex flex-col lg:flex-row gap-12">
-
-                <!-- SonarQube Coverage Prints -->
-                <div class="w-full lg:w-2/3 reveal">
-                    <h2 class="text-3xl font-bold mb-4 flex items-center gap-3">
-                        <i class="ph ph-chart-line-up text-accent"></i> Cobertura de Testes
-                    </h2>
-                    <p class="text-gray-400 mb-8 max-w-xl">
-                        Múltiplas suítes de testes usando xUnit, Moq e FluentAssertions.
-                        Garantindo a estabilidade das camadas de API (Integração), Application e Domain (Unitários).
-                    </p>
-
-                    <div class="glass-card p-2 rounded-2xl">
-                        <div class="bg-surface rounded-xl overflow-hidden border border-white/5 relative group min-h-[300px] flex items-center justify-center">
-
-                            <!-- PLACEHOLDER DO PRINT DO SONAR -->
-                            <!-- Instrução: Substitua a div abaixo pela tag <img> com o seu print -->
-                            <div class="text-center text-gray-500 p-8">
-                                <i class="ph ph-image text-4xl mb-3 opacity-50"></i>
-                                <p class="text-sm font-medium"></p>
-                                <code class="text-xs mt-2 block bg-black/50 p-2 rounded"><img src="assets/sonar.png" /></code>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-                <!-- OWASP ZAP -->
-                <div class="w-full lg:w-1/3 reveal" style="transition-delay: 200ms;">
-                    <h2 class="text-3xl font-bold mb-4 flex items-center gap-3 text-red-400">
-                        <i class="ph ph-shield-warning"></i> Security ZAP
-                    </h2>
-                    <p class="text-gray-400 mb-8">
-                        Análise de vulnerabilidades na API executada através do OWASP ZAP, garantindo proteção contra injeções, configurações de segurança e vazamentos.
-                    </p>
-
-                    <div class="glass-card p-8 border-t-4 border-t-red-500 flex flex-col h-[calc(100%-8.5rem)] justify-between">
-                        <div>
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="w-3 h-3 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]"></div>
-                                <span class="text-sm font-mono text-gray-300">Scan Finalizado</span>
-                            </div>
-                            <h3 class="text-lg font-bold mb-2 text-white">Relatório de Vulnerabilidades</h3>
-                            <p class="text-sm text-gray-400 mb-6">Acesse o HTML gerado diretamente pela ferramenta de testes DAST.</p>
-                        </div>
-
-                        <a href="ZAP-Report-localhost.html" target="_blank" class="w-full bg-white/10 hover:bg-white/20 border border-white/10 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all">
-                            Abrir zap-report.html <i class="ph ph-arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
-
             </div>
         </div>
     </section>
@@ -522,9 +614,12 @@
             <div>
                 Projeto acadêmico construído para o TechChallenge da FIAP.
             </div>
-            <div class="flex gap-4">
+            <div class="flex gap-4 flex-wrap justify-center">
                 <span class="hover:text-white cursor-pointer transition-colors">ASP.NET Core</span>
                 <span class="hover:text-white cursor-pointer transition-colors">Docker</span>
+                <span class="hover:text-white cursor-pointer transition-colors">Kubernetes</span>
+                <span class="hover:text-white cursor-pointer transition-colors">Terraform</span>
+                <span class="hover:text-white cursor-pointer transition-colors">GitHub Actions</span>
                 <span class="hover:text-white cursor-pointer transition-colors">SQL Server</span>
             </div>
         </div>
