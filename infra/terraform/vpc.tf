@@ -115,12 +115,17 @@ resource "aws_security_group" "sqlserver" {
   name_prefix = "${var.project_name}-sqlserver-"
   vpc_id      = aws_vpc.main.id
 
+  # ATENCAO: aws_security_group.eks_nodes so fica anexado as ENIs do control plane
+  # (vpc_config.security_group_ids em eks.tf), NAO aos nos EC2 do node group — o
+  # aws_eks_node_group.nodes nao usa launch_template, entao a AWS anexa aos nos o
+  # security group "cluster" que ela mesma cria (cluster_security_group_id).
+  # Por isso a origem correta aqui e o cluster_security_group_id, nao o eks_nodes.
   ingress {
     description     = "SQL Server access from EKS nodes"
     from_port       = 1433
     to_port         = 1433
     protocol        = "tcp"
-    security_groups = [aws_security_group.eks_nodes.id]
+    security_groups = [aws_eks_cluster.cluster.vpc_config[0].cluster_security_group_id]
   }
 
   # ATENCAO: regra temporaria para acesso via SSMS. Remova quando terminar de debugar.

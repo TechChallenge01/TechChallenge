@@ -11,7 +11,7 @@ permissions:
 env:
   AWS_REGION: us-east-1              # ajuste para a região usada no Lab
   ECR_REPOSITORY: techchallenger     # nome do repositório no ECR
-  EKS_CLUSTER_NAME: techchallenge      # nome do cluster EKS
+  EKS_CLUSTER_NAME: techchallenge     # nome do cluster EKS
   K8S_NAMESPACE: techchallenger-ns
 
 jobs:
@@ -115,7 +115,7 @@ jobs:
           kubectl delete job/$JOB_NAME -n ${{ env.K8S_NAMESPACE }}
 
   deploy:
-    needs: migrate-database
+    needs: [build-push-image, migrate-database]
     runs-on: ubuntu-latest
     env:
       IMAGE: ${{ needs.build-push-image.outputs.image }}
