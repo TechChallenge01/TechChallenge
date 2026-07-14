@@ -1,12 +1,28 @@
 # TechChallenge API
 
 ## Descrição
-API REST para gerenciamento de oficina mecânica, desenvolvida em .NET 10 com arquitetura em camadas (Domain, Application, Infrastructure, API).
+API REST para gerenciamento de oficina mecânica (clientes, veículos, ordens de serviço, peças e estoque), desenvolvida em .NET 10 seguindo Clean Architecture (Domain, Application, Infrastructure, API), com cobertura de testes automatizados nos fluxos críticos.
+
+### Objetivo da Fase 2
+Na Fase 1 o sistema entregou a gestão de ordens de serviço, veículos, clientes e peças. A Fase 2 evolui essa base para suportar alta disponibilidade e maiores volumes de OS em horários de pico, incorporando:
+- Refino do código sob Clean Architecture, com Clean Code e testes automatizados cobrindo os fluxos críticos (abertura, diagnóstico, aprovação, execução e entrega de OS).
+- Conteinerização revisada (Dockerfile multi-stage + Docker Compose para desenvolvimento local).
+- Orquestração via Kubernetes (Deployments, Services, ConfigMaps/Secrets e Horizontal Pod Autoscaler) — manifestos em [`k8s/`](k8s).
+- Infraestrutura como Código com Terraform, provisionando VPC, cluster EKS e banco de dados (RDS SQL Server) — scripts em [`infra/terraform/`](infra/terraform).
+- Pipeline de CI/CD (GitHub Actions) fazendo build, testes, build/push da imagem Docker, migration do banco e deploy no Kubernetes — workflows em [`.github/workflows/`](.github/workflows).
 
 ## Pré-requisitos
+
+### Execução local
 - Docker
 - Docker Compose
 - (Opcional) .NET 10 SDK para desenvolvimento local
+
+### Deploy em Kubernetes / Infraestrutura (opcional)
+- kubectl
+- Terraform >= 1.5
+- AWS CLI configurado (credenciais AWS Academy Learner Lab / conta AWS com acesso a EKS, ECR e RDS)
+- Helm (usado internamente pelo Terraform para instalar o metrics-server no cluster)
 
 ## Como Executar
 
@@ -31,6 +47,89 @@ API REST para gerenciamento de oficina mecânica, desenvolvida em .NET 10 com ar
    http://localhost:8080
    ```
 
+---
+
+## Provisionamento da Infraestrutura (Terraform)
+
+Os scripts em [`infra/terraform/`](infra/terraform) provisionam, na AWS, toda a infraestrutura necessária para rodar a aplicação em produção:
+
+| Recurso | Arquivo | Descrição |
+|---------|---------|-----------|
+| VPC, subnets públicas/privadas, Internet Gateway, route tables | `vpc.tf` | Rede da aplicação — subnets públicas para os nodes do EKS, privadas para o banco |
+| Cluster EKS + Node Group + metrics-server (via Helm) | `eks.tf` | Cluster Kubernetes gerenciado e o componente necessário para o HPA funcionar |
+| Repositório ECR | `ecr.tf` | Registry das imagens Docker publicadas pela pipeline de CD |
+| Banco de dados (RDS SQL Server Express) | `sqlserver.tf` | Banco relacional gerenciado, na mesma VPC do cluster |
+| IAM (LabRole) | `iam.tf` | Reaproveita a role padrão do AWS Academy Learner Lab (ambiente não permite criar roles/policies) |
+| Variáveis e outputs | `variables.tf`, `outputs.tf`, `provider.tf` | Parametrização (região, nomes, CIDRs, tamanhos de instância) e valores expostos após o apply |
+
+### Como aplicar
+
+```bash
+cd infra/terraform
+terraform init
+terraform plan -var="db_password=<SENHA_FORTE_DO_BANCO>"
+terraform apply -var="db_password=<SENHA_FORTE_DO_BANCO>"
+```
+
+Ao final, os outputs trazem o endpoint do cluster EKS, a URL do repositório ECR e o endpoint do banco (`terraform output`). Esses valores alimentam a pipeline de CD e o Secret do Kubernetes.
+
+> Ambiente pensado para o AWS Academy Learner Lab: usa a `LabRole` já existente (sem criação de IAM roles), nodes do EKS em subnets públicas (evita custo de NAT Gateway) e RDS com `skip_final_snapshot` para permitir destruir/recriar o lab livremente. Para destruir os recursos: `terraform destroy`.
+
+---
+
+## Deploy em Kubernetes
+
+Os manifestos em [`k8s/`](k8s) descrevem o deploy da aplicação no cluster:
+
+| Manifesto | Recurso | Descrição |
+|-----------|---------|-----------|
+| `namespace.yaml` | Namespace | Isola os recursos da aplicação (`techchallenger-ns`) |
+| `configmap.yaml` | ConfigMap | Variáveis não sensíveis (ambiente, porta, log level) |
+| `secret.yaml` | Secret | Connection string do banco (valor sensível, em base64) |
+| `deployment.yaml` | Deployment | 2 réplicas da API, com readiness/liveness probes em `/health` |
+| `service.yaml` | Service (LoadBalancer) | Expõe a aplicação externamente na porta 80 |
+| `hpa.yaml` | HorizontalPodAutoscaler | Escala entre 2 e 6 réplicas por uso de CPU (70%) ou memória (80%) |
+| `migration-job.yaml` | Job | Executa o EF Core migration bundle contra o banco antes do deploy |
+
+### Aplicando manualmente
+
+```bash
+kubectl apply -f k8s/namespace.yaml
+kubectl apply -f k8s/configmap.yaml
+kubectl apply -f k8s/secret.yaml   # ajuste a connection string em base64 antes
+
+# Substitua ${IMAGE} pela tag da imagem publicada no ECR
+export IMAGE="<ecr_repository_url>:<tag>"
+envsubst < k8s/deployment.yaml | kubectl apply -f -
+kubectl apply -f k8s/service.yaml
+kubectl apply -f k8s/hpa.yaml
+
+kubectl rollout status deployment/techchallenger -n techchallenger-ns
+kubectl get service techchallenger-service -n techchallenger-ns
+```
+
+Em produção esse fluxo é automatizado pela pipeline de CD (veja a seção abaixo).
+
+---
+
+## Integração e Entrega Contínua (CI/CD)
+
+A pipeline roda no GitHub Actions, em dois workflows complementares ([`.github/workflows/`](.github/workflows)):
+
+### `ci.yml` — Integração Contínua
+Disparado em Pull Requests para `release`/`main` e em push para `release`. Executa build, testes automatizados e build (sem push) da imagem Docker, validando o código antes do merge.
+
+### `cd.yml` — Entrega Contínua
+Disparado em push para `main`. Encadeia:
+1. **build-test** — build e execução dos testes automatizados.
+2. **build-push-image** — build da imagem Docker e push para o ECR.
+3. **migrate-database** — aplica namespace/ConfigMap/Secret no cluster e roda o `migration-job.yaml` (EF Core migration bundle) contra o banco.
+4. **deploy** — aplica `deployment.yaml`, `service.yaml` e `hpa.yaml` no EKS e aguarda o rollout.
+
+As credenciais AWS (temporárias, do AWS Academy) e a connection string do banco são injetadas via GitHub Secrets (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN`, `RDS_CONNECTION_STRING`).
+
+---
+
 ## Documentação da API
 
 A API utiliza o **Scalar** como interface de documentação interativa. Com a aplicação em execução, acesse:
@@ -39,11 +138,14 @@ http://localhost:8080/scalar
 ```
 
 Também está disponível uma collection do **Postman** com todos os endpoints e exemplos de request prontos para uso:
-```
-docs/collection/
-```
 
-Importe o arquivo no Postman e configure a variável `baseUrl` como `http://localhost:8080` para começar a usar.
+📄 [`docs/API - v1 - Completa.postman_collection.json`](docs/API%20-%20v1%20-%20Completa.postman_collection.json)
+
+Importe o arquivo no Postman e configure a variável `baseUrl` como `http://localhost:8080` (ou a URL pública do serviço no Kubernetes) para começar a usar.
+
+## Vídeo Demonstrativo
+
+🎥 [Assista à demonstração do ambiente em execução](https://www.youtube.com/watch?v=a9y73qtfT-E) — deploy da aplicação, execução do CI/CD, consumo das APIs e escalabilidade automática (HPA).
 
 ---
 
@@ -403,12 +505,16 @@ Os seguintes perfis estão disponíveis no sistema:
 ```
 TechChallenge/
 ├── src/
-│   ├── API/                    # Camada de apresentação (Controllers, DTOs)
+│   ├── API/                    # Camada de apresentação (Controllers, DTOs, Dockerfile)
 │   ├── Application/            # Camada de aplicação (Services, DTOs)
 │   ├── Domain/                 # Camada de domínio (Entities, ValueObjects)
 │   ├── Infra/                  # Camada de infraestrutura (Data, External Services)
 │   └── Shared/                 # Código compartilhado (Utilities, Constants)
 ├── test/                       # Projetos de testes (Unit, Integration)
+├── k8s/                        # Manifestos Kubernetes (Deployment, Service, HPA, ConfigMap, Secret, Job)
+├── infra/terraform/            # Infraestrutura como Código (VPC, EKS, ECR, RDS)
+├── .github/workflows/          # Pipelines de CI (ci.yml) e CD (cd.yml)
+├── docs/                       # Site de documentação, collection Postman
 └── docker-compose.yml          # Configuração do Docker Compose
 ```
 

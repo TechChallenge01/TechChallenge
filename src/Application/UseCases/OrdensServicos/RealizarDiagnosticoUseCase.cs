@@ -139,6 +139,8 @@ namespace Application.UseCases.OrdensServicos
                     await insumoUseCase.Run(request.insumos, ordemServico, idUsuario, ct);
                 }
 
+                ordemServico.RegistrarDiagnostico(request.Observacao);
+
                 await _ordemServicoGateway.Update(ordemServico, ct);
 
                 var envioEmailUseCase = EnviarOrcamentoUseCase.Create(_clienteGateway, _emailService);

@@ -26,8 +26,8 @@ services:
       test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Str0ng@Passw0rd!' -Q 'SELECT 1' -C || exit 1"]
       interval: 15s
       timeout: 10s
-      retries: 5
-      start_period: 40s
+      retries: 10
+      start_period: 90s
 
   api:
     build:

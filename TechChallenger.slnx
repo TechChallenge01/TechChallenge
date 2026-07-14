@@ -2,6 +2,11 @@
   <Folder Name="/Itens de Solução/">
     <File Path="docker-compose.yml" />
   </Folder>
+  <Folder Name="/Itens de Solução/docs/">
+    <File Path="docs/API-v2-Completa.postman_collection.json" />
+    <File Path="docs/index.html" />
+    <File Path="README.md" />
+  </Folder>
   <Folder Name="/Itens de Solução/techChallenger.Infra/" />
   <Folder Name="/Itens de Solução/techChallenger.Infra/k8s/">
     <File Path="k8s/configmap.yaml" />
