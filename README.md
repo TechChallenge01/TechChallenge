@@ -3,6 +3,16 @@
 ## Descrição
 API REST para gerenciamento de oficina mecânica (clientes, veículos, ordens de serviço, peças e estoque), desenvolvida em .NET 10 seguindo Clean Architecture (Domain, Application, Infrastructure, API), com cobertura de testes automatizados nos fluxos críticos.
 
+## Repositórios do Tech Challenge
+Este é um dos quatro repositórios que compõem a solução:
+
+| Repositório | Papel |
+|---|---|
+| **TechChallenge** (este) | Aplicação principal (API em Kubernetes) |
+| [TechChallenge.auth](https://github.com/TechChallenge01/TechChallenger.auth) | Function Serverless de autenticação por CPF |
+| [TechChallenge.db](https://github.com/TechChallenge01/TechChallenge.db) | Infraestrutura do banco de dados gerenciado (Terraform) |
+| [TechChallenge.k8s](https://github.com/TechChallenge01/TechChallenge.k8s) | Infraestrutura do cluster Kubernetes (Terraform) |
+
 ### Objetivo da Fase 2
 Na Fase 1 o sistema entregou a gestão de ordens de serviço, veículos, clientes e peças. A Fase 2 evolui essa base para suportar alta disponibilidade e maiores volumes de OS em horários de pico, incorporando:
 - Refino do código sob Clean Architecture, com Clean Code e testes automatizados cobrindo os fluxos críticos (abertura, diagnóstico, aprovação, execução e entrega de OS).
@@ -90,6 +100,8 @@ Os manifestos em [`k8s/`](k8s) descrevem o deploy da aplicação no cluster:
 | `service.yaml` | Service (LoadBalancer) | Expõe a aplicação externamente na porta 80 |
 | `hpa.yaml` | HorizontalPodAutoscaler | Escala entre 2 e 6 réplicas por uso de CPU (70%) ou memória (80%) |
 | `migration-job.yaml` | Job | Executa o EF Core migration bundle contra o banco antes do deploy |
+| `datadog-agent.yaml` | DaemonSet | Agente do Datadog (APM, DogStatsD, métricas de infraestrutura e logs) — um por node |
+| `datadog-secret.yaml` | Secret | Template da API Key do Datadog (valor sensível, em base64) — a esteira de CD gera a versão real a partir do GitHub Secret `DATADOG_API_KEY` |
 
 ### Aplicando manualmente
 
@@ -126,7 +138,43 @@ Disparado em push para `main`. Encadeia:
 3. **migrate-database** — aplica namespace/ConfigMap/Secret no cluster e roda o `migration-job.yaml` (EF Core migration bundle) contra o banco.
 4. **deploy** — aplica `deployment.yaml`, `service.yaml` e `hpa.yaml` no EKS e aguarda o rollout.
 
-As credenciais AWS (temporárias, do AWS Academy) e a connection string do banco são injetadas via GitHub Secrets (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN`, `RDS_CONNECTION_STRING`).
+As credenciais AWS (temporárias, do AWS Academy), a connection string do banco e a API Key do Datadog são injetadas via GitHub Secrets (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN`, `RDS_CONNECTION_STRING`, `DATADOG_API_KEY`).
+
+---
+
+## Observabilidade / Datadog
+
+A aplicação é instrumentada com o Datadog em três frentes, todas configuradas via variáveis de ambiente (nenhuma delas exige recompilar a imagem):
+
+1. **APM (traces)** — `Datadog.Trace.Bundle` (referenciado no `src/API/API.csproj`) faz auto-instrumentação de requisições HTTP, EF Core/SQL Server e chamadas externas. Ativado pelas variáveis `CORECLR_ENABLE_PROFILING`/`CORECLR_PROFILER`/`CORECLR_PROFILER_PATH`/`DD_DOTNET_TRACER_HOME` no `k8s/configmap.yaml`.
+2. **Logs estruturados** — `Logging:Console:FormatterName=json` (também no ConfigMap) faz o `Microsoft.Extensions.Logging` nativo emitir logs em JSON. Com `DD_LOGS_INJECTION=true`, o tracer injeta `dd.trace_id`/`dd.span_id` em cada log, permitindo pular do log direto para o trace correspondente no Datadog (correlação entre requisições).
+3. **Métricas de negócio (DogStatsD)** — `IMetricsService`/`DatadogMetricsService` ([`src/Application/Interfaces/IMetricsService.cs`](src/Application/Interfaces/IMetricsService.cs), [`src/Infra/Services/DatadogMetricsService.cs`](src/Infra/Services/DatadogMetricsService.cs)) publicam contadores/histogramas customizados a cada transição de status de uma ordem de serviço:
+   - `techchallenger.os.criadas` — volume de OS criadas
+   - `techchallenger.os.status_alterado` (tag `status`) — volume por status (Diagnóstico, Execução, Finalização, etc.)
+   - `techchallenger.os.tempo_execucao_segundos` (tag `status`) — histograma do tempo médio de execução
+   - `techchallenger.os.erros` (tag `operacao`) — falhas por ação (Create, Aprovar, RealizarDiagnostico, etc.)
+
+O [Datadog Agent](k8s/datadog-agent.yaml) roda como `DaemonSet` (um por node do EKS) e expõe DogStatsD (8125/UDP) e o receptor de traces do APM (8126/TCP) via `hostPort`, além de coletar métricas de CPU/memória dos pods (`kubelet`) e logs de todos os containers do namespace. O pod da API aponta para o agente do seu próprio node via `DD_AGENT_HOST` (`status.hostIP`, injetado em `k8s/deployment.yaml`).
+
+### Aplicando
+
+```bash
+kubectl create secret generic datadog-secret \
+  --namespace techchallenger-ns \
+  --from-literal=api-key=<SUA_DATADOG_API_KEY>
+kubectl apply -f k8s/datadog-agent.yaml
+```
+
+Em produção isso é feito automaticamente pelo `cd.yml`, a partir do secret `DATADOG_API_KEY` configurado no GitHub.
+
+### Dashboards e alertas sugeridos
+- **Healthcheck/uptime**: monitor de disponibilidade sobre `GET /health` (Synthetics ou monitor HTTP do Datadog) + os `readinessProbe`/`livenessProbe` do `k8s/deployment.yaml`.
+- **Latência das APIs**: `trace.aspnet_core.request` (p50/p95/p99) vindo do APM, por rota.
+- **CPU/memória do Kubernetes**: `kubernetes.cpu.usage.total` / `kubernetes.memory.usage`, comparado com os `requests`/`limits` do `deployment.yaml` e os alvos do `k8s/hpa.yaml`.
+- **Volume diário de OS**: soma de `techchallenger.os.criadas` por dia.
+- **Tempo médio de execução por status**: média/percentis de `techchallenger.os.tempo_execucao_segundos`, agrupado pela tag `status`.
+- **Erros e falhas nas integrações**: soma de `techchallenger.os.erros` por `operacao`, mais os erros 5xx capturados automaticamente pelo APM.
+- **Alerta de falha no processamento de OS**: monitor de anomalia/threshold sobre `techchallenger.os.erros` e sobre a taxa de erro do APM no serviço `techchallenger-api`.
 
 ---
 
@@ -154,6 +202,17 @@ Todos os endpoints (exceto login) requerem um token JWT no header:
 ```
 Authorization: Bearer <seu_token_jwt>
 ```
+
+Existem duas formas de obter esse token, dependendo de quem está se autenticando:
+
+| Quem | Como | Onde |
+|---|---|---|
+| Funcionários/equipe interna (`Administrador`, `Funcionario`, `Mecanico`, `Almoxarifado`) | Login com e-mail/senha | `POST /api/login`, nesta API |
+| Cliente final (dono do veículo) | Autenticação por CPF | `POST /auth/cpf`, na Function Serverless [TechChallenge.auth](https://github.com/TechChallenge01/TechChallenger.auth) |
+
+Os dois emissores assinam o token com a **mesma chave simétrica** (`Jwt:Key`/`Jwt:Issuer`/`Jwt:Audience`) — esta API só valida a assinatura e as claims (`sub`, `role`), sem saber qual serviço emitiu o token. Isso significa que qualquer alteração em `Jwt:Key` precisa ser replicada nos dois repositórios ao mesmo tempo (ver `Jwt__Key` no `docker-compose.yml`/`k8s/secret.yaml` aqui e a variável `jwt_key` no Terraform do `TechChallenge.auth`).
+
+Um token emitido pela `TechChallenge.auth` carrega `role=Cliente` e `sub=<ClienteId>`. As rotas que aceitam esse perfil (`GET /api/ordemServico/{id}` e `PUT /api/ordemServico/{id}/Aprovar`) verificam que o `ClienteId` do token é o dono da ordem de serviço consultada/aprovada — um cliente autenticado não consegue ver ou aprovar ordens de serviço de outro cliente (retorna `403 Forbidden`).
 
 ---
 
@@ -511,7 +570,7 @@ TechChallenge/
 │   ├── Infra/                  # Camada de infraestrutura (Data, External Services)
 │   └── Shared/                 # Código compartilhado (Utilities, Constants)
 ├── test/                       # Projetos de testes (Unit, Integration)
-├── k8s/                        # Manifestos Kubernetes (Deployment, Service, HPA, ConfigMap, Secret, Job)
+├── k8s/                        # Manifestos Kubernetes (Deployment, Service, HPA, ConfigMap, Secret, Job, Datadog Agent)
 ├── infra/terraform/            # Infraestrutura como Código (VPC, EKS, ECR, RDS)
 ├── .github/workflows/          # Pipelines de CI (ci.yml) e CD (cd.yml)
 ├── docs/                       # Site de documentação, collection Postman

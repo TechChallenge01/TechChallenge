@@ -8,3 +8,21 @@ data:
   APP_PORT: "8080"
   LOG_LEVEL: "info"
   ASPNETCORE_ENVIRONMENT: "Production"
+
+  # Logs estruturados em JSON (formatter nativo do Microsoft.Extensions.Logging.Console) —
+  # necessario para o Datadog correlacionar log <-> trace via injecao automatica.
+  Logging__Console__FormatterName: "json"
+
+  # Datadog APM (Datadog.Trace.Bundle, referenciado no API.csproj) — Unified Service Tagging.
+  DD_ENV: "production"
+  DD_SERVICE: "techchallenger-api"
+  DD_TRACE_ENABLED: "true"
+  DD_LOGS_INJECTION: "true"
+  DD_RUNTIME_METRICS_ENABLED: "true"
+  DD_DOTNET_TRACER_HOME: "/app/datadog"
+  CORECLR_ENABLE_PROFILING: "1"
+  CORECLR_PROFILER: "{846F5F1C-F9AE-4B07-969E-05C26BC060D8}"
+  CORECLR_PROFILER_PATH: "/app/datadog/linux-x64/Datadog.Trace.ClrProfiler.Native.so"
+
+  # DogStatsD (metricas de negocio custom, ver IMetricsService/DatadogMetricsService)
+  Datadog__DogStatsdPort: "8125"

@@ -1,5 +1,6 @@
 ﻿using Application.Gateways.OrdemServicos;
 using Application.Gateways.Servicos;
+using Domain.Aggregates.OrdemServicoAggregates;
 using Shared.DTOs.OrdemServicos.Request;
 
 namespace Application.UseCases.OrdensServicos
@@ -20,7 +21,7 @@ namespace Application.UseCases.OrdensServicos
             return new FinalizarServicoUseCase(ordemServicoGateway, servicoGateway);
         }
 
-        public async Task Run(FinalizarServicoRequestDTO request, Guid ordemServicoId, Guid usuarioId,CancellationToken ct)
+        public async Task<OrdemServico> Run(FinalizarServicoRequestDTO request, Guid ordemServicoId, Guid usuarioId,CancellationToken ct)
         {
             try
             {
@@ -58,6 +59,8 @@ namespace Application.UseCases.OrdensServicos
 
                 await _servicoGateway.UpdateServicos(servicos, ct);
                 await _ordemServicoGateway.Update(ordemServico, ct);
+
+                return ordemServico;
             }
             catch (ArgumentException ex)
             {

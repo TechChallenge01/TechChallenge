@@ -105,6 +105,14 @@ jobs:
             --from-literal=ConnectionStrings__DefaultConnection="${{ secrets.RDS_CONNECTION_STRING }}" \
             --dry-run=client -o yaml | kubectl apply -f -
 
+      - name: Criar/atualizar Secret do Datadog e instalar o Agent (DaemonSet)
+        run: |
+          kubectl create secret generic datadog-secret \
+            --namespace ${{ env.K8S_NAMESPACE }} \
+            --from-literal=api-key="${{ secrets.DATADOG_API_KEY }}" \
+            --dry-run=client -o yaml | kubectl apply -f -
+          kubectl apply -f k8s/datadog-agent.yaml
+
       - name: Rodar Job de migration no cluster
         run: |
           export IMAGE="${{ env.IMAGE }}"
@@ -137,6 +145,7 @@ jobs:
       - name: Aplicar Deployment, Service e HPA
         run: |
           export IMAGE="${{ env.IMAGE }}"
+          export DD_VERSION="${{ github.sha }}"
           envsubst < k8s/deployment.yaml | kubectl apply -f -
           kubectl apply -f k8s/service.yaml
           kubectl apply -f k8s/hpa.yaml
