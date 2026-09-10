@@ -8,3 +8,7 @@ data:
   APP_PORT: "8080"
   LOG_LEVEL: "info"
   ASPNETCORE_ENVIRONMENT: "Production"
+  # Validacao do JWT emitido pela Lambda de auth (repo TechChallenger.auth).
+  # Issuer/Audience nao sao segredo; a chave (Jwt__Key) vem do Secret.
+  Jwt__Issuer: "TechChallenger"
+  Jwt__Audience: "TechChallenger"

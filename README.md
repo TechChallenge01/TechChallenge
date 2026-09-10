@@ -84,10 +84,10 @@ Os manifestos em [`k8s/`](k8s) descrevem o deploy da aplicação no cluster:
 | Manifesto | Recurso | Descrição |
 |-----------|---------|-----------|
 | `namespace.yaml` | Namespace | Isola os recursos da aplicação (`techchallenger-ns`) |
-| `configmap.yaml` | ConfigMap | Variáveis não sensíveis (ambiente, porta, log level) |
-| `secret.yaml` | Secret | Connection string do banco (valor sensível, em base64) |
+| `configmap.yaml` | ConfigMap | Variáveis não sensíveis (ambiente, porta, log level, `Jwt__Issuer`/`Jwt__Audience`) |
+| `secret.yaml` | Secret | Connection string do banco **e** `Jwt__Key` (valores sensíveis) |
 | `deployment.yaml` | Deployment | 2 réplicas da API, com readiness/liveness probes em `/health` |
-| `service.yaml` | Service (LoadBalancer) | Expõe a aplicação externamente na porta 80 |
+| `service.yaml` | Service (NodePort 30080) | Exposto internamente no cluster; o acesso externo entra pelo API Gateway (ver abaixo) |
 | `hpa.yaml` | HorizontalPodAutoscaler | Escala entre 2 e 6 réplicas por uso de CPU (70%) ou memória (80%) |
 | `migration-job.yaml` | Job | Executa o EF Core migration bundle contra o banco antes do deploy |
 
@@ -96,7 +96,11 @@ Os manifestos em [`k8s/`](k8s) descrevem o deploy da aplicação no cluster:
 ```bash
 kubectl apply -f k8s/namespace.yaml
 kubectl apply -f k8s/configmap.yaml
-kubectl apply -f k8s/secret.yaml   # ajuste a connection string em base64 antes
+
+# Secret com a connection string do RDS + a chave JWT (mesma Jwt:Key da auth):
+kubectl create secret generic techchallenger-secrets -n techchallenger-ns \
+  --from-literal=ConnectionStrings__DefaultConnection="Server=<RDS_HOST>,1433;Database=AppDb;User Id=dbadmin;Password=<SENHA>;TrustServerCertificate=True;Encrypt=True;" \
+  --from-literal=Jwt__Key="<MESMA_CHAVE_DA_AUTH>"
 
 # Substitua ${IMAGE} pela tag da imagem publicada no ECR
 export IMAGE="<ecr_repository_url>:<tag>"
@@ -105,8 +109,24 @@ kubectl apply -f k8s/service.yaml
 kubectl apply -f k8s/hpa.yaml
 
 kubectl rollout status deployment/techchallenger -n techchallenger-ns
-kubectl get service techchallenger-service -n techchallenger-ns
 ```
+
+> No Windows/PowerShell, `envsubst` não existe — substitua o `${IMAGE}` com
+> `(Get-Content k8s/deployment.yaml -Raw).Replace('${IMAGE}', $img) | Set-Content deploy.tmp.yaml -Encoding ascii; kubectl apply -f deploy.tmp.yaml`.
+
+O `Program.cs` roda `db.Database.Migrate()` e `DbSeeds.Seed()` no startup — não é obrigatório rodar o `migration-job.yaml` à parte; os pods criam o schema e os dados de seed ao subir.
+
+### Acesso externo — via API Gateway
+
+A partir da Fase 3 o `Service` é **`NodePort` (30080)**, sem LoadBalancer público. Todo o tráfego externo entra pelo **API Gateway HTTP API** provisionado no repo [`TechChallenger.auth`](https://github.com/TechChallenge01/TechChallenger.auth):
+
+```
+Cliente → API Gateway  ─ POST /auth/cpf ──────────────→ Lambda de autenticação (CPF → JWT)
+                       └ ANY  /api/{proxy+} ─ Lambda authorizer (valida o Bearer JWT)
+                                            └ VPC Link → NLB interno → NodePort 30080 → estes pods
+```
+
+Por isso o `configmap.yaml` traz `Jwt__Issuer`/`Jwt__Audience` e o Secret traz `Jwt__Key`: a API revalida internamente o token emitido pela Lambda.
 
 Em produção esse fluxo é automatizado pela pipeline de CD (veja a seção abaixo).
 
