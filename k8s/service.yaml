@@ -4,10 +4,14 @@ metadata:
   name: techchallenger-service
   namespace: techchallenger-ns
 spec:
-  type: LoadBalancer
+  # NodePort fixo: a API deixa de ter LoadBalancer publico. O acesso externo
+  # passa pelo API Gateway (repo TechChallenger.auth) -> VPC Link -> NLB interno
+  # -> este NodePort. O valor 30080 casa com var.app_node_port do terraform da auth.
+  type: NodePort
   selector:
     app: techchallenger
   ports:
     - protocol: TCP
       port: 80
       targetPort: 8080
+      nodePort: 30080
