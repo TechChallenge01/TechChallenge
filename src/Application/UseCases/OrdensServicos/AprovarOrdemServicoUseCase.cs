@@ -24,13 +24,16 @@ namespace Application.UseCases.OrdensServicos
             return new AprovarOrdemServicoUseCase(ordemServicoGateway, pecaGateway, insumoGateway, estoqueGateway);
         }
 
-        public async Task Run(Guid id, Guid idUsuario, CancellationToken ct)
+        public async Task Run(Guid id, Guid idUsuario, CancellationToken ct, Guid? clienteIdSolicitante = null)
         {
             try
             {
                 var ordemServico = await _ordemServicoGateway.GetById(id, ct);
 
                 if (ordemServico is null) throw new KeyNotFoundException("ordem de serviço informada não existe!");
+
+                if (clienteIdSolicitante.HasValue && ordemServico.ClienteId != clienteIdSolicitante.Value)
+                    throw new UnauthorizedAccessException("Você não tem permissão para aprovar esta ordem de serviço.");
 
                 if (ordemServico.Pecas.Any())
                 {
@@ -70,6 +73,10 @@ namespace Application.UseCases.OrdensServicos
             catch (KeyNotFoundException ex)
             {
                 throw new KeyNotFoundException(ex.Message);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                throw;
             }
             catch (InvalidOperationException)
             {

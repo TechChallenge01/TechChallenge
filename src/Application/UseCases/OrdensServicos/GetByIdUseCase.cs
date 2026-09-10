@@ -16,13 +16,20 @@ namespace Application.UseCases.OrdensServicos
             return new GetByIdUseCase(ordemServicoGateway);
         }
 
-        public async Task<OrdemServico?> Run(Guid id, CancellationToken ct)
+        public async Task<OrdemServico?> Run(Guid id, CancellationToken ct, Guid? clienteIdSolicitante = null)
         {
             try
             {
                 var response = await _ordemServicoGateway.GetById(id, ct);
 
+                if (response is not null && clienteIdSolicitante.HasValue && response.ClienteId != clienteIdSolicitante.Value)
+                    throw new UnauthorizedAccessException("Você não tem permissão para acessar esta ordem de serviço.");
+
                 return response;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                throw;
             }
             catch (ArgumentException ex)
             {
