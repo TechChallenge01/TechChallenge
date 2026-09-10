@@ -12,6 +12,7 @@ namespace Infra
         {
             services.AddSingleton<EmailService>();
             services.AddSingleton<JwtService>();
+            services.AddSingleton<Application.Interfaces.IMetricsService, DatadogMetricsService>();
 
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), sqlOptions =>
             {

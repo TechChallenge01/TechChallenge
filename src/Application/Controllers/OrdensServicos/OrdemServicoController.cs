@@ -45,19 +45,23 @@ namespace Application.Controllers.OrdensServicos
             }
         }
 
-        public async Task<ICommandResult<OrdemServicoOutputDTO>> GetById(Guid id, CancellationToken ct)
+        public async Task<ICommandResult<OrdemServicoOutputDTO>> GetById(Guid id, CancellationToken ct, Guid? clienteIdSolicitante = null)
         {
             var presenter = new OrdemServicoPresenter("Ordem de serviço retornada com sucesso!");
             try
             {
                 var ordemServicoGateway = OrdemServicoGateway.Create(_dataSource);
                 var useCase = GetByIdUseCase.Create(ordemServicoGateway);
-                var response = await useCase.Run(id, ct);
+                var response = await useCase.Run(id, ct, clienteIdSolicitante);
 
                 if (response is null)
                     return presenter.NotFound<OrdemServicoOutputDTO>("Ordem de serviço não encontrada");
 
                 return presenter.TransformObject(response);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return presenter.Forbidden<OrdemServicoOutputDTO>(ex.Message);
             }
             catch(ArgumentException ex)
             {
@@ -69,7 +73,7 @@ namespace Application.Controllers.OrdensServicos
             }
         }
 
-        public async Task<ICommandResult<Guid>> Create(OrdemServicoRequestDTO request, Guid idUsuario, IClienteDataSource clienteDataSource, IVeiculoDataSource veiculoDataSource, IPecaDataSource pecaDataSource, IServicoDataSource servicoDataSource, IInsumoDataSource insumoDataSource, IEstoqueDataSource estoqueDataSource, CancellationToken ct)
+        public async Task<ICommandResult<Guid>> Create(OrdemServicoRequestDTO request, Guid idUsuario, IClienteDataSource clienteDataSource, IVeiculoDataSource veiculoDataSource, IPecaDataSource pecaDataSource, IServicoDataSource servicoDataSource, IInsumoDataSource insumoDataSource, IEstoqueDataSource estoqueDataSource, CancellationToken ct, IMetricsService? metricsService = null)
         {
             var presenter = new OrdemServicoPresenter("Ordem de serviço criada com sucesso!");
             try
@@ -85,6 +89,8 @@ namespace Application.Controllers.OrdensServicos
                 var useCase = CreateUseCase.Create(ordemServicoGateway, clienteGateway, veiculoGateway, pecaGateway, servicoGateway, insumoGateway, estoqueGateway);
                 var response = await useCase.Run(request, idUsuario, ct);
 
+                metricsService?.IncrementOrdemServicoCriada();
+
                 return presenter.Created<Guid>(response);
             }
             catch (ArgumentException ex)
@@ -93,11 +99,12 @@ namespace Application.Controllers.OrdensServicos
             }
             catch (Exception ex)
             {
+                metricsService?.IncrementErro(nameof(Create));
                 return presenter.InternalError<Guid>(ex.Message);
             }
 
         }
-        public async Task<ICommandResult> Aprovar(Guid id, Guid idUsuario, IPecaDataSource pecaDataSource, IInsumoDataSource insumoDataSource, IEstoqueDataSource estoqueDataSource, CancellationToken ct)
+        public async Task<ICommandResult> Aprovar(Guid id, Guid idUsuario, IPecaDataSource pecaDataSource, IInsumoDataSource insumoDataSource, IEstoqueDataSource estoqueDataSource, CancellationToken ct, Guid? clienteIdSolicitante = null, IMetricsService? metricsService = null)
         {
             var presenter = new OrdemServicoPresenter("Ordem de serviço aprovada com sucesso!");
             try
@@ -108,9 +115,15 @@ namespace Application.Controllers.OrdensServicos
                 var estoqueGateway = EstoqueGateway.Create(estoqueDataSource);
 
                 var useCase = AprovarOrdemServicoUseCase.Create(ordemServicoGateway, pecaGateway, insumoGateway, estoqueGateway);
-                await useCase.Run(id, idUsuario, ct);
+                await useCase.Run(id, idUsuario, ct, clienteIdSolicitante);
+
+                metricsService?.IncrementOrdemServicoStatus("EmExecucao");
 
                 return presenter.NoContent();
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return presenter.Forbidden(ex.Message);
             }
             catch(ArgumentException ex)
             {
@@ -126,10 +139,11 @@ namespace Application.Controllers.OrdensServicos
             }
             catch(Exception ex)
             {
+                metricsService?.IncrementErro(nameof(Aprovar));
                 return presenter.InternalError(ex.Message);
             }
         }
-        public async Task<ICommandResult> Cancelar(Guid id, Guid idUsuario, IPecaDataSource pecaDataSource, IInsumoDataSource insumoDataSource, IEstoqueDataSource estoqueDataSource, CancellationToken ct)
+        public async Task<ICommandResult> Cancelar(Guid id, Guid idUsuario, IPecaDataSource pecaDataSource, IInsumoDataSource insumoDataSource, IEstoqueDataSource estoqueDataSource, CancellationToken ct, IMetricsService? metricsService = null)
         {
             var presenter = new OrdemServicoPresenter("Ordem de serviço cancelada com sucesso!");
             try
@@ -142,6 +156,8 @@ namespace Application.Controllers.OrdensServicos
                 var useCase = CancelarOrdemServicoUseCase.Create(ordemServicoGateway, pecaGateway, insumoGateway, estoqueGateway);
                 await useCase.Run(id, idUsuario, ct);
 
+                metricsService?.IncrementOrdemServicoStatus("Cancelada");
+
                 return presenter.NoContent();
             }
             catch(ArgumentException ex)
@@ -158,10 +174,11 @@ namespace Application.Controllers.OrdensServicos
             }
             catch(Exception ex)
             {
+                metricsService?.IncrementErro(nameof(Cancelar));
                 return presenter.InternalError(ex.Message);
             }
         }
-        public async Task<ICommandResult> FinalizarServico(Guid id, Guid idUsuario, FinalizarServicoRequestDTO request, IServicoDataSource servicoDataSource, CancellationToken ct)
+        public async Task<ICommandResult> FinalizarServico(Guid id, Guid idUsuario, FinalizarServicoRequestDTO request, IServicoDataSource servicoDataSource, CancellationToken ct, IMetricsService? metricsService = null)
         {
             var presenter = new OrdemServicoPresenter("Serviços finalizados com sucesso!");
             try
@@ -170,7 +187,11 @@ namespace Application.Controllers.OrdensServicos
                 var servicoGateway = ServicoGateway.Create(servicoDataSource);
 
                 var useCase = FinalizarServicoUseCase.Create(ordemServicoGateway, servicoGateway);
-                await useCase.Run(request, id, idUsuario, ct);
+                var ordemServico = await useCase.Run(request, id, idUsuario, ct);
+
+                metricsService?.IncrementOrdemServicoStatus(ordemServico.StatusOS);
+                if (ordemServico.StatusOS == "Finalizada")
+                    metricsService?.RecordTempoExecucao("Finalizada", ordemServico.TempoExecucao);
 
                 return presenter.NoContent();
 
@@ -189,10 +210,11 @@ namespace Application.Controllers.OrdensServicos
             }
             catch (Exception ex)
             {
+                metricsService?.IncrementErro(nameof(FinalizarServico));
                 return presenter.InternalError(ex.Message);
             }
         }
-        public async Task<ICommandResult> RealizarEntrega(Guid id, Guid idUsuario, CancellationToken ct)
+        public async Task<ICommandResult> RealizarEntrega(Guid id, Guid idUsuario, CancellationToken ct, IMetricsService? metricsService = null)
         {
             var presenter = new OrdemServicoPresenter("Ordem de serviço Entregue!");
             try
@@ -202,6 +224,8 @@ namespace Application.Controllers.OrdensServicos
 
                 await useCase.Run(id, idUsuario, ct);
 
+                metricsService?.IncrementOrdemServicoStatus("Entregue");
+
                 return presenter.NoContent();
             }
             catch (ArgumentException ex)
@@ -218,10 +242,11 @@ namespace Application.Controllers.OrdensServicos
             }
             catch (Exception ex)
             {
+                metricsService?.IncrementErro(nameof(RealizarEntrega));
                 return presenter.InternalError(ex.Message);
             }
         }
-        public async Task<ICommandResult> IniciarDiagnostico(Guid id, Guid idUsuario, CancellationToken ct)
+        public async Task<ICommandResult> IniciarDiagnostico(Guid id, Guid idUsuario, CancellationToken ct, IMetricsService? metricsService = null)
         {
             var presenter = new OrdemServicoPresenter("Diagnóstico iniciado com sucesso!");
             try
@@ -231,6 +256,8 @@ namespace Application.Controllers.OrdensServicos
 
                 await useCase.Run(id, idUsuario, ct);
 
+                metricsService?.IncrementOrdemServicoStatus("EmDiagnostico");
+
                 return presenter.NoContent();
 
             }
@@ -248,10 +275,11 @@ namespace Application.Controllers.OrdensServicos
             }
             catch (Exception ex)
             {
+                metricsService?.IncrementErro(nameof(IniciarDiagnostico));
                 return presenter.InternalError(ex.Message);
             }
         }
-        public async Task<ICommandResult> RealizarDiagnostico(Guid id, Guid idUsuario, DiagnosticoRequestDTO request, IPecaDataSource pecaDataSource, IServicoDataSource servicoDataSource, IInsumoDataSource insumoDataSource, IEstoqueDataSource estoqueDataSource, IClienteDataSource clienteDataSource, IEmailService emailService, CancellationToken ct)
+        public async Task<ICommandResult> RealizarDiagnostico(Guid id, Guid idUsuario, DiagnosticoRequestDTO request, IPecaDataSource pecaDataSource, IServicoDataSource servicoDataSource, IInsumoDataSource insumoDataSource, IEstoqueDataSource estoqueDataSource, IClienteDataSource clienteDataSource, IEmailService emailService, CancellationToken ct, IMetricsService? metricsService = null)
         {
             var presenter = new OrdemServicoPresenter("Diagnóstico realizado com sucesso!");
             try
@@ -266,6 +294,8 @@ namespace Application.Controllers.OrdensServicos
                 var useCase = RealizarDiagnosticoUseCase.Create(ordemServicoGateway, pecaGateway, servicoGateway, insumoGateway, estoqueGateway, clienteGateway, emailService);
                 await useCase.Run(id, idUsuario, request, ct);
 
+                metricsService?.IncrementOrdemServicoStatus("AguardandoAprovacao");
+
                 return presenter.NoContent();
             }
             catch (ArgumentException ex)
@@ -282,6 +312,7 @@ namespace Application.Controllers.OrdensServicos
             }
             catch (Exception ex)
             {
+                metricsService?.IncrementErro(nameof(RealizarDiagnostico));
                 return presenter.InternalError(ex.Message);
             }
         }

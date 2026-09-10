@@ -99,6 +99,14 @@ namespace Application.Presenters.OrdensServicos
         {
             return new CommandResult { Message = message, StatusCode = HttpStatusCode.NotFound };
         }
+        public ICommandResult Forbidden(string message)
+        {
+            return new CommandResult { Message = message, StatusCode = HttpStatusCode.Forbidden };
+        }
+        public ICommandResult<T> Forbidden<T>(string message)
+        {
+            return new CommandResult<T> { Message = message, StatusCode = HttpStatusCode.Forbidden };
+        }
         public ICommandResult<T> InternalError<T>(string message)
         {
             return new CommandResult<T> { Message = _message, StatusCode = HttpStatusCode.InternalServerError };
