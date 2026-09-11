@@ -18,7 +18,7 @@ Na Fase 1 o sistema entregou a gestão de ordens de serviço, veículos, cliente
 - Refino do código sob Clean Architecture, com Clean Code e testes automatizados cobrindo os fluxos críticos (abertura, diagnóstico, aprovação, execução e entrega de OS).
 - Conteinerização revisada (Dockerfile multi-stage + Docker Compose para desenvolvimento local).
 - Orquestração via Kubernetes (Deployments, Services, ConfigMaps/Secrets e Horizontal Pod Autoscaler) — manifestos em [`k8s/`](k8s).
-- Infraestrutura como Código com Terraform, provisionando VPC, cluster EKS e banco de dados (RDS SQL Server) — scripts em [`infra/terraform/`](infra/terraform).
+- Infraestrutura como Código com Terraform, provisionando VPC, cluster EKS e banco de dados (RDS SQL Server) — segregada nos repositórios [`TechChallenger.k8s`](https://github.com/TechChallenge01/TechChallenger.k8s) e [`TechChallenger.db`](https://github.com/TechChallenge01/TechChallenger.db) (ver seção [Infraestrutura](#infraestrutura-repositórios-dedicados) abaixo).
 - Pipeline de CI/CD (GitHub Actions) fazendo build, testes, build/push da imagem Docker, migration do banco e deploy no Kubernetes — workflows em [`.github/workflows/`](.github/workflows).
 
 ## Pré-requisitos
@@ -59,31 +59,18 @@ Na Fase 1 o sistema entregou a gestão de ordens de serviço, veículos, cliente
 
 ---
 
-## Provisionamento da Infraestrutura (Terraform)
+## Infraestrutura (repositórios dedicados)
 
-Os scripts em [`infra/terraform/`](infra/terraform) provisionam, na AWS, toda a infraestrutura necessária para rodar a aplicação em produção:
+Este repositório contém **só a aplicação** (código + manifestos de deploy em [`k8s/`](k8s)). O provisionamento da infraestrutura AWS foi segregado em repositórios próprios, conforme a estrutura de 4 repositórios do Tech Challenge:
 
-| Recurso | Arquivo | Descrição |
-|---------|---------|-----------|
-| VPC, subnets públicas/privadas, Internet Gateway, route tables | `vpc.tf` | Rede da aplicação — subnets públicas para os nodes do EKS, privadas para o banco |
-| Cluster EKS + Node Group + metrics-server (via Helm) | `eks.tf` | Cluster Kubernetes gerenciado e o componente necessário para o HPA funcionar |
-| Repositório ECR | `ecr.tf` | Registry das imagens Docker publicadas pela pipeline de CD |
-| Banco de dados (RDS SQL Server Express) | `sqlserver.tf` | Banco relacional gerenciado, na mesma VPC do cluster |
-| IAM (LabRole) | `iam.tf` | Reaproveita a role padrão do AWS Academy Learner Lab (ambiente não permite criar roles/policies) |
-| Variáveis e outputs | `variables.tf`, `outputs.tf`, `provider.tf` | Parametrização (região, nomes, CIDRs, tamanhos de instância) e valores expostos após o apply |
+| Infra | Repositório | Provisiona |
+|---|---|---|
+| Kubernetes | [`TechChallenger.k8s`](https://github.com/TechChallenge01/TechChallenger.k8s) | VPC, subnets, Internet Gateway, cluster EKS + Node Group, ECR, IAM (LabRole) |
+| Banco de dados | [`TechChallenger.db`](https://github.com/TechChallenge01/TechChallenger.db) | RDS SQL Server Express (mesma VPC do cluster, via `data source`) |
 
-### Como aplicar
+Para rodar esta aplicação em um ambiente novo, primeiro aplique o Terraform desses dois repositórios (nessa ordem: `k8s` e depois `db`) e só então faça o deploy deste repositório (seção [Deploy em Kubernetes](#deploy-em-kubernetes) abaixo).
 
-```bash
-cd infra/terraform
-terraform init
-terraform plan -var="db_password=<SENHA_FORTE_DO_BANCO>"
-terraform apply -var="db_password=<SENHA_FORTE_DO_BANCO>"
-```
-
-Ao final, os outputs trazem o endpoint do cluster EKS, a URL do repositório ECR e o endpoint do banco (`terraform output`). Esses valores alimentam a pipeline de CD e o Secret do Kubernetes.
-
-> Ambiente pensado para o AWS Academy Learner Lab: usa a `LabRole` já existente (sem criação de IAM roles), nodes do EKS em subnets públicas (evita custo de NAT Gateway) e RDS com `skip_final_snapshot` para permitir destruir/recriar o lab livremente. Para destruir os recursos: `terraform destroy`.
+> Antes desta versão, o Terraform do cluster/banco ficava duplicado aqui em `infra/terraform/` — foi removido para eliminar a redundância entre repositórios (o mesmo VPC/EKS/RDS era provisionado em até 3 lugares diferentes).
 
 ---
 
@@ -591,7 +578,6 @@ TechChallenge/
 │   └── Shared/                 # Código compartilhado (Utilities, Constants)
 ├── test/                       # Projetos de testes (Unit, Integration)
 ├── k8s/                        # Manifestos Kubernetes (Deployment, Service, HPA, ConfigMap, Secret, Job, Datadog Agent)
-├── infra/terraform/            # Infraestrutura como Código (VPC, EKS, ECR, RDS)
 ├── .github/workflows/          # Pipelines de CI (ci.yml) e CD (cd.yml)
 ├── docs/                       # Site de documentação, collection Postman
 └── docker-compose.yml          # Configuração do Docker Compose

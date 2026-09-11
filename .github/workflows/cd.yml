@@ -1,13 +1,18 @@
 name: CD
 
-# Roda somente em push na main -> pipeline completo com deploy
+# Deploy automatico:
+#   push em release -> homologacao
+#   push em main    -> producao
 on:
   push:
-    branches: [main]
+    branches: [release, main]
 
 permissions:
   contents: read
 
+# homologacao e producao apontam para o mesmo cluster/namespace (orcamento do
+# AWS Academy nao comporta um cluster/RDS dedicado por ambiente); o que muda
+# entre release e main e a imagem publicada e o commit que gerou o deploy.
 env:
   AWS_REGION: us-east-1              # ajuste para a região usada no Lab
   ECR_REPOSITORY: techchallenger     # nome do repositório no ECR
