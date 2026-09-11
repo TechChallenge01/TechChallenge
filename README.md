@@ -9,9 +9,38 @@ Este é um dos quatro repositórios que compõem a solução:
 | Repositório | Papel |
 |---|---|
 | **TechChallenge** (este) | Aplicação principal (API em Kubernetes) |
-| [TechChallenge.auth](https://github.com/TechChallenge01/TechChallenger.auth) | Function Serverless de autenticação por CPF |
-| [TechChallenge.db](https://github.com/TechChallenge01/TechChallenge.db) | Infraestrutura do banco de dados gerenciado (Terraform) |
-| [TechChallenge.k8s](https://github.com/TechChallenge01/TechChallenge.k8s) | Infraestrutura do cluster Kubernetes (Terraform) |
+| [TechChallenger.auth](https://github.com/TechChallenge01/TechChallenger.auth) | API Gateway + Function Serverless de autenticação por CPF |
+| [TechChallenger.db](https://github.com/TechChallenge01/TechChallenger.db) | Infraestrutura do banco de dados gerenciado (Terraform) |
+| [TechChallenger.k8s](https://github.com/TechChallenge01/TechChallenger.k8s) | Infraestrutura do cluster Kubernetes e rede (Terraform) |
+
+## Arquitetura deste repositório
+
+```mermaid
+flowchart TB
+    CLIENT[Cliente] -->|"POST /auth/cpf"| GW
+    CLIENT -->|"/api/* com JWT"| GW["API Gateway<br/>(TechChallenger.auth)"]
+    GW -->|"Lambda authorizer<br/>valida JWT"| GW
+    GW -->|"VPC Link + NLB<br/>NodePort 30080"| SVC
+
+    subgraph EKS["Cluster EKS (TechChallenger.k8s)"]
+        SVC[Service :30080] --> DEP["Deployment techchallenger<br/>(HPA 2-N réplicas)"]
+        subgraph POD["Cada pod"]
+            API[API — camada de apresentação]
+            APP[Application — casos de uso]
+            DOM[Domain — entidades]
+            INFRA[Infra — EF Core, DataSources]
+            API --> APP --> DOM
+            APP --> INFRA
+        end
+        DEP -.-> POD
+        DD[Datadog Agent<br/>DaemonSet] -.APM · logs · DogStatsD.-> POD
+    end
+
+    INFRA -->|EF Core| RDS[(RDS SQL Server<br/>TechChallenger.db)]
+    DD -->|métricas/traces/logs| DATADOG[(Datadog)]
+```
+
+Camadas internas em Clean Architecture (`src/API`, `src/Application`, `src/Domain`, `src/Infra`, `src/Shared`); deploy em Kubernetes via os manifestos em [`k8s/`](k8s); rede, cluster e banco vêm dos repositórios [`TechChallenger.k8s`](https://github.com/TechChallenge01/TechChallenger.k8s) e [`TechChallenger.db`](https://github.com/TechChallenge01/TechChallenger.db); roteamento externo e autenticação vêm do [`TechChallenger.auth`](https://github.com/TechChallenge01/TechChallenger.auth).
 
 ### Objetivo da Fase 2
 Na Fase 1 o sistema entregou a gestão de ordens de serviço, veículos, clientes e peças. A Fase 2 evolui essa base para suportar alta disponibilidade e maiores volumes de OS em horários de pico, incorporando:
@@ -215,11 +244,11 @@ Existem duas formas de obter esse token, dependendo de quem está se autenticand
 | Quem | Como | Onde |
 |---|---|---|
 | Funcionários/equipe interna (`Administrador`, `Funcionario`, `Mecanico`, `Almoxarifado`) | Login com e-mail/senha | `POST /api/login`, nesta API |
-| Cliente final (dono do veículo) | Autenticação por CPF | `POST /auth/cpf`, na Function Serverless [TechChallenge.auth](https://github.com/TechChallenge01/TechChallenger.auth) |
+| Cliente final (dono do veículo) | Autenticação por CPF | `POST /auth/cpf`, na Function Serverless [TechChallenger.auth](https://github.com/TechChallenge01/TechChallenger.auth) |
 
-Os dois emissores assinam o token com a **mesma chave simétrica** (`Jwt:Key`/`Jwt:Issuer`/`Jwt:Audience`) — esta API só valida a assinatura e as claims (`sub`, `role`), sem saber qual serviço emitiu o token. Isso significa que qualquer alteração em `Jwt:Key` precisa ser replicada nos dois repositórios ao mesmo tempo (ver `Jwt__Key` no `docker-compose.yml`/`k8s/secret.yaml` aqui e a variável `jwt_key` no Terraform do `TechChallenge.auth`).
+Os dois emissores assinam o token com a **mesma chave simétrica** (`Jwt:Key`/`Jwt:Issuer`/`Jwt:Audience`) — esta API só valida a assinatura e as claims (`sub`, `role`), sem saber qual serviço emitiu o token. Isso significa que qualquer alteração em `Jwt:Key` precisa ser replicada nos dois repositórios ao mesmo tempo (ver `Jwt__Key` no `docker-compose.yml`/`k8s/secret.yaml` aqui e a variável `jwt_key` no Terraform do `TechChallenger.auth`).
 
-Um token emitido pela `TechChallenge.auth` carrega `role=Cliente` e `sub=<ClienteId>`. As rotas que aceitam esse perfil (`GET /api/ordemServico/{id}` e `PUT /api/ordemServico/{id}/Aprovar`) verificam que o `ClienteId` do token é o dono da ordem de serviço consultada/aprovada — um cliente autenticado não consegue ver ou aprovar ordens de serviço de outro cliente (retorna `403 Forbidden`).
+Um token emitido pela `TechChallenger.auth` carrega `role=Cliente` e `sub=<ClienteId>`. As rotas que aceitam esse perfil (`GET /api/ordemServico/{id}` e `PUT /api/ordemServico/{id}/Aprovar`) verificam que o `ClienteId` do token é o dono da ordem de serviço consultada/aprovada — um cliente autenticado não consegue ver ou aprovar ordens de serviço de outro cliente (retorna `403 Forbidden`).
 
 ---
 
