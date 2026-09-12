@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechChallenge API — Fase 2</title>
+    <title>TechChallenge API — Fase 3</title>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -137,6 +137,7 @@
                 <a href="#pitch" class="hover:text-white transition-colors">Pitch</a>
                 <a href="#architecture" class="hover:text-white transition-colors">Arquitetura</a>
                 <a href="#infra" class="hover:text-white transition-colors">Infraestrutura</a>
+                <a href="#repos" class="hover:text-white transition-colors">Repositórios</a>
                 <a href="#docs" class="hover:text-white transition-colors">Documentação</a>
                 <a href="#team" class="hover:text-white transition-colors">Equipe</a>
             </div>
@@ -154,18 +155,19 @@
         <div class="max-w-4xl mx-auto z-10">
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-medium text-gray-300 mb-8 animate-fade-in">
                 <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                Fase 2 · Kubernetes & IaC Ready
+                Fase 3 · API Gateway · Auth Serverless · Observabilidade
             </div>
 
             <h1 class="text-5xl md:text-7xl font-bold tracking-tighter mb-6 leading-tight reveal">
                 TechChallenge API <br>
-                <span class="text-gradient">Fase 2</span>
+                <span class="text-gradient">Fase 3</span>
             </h1>
 
             <p class="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto reveal" style="transition-delay: 100ms;">
-                Evolução da API desenvolvida em ASP.NET Core 10, aplicando Clean Architecture e testes automatizados,
-                agora com conteinerização, orquestração em Kubernetes, Infraestrutura como Código via Terraform
-                e pipeline de CI/CD para suportar alta disponibilidade e escalabilidade dinâmica.
+                Solução distribuída em 4 repositórios: API em ASP.NET Core 10 (Clean Architecture) rodando em Kubernetes,
+                autenticação de clientes por CPF via Function Serverless atrás de um API Gateway, infraestrutura como
+                código em Terraform segregada por domínio, e observabilidade ponta a ponta com Datadog (APM, logs
+                correlacionados e métricas de negócio customizadas).
             </p>
 
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4 reveal" style="transition-delay: 200ms;">
@@ -173,7 +175,7 @@
                     <i class="ph ph-play-circle text-xl"></i>
                     Assistir Apresentação
                 </a>
-                <a href="#infra" class="px-8 py-3 rounded-full border border-white/20 bg-white/5 text-white font-semibold hover:bg-white/10 transition-all w-full sm:w-auto flex items-center justify-center gap-2">
+                <a href="#repos" class="px-8 py-3 rounded-full border border-white/20 bg-white/5 text-white font-semibold hover:bg-white/10 transition-all w-full sm:w-auto flex items-center justify-center gap-2">
                     <i class="ph ph-code text-xl"></i>
                     Explorar Arquitetura
                 </a>
@@ -191,17 +193,16 @@
 
             <div class="glass-card p-2 md:p-4 rounded-2xl relative group overflow-hidden">
                 <div class="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <!-- YouTube Iframe Placeholder -->
-					<a href="https://youtu.be/IihsXi91EVE" 
-					   target="_blank" 
-					   rel="noopener noreferrer" 
-					   class="flex flex-col items-center justify-center p-8 border-2 border-dashed border-gray-300 rounded-lg hover:bg-gray-50 transition-colors group">
-						
-						<div class="text-center text-gray-500 z-10">
-							<i class="ph ph-youtube-logo text-6xl text-red-500 mb-2 group-hover:scale-110 transition-transform"></i>
-							<p class="text-sm font-medium text-gray-600">Assistir apresentação no YouTube</p>
-						</div>
-					</a>
+                <a href="https://www.youtube.com/watch?v=a9y73qtfT-E"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="flex flex-col items-center justify-center p-12 border-2 border-dashed border-white/15 rounded-xl hover:bg-white/5 transition-colors relative z-10">
+                    <div class="text-center text-gray-300">
+                        <i class="ph ph-youtube-logo text-6xl text-red-500 mb-3 block group-hover:scale-110 transition-transform"></i>
+                        <p class="text-sm font-medium text-white">Assistir apresentação no YouTube</p>
+                        <p class="text-xs text-gray-500 mt-1">Autenticação por CPF · pipeline CI/CD · deploy automatizado · escalabilidade (HPA) · dashboard e logs ao vivo</p>
+                    </div>
+                </a>
             </div>
         </div>
     </section>
@@ -386,13 +387,13 @@
         <div class="max-w-7xl mx-auto relative z-10">
             <div class="mb-16 reveal">
                 <div class="inline-block px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-medium text-accent mb-6">
-                    <i class="ph ph-cloud align-middle mr-1"></i> Fase 2
+                    <i class="ph ph-cloud align-middle mr-1"></i> Fase 3
                 </div>
                 <h2 class="text-3xl font-bold mb-4">Infraestrutura & DevOps</h2>
-                <p class="text-gray-400 max-w-2xl">Do container ao cluster: conteinerização, orquestração, infraestrutura como código e entrega contínua, provisionadas na AWS (EKS + RDS).</p>
+                <p class="text-gray-400 max-w-2xl">Do container ao cluster: conteinerização, orquestração, infraestrutura como código, borda de autenticação serverless e observabilidade — provisionadas na AWS (API Gateway + Lambda, EKS, RDS) e monitoradas via Datadog.</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                 <!-- Docker -->
                 <div class="glass-card p-8 reveal" style="transition-delay: 100ms;">
                     <div class="w-12 h-12 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center text-2xl mb-6">
@@ -407,23 +408,39 @@
                         <i class="ph ph-hexagon"></i>
                     </div>
                     <h3 class="text-lg font-semibold mb-3">Kubernetes</h3>
-                    <p class="text-gray-400 text-sm">Deployment (2 réplicas), Service, ConfigMap/Secret e HPA (2-6 réplicas por CPU/memória) em <code class="text-xs bg-black/50 px-1 py-0.5 rounded">/k8s</code>.</p>
+                    <p class="text-gray-400 text-sm">Deployment (2 réplicas), Service NodePort, ConfigMap/Secret e HPA (2-6 réplicas por CPU 70%/memória 80%) em <code class="text-xs bg-black/50 px-1 py-0.5 rounded">/k8s</code>.</p>
+                </div>
+                <!-- Auth Serverless -->
+                <div class="glass-card p-8 reveal" style="transition-delay: 300ms;">
+                    <div class="w-12 h-12 rounded-lg bg-red-500/20 text-red-400 flex items-center justify-center text-2xl mb-6">
+                        <i class="ph ph-function"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-3">Auth Serverless</h3>
+                    <p class="text-gray-400 text-sm">API Gateway HTTP API + Lambda (.NET 8) que valida CPF e emite JWT, e Lambda authorizer que protege as rotas <code class="text-xs bg-black/50 px-1 py-0.5 rounded">/api/*</code> — repositório <a href="https://github.com/TechChallenge01/TechChallenger.auth" target="_blank" class="text-accent hover:underline">TechChallenger.auth</a>.</p>
                 </div>
                 <!-- Terraform -->
-                <div class="glass-card p-8 reveal" style="transition-delay: 300ms;">
+                <div class="glass-card p-8 reveal" style="transition-delay: 400ms;">
                     <div class="w-12 h-12 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl mb-6">
                         <i class="ph ph-tree-structure"></i>
                     </div>
                     <h3 class="text-lg font-semibold mb-3">Terraform (IaC)</h3>
-                    <p class="text-gray-400 text-sm">Provisiona VPC, cluster EKS, repositório ECR e banco RDS SQL Server em <code class="text-xs bg-black/50 px-1 py-0.5 rounded">/infra/terraform</code>.</p>
+                    <p class="text-gray-400 text-sm">Provisiona VPC, cluster EKS e ECR (<code class="text-xs bg-black/50 px-1 py-0.5 rounded">TechChallenger.k8s</code>) e o RDS SQL Server (<code class="text-xs bg-black/50 px-1 py-0.5 rounded">TechChallenger.db</code>) — segregado por domínio, um repo por infra.</p>
                 </div>
                 <!-- CI/CD -->
-                <div class="glass-card p-8 reveal" style="transition-delay: 400ms;">
+                <div class="glass-card p-8 reveal" style="transition-delay: 500ms;">
                     <div class="w-12 h-12 rounded-lg bg-orange-500/20 text-orange-400 flex items-center justify-center text-2xl mb-6">
                         <i class="ph ph-git-branch"></i>
                     </div>
                     <h3 class="text-lg font-semibold mb-3">CI/CD</h3>
-                    <p class="text-gray-400 text-sm">GitHub Actions: build, testes, build/push da imagem, migration do banco e deploy no EKS a cada push em <code class="text-xs bg-black/50 px-1 py-0.5 rounded">main</code>.</p>
+                    <p class="text-gray-400 text-sm">GitHub Actions em cada um dos 4 repositórios: build, testes, build/push da imagem, migration do banco e deploy automatizado a cada push em <code class="text-xs bg-black/50 px-1 py-0.5 rounded">main</code>.</p>
+                </div>
+                <!-- Observabilidade -->
+                <div class="glass-card p-8 reveal" style="transition-delay: 600ms;">
+                    <div class="w-12 h-12 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-2xl mb-6">
+                        <i class="ph ph-chart-line"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-3">Observabilidade (Datadog)</h3>
+                    <p class="text-gray-400 text-sm">Agent DaemonSet no EKS (APM, DogStatsD, logs) + Log Forwarder para a camada serverless — traces, logs correlacionados (<code class="text-xs bg-black/50 px-1 py-0.5 rounded">dd.trace_id</code>) e métricas de negócio customizadas por status de OS.</p>
                 </div>
             </div>
 
@@ -440,12 +457,12 @@
                         <div class="flex items-center gap-3 mb-4">
                             <div class="flex-1 p-3 rounded-lg bg-white/5 border border-white/10 text-center text-gray-300">
                                 <i class="ph ph-git-commit block text-lg mb-1 text-gray-400"></i>
-                                git push main
+                                git push main <span class="text-gray-500">(× 4 repos)</span>
                             </div>
                             <i class="ph ph-arrow-right text-gray-600 text-lg"></i>
                             <div class="flex-[2] p-3 rounded-lg bg-orange-500/10 border border-orange-500/30 text-center text-orange-300">
                                 <i class="ph ph-git-branch block text-lg mb-1"></i>
-                                GitHub Actions — CI/CD
+                                GitHub Actions — CI/CD por repositório
                                 <div class="text-[10px] text-orange-300/70 mt-1 font-sans">build → test → build/push imagem → migration → deploy</div>
                             </div>
                             <i class="ph ph-arrow-right text-gray-600 text-lg"></i>
@@ -453,6 +470,32 @@
                                 <i class="ph ph-tree-structure block text-lg mb-1"></i>
                                 Terraform (IaC)
                                 <div class="text-[10px] text-emerald-300/70 mt-1 font-sans">provisiona toda a infra abaixo</div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-center text-gray-600 mb-2"><i class="ph ph-arrow-down text-lg"></i></div>
+
+                        <!-- Client + API Gateway edge -->
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="flex-1 p-3 rounded-lg bg-white/5 border border-white/10 text-center text-gray-300">
+                                <i class="ph ph-user block text-lg mb-1 text-gray-400"></i>
+                                Cliente / Front
+                            </div>
+                            <div class="flex flex-col items-center text-gray-600 text-[9px] leading-tight">
+                                <span>POST /auth/cpf</span>
+                                <i class="ph ph-arrow-right text-lg"></i>
+                                <span class="mt-1">/api/* + JWT</span>
+                            </div>
+                            <div class="flex-[2] p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-center text-red-300">
+                                <i class="ph ph-shield-check block text-lg mb-1"></i>
+                                API Gateway HTTP API
+                                <div class="text-[10px] text-red-300/70 mt-1 font-sans">Lambda auth (CPF → JWT) + Lambda authorizer (valida Bearer JWT) · <span class="text-red-300">TechChallenger.auth</span></div>
+                            </div>
+                            <i class="ph ph-arrow-right text-gray-600 text-lg"></i>
+                            <div class="flex-1 p-3 rounded-lg bg-white/5 border border-white/10 text-center text-gray-300">
+                                <i class="ph ph-shuffle block text-lg mb-1 text-gray-400"></i>
+                                VPC Link + NLB
+                                <div class="text-[10px] text-gray-500 mt-1 font-sans">NodePort 30080</div>
                             </div>
                         </div>
 
@@ -490,7 +533,7 @@
 
                                             <div class="p-3 rounded-lg bg-white/5 border border-white/10 text-center text-gray-300 mb-3">
                                                 <i class="ph ph-globe block text-lg mb-1 text-gray-400"></i>
-                                                Service (LoadBalancer :80)
+                                                Service :30080 (NodePort)
                                             </div>
                                             <div class="flex justify-center text-gray-600 mb-2"><i class="ph ph-arrow-down"></i></div>
 
@@ -501,7 +544,10 @@
                                                     <div class="flex-1 min-w-[70px] p-2 rounded bg-white/5 border border-white/10 text-center text-gray-300">Pod API</div>
                                                     <div class="flex-1 min-w-[70px] p-2 rounded bg-white/5 border border-dashed border-white/20 text-center text-gray-500">+ até 4</div>
                                                 </div>
-                                                <div class="text-[10px] text-purple-300/70 font-sans">HPA: 2–6 réplicas (CPU 70% / Mem 80%)</div>
+                                                <div class="text-[10px] text-purple-300/70 font-sans mb-2">HPA: 2–6 réplicas (CPU 70% / Mem 80%)</div>
+                                                <div class="p-2 rounded bg-cyan-500/10 border border-cyan-500/30 text-center text-cyan-300 text-[10px]">
+                                                    <i class="ph ph-chart-line align-middle mr-1"></i>Datadog Agent (DaemonSet) — APM · DogStatsD · logs
+                                                </div>
                                             </div>
                                         </div>
 
@@ -523,25 +569,98 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="flex justify-center text-gray-600 my-2"><i class="ph ph-arrow-down text-lg"></i></div>
+
+                        <!-- Datadog SaaS -->
+                        <div class="flex items-center gap-3">
+                            <div class="flex-1 p-3 rounded-lg bg-white/5 border border-white/10 text-center text-gray-300">
+                                <i class="ph ph-function block text-lg mb-1 text-gray-400"></i>
+                                Lambdas (TechChallenger.auth)
+                                <div class="text-[10px] text-gray-500 mt-1 font-sans">sem NAT Gateway → logs via CloudWatch + Log Forwarder</div>
+                            </div>
+                            <i class="ph ph-arrow-right text-gray-600 text-lg"></i>
+                            <div class="flex-1 p-3 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-center text-cyan-300">
+                                <i class="ph ph-chart-line block text-lg mb-1"></i>
+                                Datadog
+                                <div class="text-[10px] text-cyan-300/70 mt-1 font-sans">APM · logs correlacionados · métricas de negócio · dashboards/alertas</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <p class="text-[11px] text-gray-500 mt-4 text-center font-sans">
-                    <i class="ph ph-info"></i> Nodes do EKS em subnets públicas (evita custo de NAT Gateway em ambiente acadêmico) — acesso ao RDS restrito por Security Group apenas aos nodes do cluster.
+                    <i class="ph ph-info"></i> Nodes do EKS em subnets públicas (evita custo de NAT Gateway em ambiente acadêmico) — acesso ao RDS restrito por Security Group apenas aos nodes do cluster; ver <a href="https://github.com/TechChallenge01/TechChallenge/blob/main/docs/architecture/adrs/ADR-004-observabilidade-hibrida.md" target="_blank" class="text-accent hover:underline">ADR-004</a> para o desenho de observabilidade híbrida da camada serverless.
                 </p>
             </div>
         </div>
     </section>
 
-    <!-- Documentation (Postman) -->
+    <!-- 4 Repositórios -->
+    <section id="repos" class="py-24 px-6 bg-surface border-y border-white/10">
+        <div class="max-w-7xl mx-auto">
+            <div class="mb-16 reveal">
+                <div class="inline-block px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-medium text-accent2 mb-6">
+                    <i class="ph ph-git-fork align-middle mr-1"></i> Estrutura do Tech Challenge
+                </div>
+                <h2 class="text-3xl font-bold mb-4">Os 4 Repositórios</h2>
+                <p class="text-gray-400 max-w-2xl">A solução é segregada em 4 repositórios independentes, cada um com CI/CD próprio, conforme exigido pela rubrica da Fase 3.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <a href="https://github.com/TechChallenge01/TechChallenge" target="_blank" class="glass-card p-8 group block reveal" style="transition-delay: 100ms;">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="w-12 h-12 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center text-2xl">
+                            <i class="ph ph-hexagon"></i>
+                        </div>
+                        <i class="ph ph-arrow-up-right text-gray-500 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-1">TechChallenge <span class="text-xs font-normal text-gray-500">(este repositório)</span></h3>
+                    <p class="text-gray-400 text-sm">API principal em Clean Architecture, rodando em Kubernetes (EKS) com HPA, instrumentada com Datadog.</p>
+                </a>
+                <a href="https://github.com/TechChallenge01/TechChallenger.auth" target="_blank" class="glass-card p-8 group block reveal" style="transition-delay: 200ms;">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="w-12 h-12 rounded-lg bg-red-500/20 text-red-400 flex items-center justify-center text-2xl">
+                            <i class="ph ph-function"></i>
+                        </div>
+                        <i class="ph ph-arrow-up-right text-gray-500 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-1">TechChallenger.auth</h3>
+                    <p class="text-gray-400 text-sm">API Gateway HTTP API + Function Serverless (.NET 8) que valida CPF, consulta o cliente e emite o JWT; inclui o Lambda authorizer.</p>
+                </a>
+                <a href="https://github.com/TechChallenge01/TechChallenger.db" target="_blank" class="glass-card p-8 group block reveal" style="transition-delay: 300ms;">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="w-12 h-12 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl">
+                            <i class="ph ph-database"></i>
+                        </div>
+                        <i class="ph ph-arrow-up-right text-gray-500 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-1">TechChallenger.db</h3>
+                    <p class="text-gray-400 text-sm">Terraform puro provisionando o banco gerenciado — RDS SQL Server Express — na mesma VPC do cluster.</p>
+                </a>
+                <a href="https://github.com/TechChallenge01/TechChallenger.k8s" target="_blank" class="glass-card p-8 group block reveal" style="transition-delay: 400ms;">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="w-12 h-12 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center text-2xl">
+                            <i class="ph ph-tree-structure"></i>
+                        </div>
+                        <i class="ph ph-arrow-up-right text-gray-500 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-1">TechChallenger.k8s</h3>
+                    <p class="text-gray-400 text-sm">Terraform puro provisionando VPC, subnets, cluster EKS + Node Group, ECR e metrics-server (via Helm).</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Documentation (Postman + Arquitetura) -->
     <section id="docs" class="py-24 px-6">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16 reveal">
-                <h2 class="text-3xl font-bold mb-4">Documentação da API</h2>
-                <p class="text-gray-400">Collection pronta para uso e documentação interativa dos endpoints.</p>
+                <h2 class="text-3xl font-bold mb-4">Documentação</h2>
+                <p class="text-gray-400">Collection da API, documentação interativa dos endpoints e documentação arquitetural completa (diagramas, RFCs e ADRs) cobrindo os 4 repositórios.</p>
             </div>
 
-            <div class="flex justify-center">
+            <div class="flex justify-center mb-16">
                 <!-- Postman / Swagger -->
                 <a href="API-v2-Completa.postman_collection.json" target="_blank" class="glass-card p-8 group block reveal max-w-md w-full">
                     <div class="flex justify-between items-start mb-6">
@@ -552,6 +671,96 @@
                     <p class="text-gray-400 text-sm">Baixe a Collection completa com requisições prontas (também disponível em <code class="text-xs bg-black/50 px-1 py-0.5 rounded">/docs</code> no repositório) e acesse a documentação interativa via Scalar em <code class="text-xs bg-black/50 px-1 py-0.5 rounded">/scalar</code>.</p>
                 </a>
             </div>
+
+            <!-- Diagramas de arquitetura -->
+            <div class="mb-10 reveal">
+                <h3 class="text-sm font-semibold text-gray-300 mb-6 flex items-center gap-2">
+                    <i class="ph ph-flow-arrow text-accent"></i> Diagramas
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <a href="https://github.com/TechChallenge01/TechChallenge/blob/main/docs/architecture/01-diagrama-componentes.md" target="_blank" class="glass-card p-6 group block">
+                        <div class="flex justify-between items-start mb-3">
+                            <i class="ph ph-flow-arrow text-xl text-accent"></i>
+                            <i class="ph ph-arrow-up-right text-gray-500 group-hover:text-white transition-colors"></i>
+                        </div>
+                        <h4 class="font-semibold mb-1">Diagrama de Componentes</h4>
+                        <p class="text-gray-400 text-xs">Visão de nuvem, APIs, banco e observabilidade, cobrindo os 4 repositórios.</p>
+                    </a>
+                    <a href="https://github.com/TechChallenge01/TechChallenge/blob/main/docs/architecture/02-diagramas-sequencia.md" target="_blank" class="glass-card p-6 group block">
+                        <div class="flex justify-between items-start mb-3">
+                            <i class="ph ph-arrows-left-right text-xl text-accent"></i>
+                            <i class="ph ph-arrow-up-right text-gray-500 group-hover:text-white transition-colors"></i>
+                        </div>
+                        <h4 class="font-semibold mb-1">Diagramas de Sequência</h4>
+                        <p class="text-gray-400 text-xs">Fluxo de autenticação por CPF e de abertura de Ordem de Serviço.</p>
+                    </a>
+                    <a href="https://github.com/TechChallenge01/TechChallenge/blob/main/docs/architecture/03-modelo-dados.md" target="_blank" class="glass-card p-6 group block">
+                        <div class="flex justify-between items-start mb-3">
+                            <i class="ph ph-database text-xl text-accent"></i>
+                            <i class="ph ph-arrow-up-right text-gray-500 group-hover:text-white transition-colors"></i>
+                        </div>
+                        <h4 class="font-semibold mb-1">Modelo de Dados (ER)</h4>
+                        <p class="text-gray-400 text-xs">Diagrama ER com justificativa da escolha do banco e do modelo relacional.</p>
+                    </a>
+                </div>
+            </div>
+
+            <!-- RFCs e ADRs -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 reveal">
+                <div class="glass-card p-8">
+                    <h3 class="text-sm font-semibold text-gray-300 mb-5 flex items-center gap-2">
+                        <i class="ph ph-scroll text-accent2"></i> RFCs — decisões técnicas
+                    </h3>
+                    <ul class="space-y-3 text-sm">
+                        <li>
+                            <a href="https://github.com/TechChallenge01/TechChallenge/blob/main/docs/architecture/rfcs/RFC-001-escolha-da-nuvem.md" target="_blank" class="flex items-start gap-2 text-gray-300 hover:text-white transition-colors">
+                                <i class="ph ph-file-text text-accent2 mt-0.5"></i> RFC-001 — Escolha do provedor de nuvem
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/TechChallenge01/TechChallenge/blob/main/docs/architecture/rfcs/RFC-002-escolha-do-banco-de-dados.md" target="_blank" class="flex items-start gap-2 text-gray-300 hover:text-white transition-colors">
+                                <i class="ph ph-file-text text-accent2 mt-0.5"></i> RFC-002 — Escolha do banco de dados
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/TechChallenge01/TechChallenge/blob/main/docs/architecture/rfcs/RFC-003-estrategia-de-autenticacao.md" target="_blank" class="flex items-start gap-2 text-gray-300 hover:text-white transition-colors">
+                                <i class="ph ph-file-text text-accent2 mt-0.5"></i> RFC-003 — Estratégia de autenticação
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="glass-card p-8">
+                    <h3 class="text-sm font-semibold text-gray-300 mb-5 flex items-center gap-2">
+                        <i class="ph ph-check-square text-accent"></i> ADRs — decisões arquiteturais
+                    </h3>
+                    <ul class="space-y-3 text-sm">
+                        <li>
+                            <a href="https://github.com/TechChallenge01/TechChallenge/blob/main/docs/architecture/adrs/ADR-001-padrao-de-comunicacao.md" target="_blank" class="flex items-start gap-2 text-gray-300 hover:text-white transition-colors">
+                                <i class="ph ph-file-text text-accent mt-0.5"></i> ADR-001 — Padrão de comunicação (REST síncrono)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/TechChallenge01/TechChallenge/blob/main/docs/architecture/adrs/ADR-002-uso-de-hpa.md" target="_blank" class="flex items-start gap-2 text-gray-300 hover:text-white transition-colors">
+                                <i class="ph ph-file-text text-accent mt-0.5"></i> ADR-002 — Uso de HPA
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/TechChallenge01/TechChallenge/blob/main/docs/architecture/adrs/ADR-003-segregacao-de-repositorios.md" target="_blank" class="flex items-start gap-2 text-gray-300 hover:text-white transition-colors">
+                                <i class="ph ph-file-text text-accent mt-0.5"></i> ADR-003 — Segregação em 4 repositórios
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/TechChallenge01/TechChallenge/blob/main/docs/architecture/adrs/ADR-004-observabilidade-hibrida.md" target="_blank" class="flex items-start gap-2 text-gray-300 hover:text-white transition-colors">
+                                <i class="ph ph-file-text text-accent mt-0.5"></i> ADR-004 — Observabilidade híbrida
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <p class="text-center text-xs text-gray-500 mt-10">
+                Índice completo em <a href="https://github.com/TechChallenge01/TechChallenge/blob/main/docs/architecture/README.md" target="_blank" class="text-accent hover:underline">docs/architecture/</a> no repositório.
+            </p>
         </div>
     </section>
 
@@ -619,6 +828,9 @@
                 <span class="hover:text-white cursor-pointer transition-colors">Docker</span>
                 <span class="hover:text-white cursor-pointer transition-colors">Kubernetes</span>
                 <span class="hover:text-white cursor-pointer transition-colors">Terraform</span>
+                <span class="hover:text-white cursor-pointer transition-colors">API Gateway</span>
+                <span class="hover:text-white cursor-pointer transition-colors">AWS Lambda</span>
+                <span class="hover:text-white cursor-pointer transition-colors">Datadog</span>
                 <span class="hover:text-white cursor-pointer transition-colors">GitHub Actions</span>
                 <span class="hover:text-white cursor-pointer transition-colors">SQL Server</span>
             </div>

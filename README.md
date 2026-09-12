@@ -173,8 +173,9 @@ Disparado em push para `main`. Encadeia:
 2. **build-push-image** — build da imagem Docker e push para o ECR.
 3. **migrate-database** — aplica namespace/ConfigMap/Secret no cluster e roda o `migration-job.yaml` (EF Core migration bundle) contra o banco.
 4. **deploy** — aplica `deployment.yaml`, `service.yaml` e `hpa.yaml` no EKS e aguarda o rollout.
+5. **terraform-datadog** — aplica o dashboard do Datadog (`terraform/datadog`), só em push na `main`.
 
-As credenciais AWS (temporárias, do AWS Academy), a connection string do banco e a API Key do Datadog são injetadas via GitHub Secrets (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN`, `RDS_CONNECTION_STRING`, `DATADOG_API_KEY`).
+As credenciais AWS (temporárias, do AWS Academy), a connection string do banco e as credenciais do Datadog são injetadas via GitHub Secrets (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN`, `RDS_CONNECTION_STRING`, `DATADOG_API_KEY`, `DATADOG_APP_KEY`, `TF_STATE_BUCKET`).
 
 ---
 
@@ -203,14 +204,29 @@ kubectl apply -f k8s/datadog-agent.yaml
 
 Em produção isso é feito automaticamente pelo `cd.yml`, a partir do secret `DATADOG_API_KEY` configurado no GitHub.
 
-### Dashboards e alertas sugeridos
-- **Healthcheck/uptime**: monitor de disponibilidade sobre `GET /health` (Synthetics ou monitor HTTP do Datadog) + os `readinessProbe`/`livenessProbe` do `k8s/deployment.yaml`.
-- **Latência das APIs**: `trace.aspnet_core.request` (p50/p95/p99) vindo do APM, por rota.
-- **CPU/memória do Kubernetes**: `kubernetes.cpu.usage.total` / `kubernetes.memory.usage`, comparado com os `requests`/`limits` do `deployment.yaml` e os alvos do `k8s/hpa.yaml`.
+### Dashboard e monitors (provisionados via Terraform)
+
+Todo o dashboard e os alertas exigidos pela rubrica são código, em [`terraform/datadog`](terraform/datadog):
+
+**Dashboard** (`dashboard.tf`), em 4 grupos:
 - **Volume diário de OS**: soma de `techchallenger.os.criadas` por dia.
-- **Tempo médio de execução por status**: média/percentis de `techchallenger.os.tempo_execucao_segundos`, agrupado pela tag `status`.
-- **Erros e falhas nas integrações**: soma de `techchallenger.os.erros` por `operacao`, mais os erros 5xx capturados automaticamente pelo APM.
-- **Alerta de falha no processamento de OS**: monitor de anomalia/threshold sobre `techchallenger.os.erros` e sobre a taxa de erro do APM no serviço `techchallenger-api`.
+- **Tempo médio de execução por status**: média de `techchallenger.os.tempo_execucao_segundos`, agrupado pela tag `status`.
+- **Erros e falhas nas integrações**: soma de `techchallenger.os.erros` por `operacao` + ranking (Top List) das operações com mais falhas.
+- **Latência das APIs e recursos de Kubernetes**: `trace.aspnet_core.request` (p95, via APM) por rota + `kubernetes.cpu.usage.total`/`kubernetes.memory.usage` (via kubelet) por pod.
+
+**Monitors** (`monitors.tf`):
+- **Falhas no processamento de OS**: alerta de threshold sobre `techchallenger.os.erros` (padrão: warning acima de 5, crítico acima de 10 erros em 5min — ajustável via `erros_os_threshold_warning`/`erros_os_threshold_critical`).
+- **Healthcheck/uptime**: monitor do tipo *service check* sobre `http.can_connect`, alimentado pela integração `http_check` do próprio Datadog Agent, configurada via Autodiscovery annotation em [`k8s/deployment.yaml`](k8s/deployment.yaml) (`ad.datadoghq.com/techchallenger.checks`) batendo em `GET /health` a cada ciclo do Agent — sem depender de Synthetics (fora do plano free/trial).
+
+Nenhum dos dois monitors notifica ninguém por padrão (`alert_notification = ""`); para receber alerta de verdade (Slack, e-mail, etc.), defina a variável `alert_notification` com o handle do canal, ex. `TF_VAR_alert_notification="@slack-tech-challenge"`.
+
+Tudo aplicado automaticamente pelo job `terraform-datadog` do `cd.yml` a cada push na `main` (validado em PR pelo job `terraform-validate-datadog` do `ci.yml`). Precisa dos secrets `DATADOG_API_KEY` (já existente), `DATADOG_APP_KEY` (Application Key, gerada em Datadog → Organization Settings → Application Keys) e `TF_STATE_BUCKET` (bucket S3 usado como backend do Terraform). Para aplicar manualmente:
+
+```bash
+cd terraform/datadog
+terraform init -backend-config="bucket=<SEU_BUCKET_DE_STATE>"
+TF_VAR_datadog_api_key=<SUA_API_KEY> TF_VAR_datadog_app_key=<SUA_APP_KEY> terraform apply
+```
 
 ---
 
@@ -269,8 +285,8 @@ Um token emitido pela `TechChallenger.auth` carrega `role=Cliente` e `sub=<Clien
 
 ---
 
-### 🔐 AuthController - Autenticação
-**Base URL:** `/api/auth`
+### 🔐 Autenticação (login interno)
+**Base URL:** `/api`
 
 | Método | Endpoint | Descrição | Autorização | Status |
 |--------|----------|-----------|-------------|--------|
@@ -294,7 +310,7 @@ Um token emitido pela `TechChallenger.auth` carrega `role=Cliente` e `sub=<Clien
 ---
 
 ### 👤 UsuarioController - Gerenciamento de Usuários
-**Base URL:** `/api/usuario`
+**Base URL:** `/api/usuarios`
 
 | Método | Endpoint | Descrição | Autorização | Status |
 |--------|----------|-----------|-------------|--------|
@@ -316,7 +332,7 @@ Um token emitido pela `TechChallenger.auth` carrega `role=Cliente` e `sub=<Clien
 ---
 
 ### 👥 ClienteController - Gerenciamento de Clientes
-**Base URL:** `/api/cliente`
+**Base URL:** `/api/clientes`
 
 | Método | Endpoint | Descrição | Autorização | Status |
 |--------|----------|-----------|-------------|--------|
@@ -357,7 +373,7 @@ Um token emitido pela `TechChallenger.auth` carrega `role=Cliente` e `sub=<Clien
 ---
 
 ### 🚗 VeiculoController - Gerenciamento de Veículos
-**Base URL:** `/api/veiculo`
+**Base URL:** `/api/veiculos`
 
 | Método | Endpoint | Descrição | Autorização | Status |
 |--------|----------|-----------|-------------|--------|
@@ -386,7 +402,7 @@ Um token emitido pela `TechChallenger.auth` carrega `role=Cliente` e `sub=<Clien
 ---
 
 ### 🔧 PecaController - Gerenciamento de Peças
-**Base URL:** `/api/peca`
+**Base URL:** `/api/pecas`
 
 | Método | Endpoint | Descrição | Autorização | Status |
 |--------|----------|-----------|-------------|--------|
@@ -413,7 +429,7 @@ Um token emitido pela `TechChallenger.auth` carrega `role=Cliente` e `sub=<Clien
 ---
 
 ### 📦 InsumoController - Gerenciamento de Insumos
-**Base URL:** `/api/insumo`
+**Base URL:** `/api/insumos`
 
 | Método | Endpoint | Descrição | Autorização | Status |
 |--------|----------|-----------|-------------|--------|
@@ -439,7 +455,7 @@ Um token emitido pela `TechChallenger.auth` carrega `role=Cliente` e `sub=<Clien
 ---
 
 ### 🛠️ ServicoController - Gerenciamento de Serviços
-**Base URL:** `/api/servico`
+**Base URL:** `/api/servicos`
 
 | Método | Endpoint | Descrição | Autorização | Status |
 |--------|----------|-----------|-------------|--------|
@@ -465,7 +481,7 @@ Um token emitido pela `TechChallenger.auth` carrega `role=Cliente` e `sub=<Clien
 ---
 
 ### 📋 OrdemServicoController - Gerenciamento de Ordens de Serviço
-**Base URL:** `/api/ordemservico`
+**Base URL:** `/api/ordemServico`
 
 | Método | Endpoint | Descrição | Status Exigido | Autorização | Status HTTP |
 |--------|----------|-----------|----------------|-------------|-------------|
@@ -559,7 +575,7 @@ Um token emitido pela `TechChallenger.auth` carrega `role=Cliente` e `sub=<Clien
 ---
 
 ### 📊 EstoqueController - Gerenciamento de Estoque
-**Base URL:** `/api/estoque`
+**Base URL:** `/api/estoques`
 
 | Método | Endpoint | Descrição | Autorização | Status |
 |--------|----------|-----------|-------------|--------|
@@ -623,7 +639,7 @@ TechChallenge/
 ## Notas Importantes
 
 - A porta `8080` deve estar disponível para executar a aplicação
-- Todos os endpoints requerem autenticação via JWT (exceto `GET /` e `POST /api/auth/login`)
+- Todos os endpoints requerem autenticação via JWT (exceto `GET /` e `POST /api/login`)
 - As senhas são armazenadas de forma segura (hash)
 - Os campos `cpf` e `cnpj` em Cliente e OS são mutuamente exclusivos — informe apenas o documento aplicável
 - A aplicação utiliza banco de dados relacional (verifique o `docker-compose.yml` para detalhes de conexão)

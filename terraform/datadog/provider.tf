@@ -1,0 +1,22 @@
+terraform {
+  required_version = ">= 1.5.0"
+
+  required_providers {
+    datadog = {
+      source  = "DataDog/datadog"
+      version = "~> 3.0"
+    }
+  }
+
+  backend "s3" {
+    key     = "techchallenge-api-datadog/terraform.tfstate"
+    region  = "us-east-1"
+    encrypt = true
+  }
+}
+
+provider "datadog" {
+  api_key = var.datadog_api_key
+  app_key = var.datadog_app_key
+  api_url = "https://api.${var.datadog_site}/"
+}
