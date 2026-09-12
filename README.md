@@ -223,9 +223,15 @@ http://localhost:8080/scalar
 
 Também está disponível uma collection do **Postman** com todos os endpoints e exemplos de request prontos para uso:
 
-📄 [`docs/API - v1 - Completa.postman_collection.json`](docs/API%20-%20v1%20-%20Completa.postman_collection.json)
+📄 [`docs/API-v2-Completa.postman_collection.json`](docs/API-v2-Completa.postman_collection.json)
 
 Importe o arquivo no Postman e configure a variável `baseUrl` como `http://localhost:8080` (ou a URL pública do serviço no Kubernetes) para começar a usar.
+
+## Documentação Arquitetural
+
+Diagrama de componentes (visão de nuvem/APIs/banco/observabilidade), diagramas de sequência (autenticação e abertura de OS), modelo ER com justificativa do banco, RFCs e ADRs — cobrindo os 4 repositórios do Tech Challenge:
+
+📄 [`docs/architecture/`](docs/architecture)
 
 ## Vídeo Demonstrativo
 
