@@ -163,3 +163,39 @@ jobs:
       - name: Mostrar endereço público
         run: |
           kubectl get service techchallenger-service -n ${{ env.K8S_NAMESPACE }}
+
+  # Dashboard do Datadog (terraform/datadog) e independente do deploy da app —
+  # so aplica em push na main, ja que existe uma unica instancia do dashboard
+  # (nao ha um por ambiente, homolog/producao apontam para o mesmo service/env no Datadog).
+  terraform-datadog:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar credenciais AWS Academy (temporárias)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform init
+        working-directory: terraform/datadog
+        run: terraform init -input=false -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}"
+
+      - name: Terraform apply
+        working-directory: terraform/datadog
+        env:
+          TF_VAR_datadog_api_key: ${{ secrets.DATADOG_API_KEY }}
+          TF_VAR_datadog_app_key: ${{ secrets.DATADOG_APP_KEY }}
+        run: |
+          terraform apply -auto-approve -input=false
+          echo "### Dashboard Datadog" >> "$GITHUB_STEP_SUMMARY"
+          terraform output -raw dashboard_url >> "$GITHUB_STEP_SUMMARY"

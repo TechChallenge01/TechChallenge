@@ -42,3 +42,22 @@ jobs:
 
       - name: Build da imagem Docker (validação, sem push)
         run: docker build -f src/API/Dockerfile -t app:ci-${{ github.sha }} .
+
+  terraform-validate-datadog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform fmt (advisory)
+        working-directory: terraform/datadog
+        run: terraform fmt -check -recursive -diff || echo "::warning::terraform fmt pendente — rode 'terraform fmt -recursive' em terraform/datadog"
+
+      - name: Terraform validate
+        working-directory: terraform/datadog
+        run: |
+          terraform init -backend=false -input=false
+          terraform validate
